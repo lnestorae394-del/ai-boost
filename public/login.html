@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вход</title>
+
+<style>
+body{
+margin:0;
+background:#050505;
+font-family:Arial;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+overflow:hidden;
+position:relative;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+}
+
+.box{
+width:420px;
+max-width:92vw;
+background:#0b0b0b;
+padding:45px;
+border-radius:22px;
+border:1px solid rgba(0,255,100,0.35);
+box-shadow:0 0 60px rgba(0,255,100,0.25);
+position:relative;
+z-index:2;
+box-sizing:border-box;
+}
+
+h1{
+text-align:center;
+color:white;
+margin-bottom:25px;
+font-size:26px;
+}
+
+input{
+width:100%;
+padding:16px;
+margin-bottom:16px;
+background:#111;
+border:1px solid #222;
+border-radius:12px;
+color:white;
+font-size:16px;
+box-sizing:border-box;
+}
+
+input:focus{
+outline:none;
+border:1px solid #00ff66;
+box-shadow:0 0 12px #00ff66;
+}
+
+button{
+width:100%;
+padding:16px;
+background:#00ff66;
+border:none;
+border-radius:14px;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+color:#000;
+margin-top:5px;
+}
+
+.login-text{
+margin-top:20px;
+text-align:center;
+color:#aaa;
+font-size:14px;
+}
+
+.login-link{
+color:#00ff66;
+text-decoration:none;
+margin-left:6px;
+font-weight:700;
+}
+
+.error{
+display:none;
+background:#ff2b2b;
+color:#fff;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+text-align:center;
+font-size:14px;
+}
+
+.loader-wrap{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh;
+background:#050505;
+color:#00ff66;
+font-size:22px;
+}
+
+.loader{
+border:4px solid #00ff66;
+border-top:4px solid transparent;
+width:45px;
+height:45px;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:25px;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="box">
+<h1>Вход</h1>
+
+<div class="error" id="errorBox">Ошибка входа</div>
+
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Пароль">
+
+<button onclick="loginUser()">Войти</button>
+
+<p class="login-text">
+Нет аккаунта?
+<a href="register.html" class="login-link">Регистрация</a>
+</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain: "ai-boost-10540.firebaseapp.com",
+projectId: "ai-boost-10540",
+storageBucket: "ai-boost-10540.appspot.com",
+messagingSenderId: "1024595520009",
+appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.loginUser = async function(){
+
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
+const errorBox = document.getElementById("errorBox");
+
+errorBox.style.display="none";
+
+if(!email || !password){
+errorBox.innerText="Введите email и пароль";
+errorBox.style.display="block";
+return;
+}
+
+document.body.innerHTML = `
+<div class="loader-wrap">
+<div class="loader"></div>
+Проверка доступа...
+</div>
+`;
+
+try{
+
+const userCredential = await signInWithEmailAndPassword(auth,email,password);
+const user = userCredential.user;
+
+/* проверяем статус */
+const docRef = doc(db,"users",user.uid);
+const docSnap = await getDoc(docRef);
+
+if(docSnap.exists()){
+
+const data = docSnap.data();
+
+if(data.hasPocket && data.hasDeposit){
+window.location.href="signals.html";
+return;
+}
+
+if(data.hasPocket && !data.hasDeposit){
+window.location.href="deposit.html";
+return;
+}
+
+window.location.href="pocket.html";
+
+}else{
+window.location.href="pocket.html";
+}
+
+}catch(e){
+location.reload();
+setTimeout(()=>{
+document.getElementById("errorBox").innerText="Неверный логин или пароль";
+document.getElementById("errorBox").style.display="block";
+},200);
+}
+
+}
+</script>
+
+<script>
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles=[];
+for(let i=0;i<120;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2+1,
+d:Math.random()*1
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff66";
+ctx.beginPath();
+
+for(let p of particles){
+ctx.moveTo(p.x,p.y);
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+}
+
+ctx.fill();
+
+for(let p of particles){
+p.y+=p.d;
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+}
+}
+setInterval(draw,33);
+</script>
+
+</body>
+</html>

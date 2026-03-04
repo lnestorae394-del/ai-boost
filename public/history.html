@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>История сделок | AI BOOST</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff;overflow-x:hidden}
+
+/* HEADER */
+.ai-header{
+width:92%;
+max-width:1500px;
+margin:14px auto 0;
+position:relative;
+z-index:5;
+}
+
+
+.ai-header-inner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 35px;
+border-radius:20px;
+background:rgba(0,0,0,.65);
+border:1.5px solid rgba(0,255,136,.45);
+box-shadow:0 0 25px rgba(0,255,136,.25),
+inset 0 0 25px rgba(0,255,136,.08);
+}
+.ai-logo{font-size:22px;font-weight:900;cursor:pointer}
+.ai-logo span{color:#00ff88}
+
+.center-menu{
+display:flex;
+gap:40px;
+align-items:center;
+justify-content:center;
+flex:1;
+}
+
+.center-menu a{
+color:#cfcfcf;
+text-decoration:none;
+font-weight:600;
+}
+
+.center-menu a:hover{
+color:#00ff88;
+}
+
+/* 🔥 УБРАТЬ ЛИШНЮЮ СТРОКУ МЕНЮ */
+body > a{
+display:none !important;
+}
+
+.center-menu a:hover{color:#00ff88}
+
+.user-box{text-align:right;font-size:13px}
+.online{color:#00ff88;font-weight:800}
+
+/* CONTENT */
+.wrapper{
+max-width:1100px;
+margin:60px auto;
+padding:20px;
+position:relative;
+z-index:5;
+}
+
+.title{
+font-size:42px;
+font-weight:900;
+margin-bottom:30px;
+text-align:center;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:35px;
+}
+
+.stat-box{
+background:#05130f;
+border:1px solid rgba(0,255,120,.2);
+padding:20px;
+border-radius:18px;
+text-align:center;
+}
+
+.stat-big{
+font-size:28px;
+font-weight:900;
+margin-top:5px;
+color:#00ff88;
+}
+
+.history-box{
+background:#050505;
+border:1px solid rgba(0,255,120,.25);
+border-radius:22px;
+padding:25px;
+}
+
+.empty{
+text-align:center;
+padding:40px;
+color:#666;
+}
+
+/* snow */
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none !important;
+z-index:0 !important;
+}
+
+@media(max-width:768px){
+
+.title{
+font-size:34px;
+margin-bottom:18px;
+}
+
+.stats{
+grid-template-columns:1fr;
+gap:12px;
+}
+
+.stat-box{
+padding:14px;
+border-radius:16px;
+}
+
+.stat-big{
+font-size:22px;
+}
+
+.wrapper{
+margin-top:30px;
+}
+
+}
+
+/* бургер */
+.ai-burger{
+display:none;
+font-size:28px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* ===== MOBILE EXACT LIKE SIGNALS ===== */
+@media(max-width:768px){
+
+.center-menu{display:none}
+
+/* бургер по центру */
+.ai-burger{
+display:block;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+font-size:28px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* ID справа */
+.user-box{
+display:block;
+font-size:13px;
+text-align:right;
+min-width:110px;
+}
+
+/* меню */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 60px rgba(0,255,120,.35);
+width:92%;
+margin:10px auto 0;
+padding:25px 20px;
+}
+
+#mobileMenu.show{
+display:flex;
+}
+
+#mobileMenu a{
+font-size:20px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+}
+
+/* УБРАТЬ ДУБЛЬ МЕНЮ СВЕРХУ */
+a[href="rules.html"],
+a[href="history.html"],
+a[href="signals.html"]{
+position:relative;
+}
+
+body > a[href="rules.html"],
+body > a[href="history.html"],
+body > a[href="signals.html"]{
+display:none !important;
+}
+
+
+
+
+/* по умолчанию скрыто */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 60px rgba(0,255,120,.35);
+width:92%;
+margin:10px auto 0;
+padding:25px 20px;
+}
+
+/* когда открыто */
+#mobileMenu.show{
+display:flex;
+}
+
+/* только мобилка */
+@media(max-width:768px){
+#mobileMenu{
+position:relative;
+}
+}
+
+
+.wrapper{
+position:relative;
+z-index:5;
+}
+
+.ai-header{
+position:relative;
+z-index:10;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="ai-header">
+  <div class="ai-header-inner">
+
+    <div class="ai-logo" onclick="location.href='signals.html'">
+      AI.<span>BOOST</span>
+    </div>
+
+    <div class="center-menu">
+      <a href="rules.html">Правила</a>
+      <a href="history.html">История сделок</a>
+      <a href="signals.html">Сигналы</a>
+    </div>
+
+    <div class="user-box">
+      <div>ID: <span id="userID"></span></div>
+      <div class="online" id="onlineCount">online: 842</div>
+    </div>
+
+    <div class="ai-burger" onclick="toggleMenu()">☰</div>
+
+  </div>
+
+  <div id="mobileMenu">
+    <a href="rules.html">Правила</a>
+    <a href="history.html">История сделок</a>
+    <a href="signals.html">Сигналы</a>
+  </div>
+</div>
+
+<div class="wrapper">
+
+<div class="title">История сделок</div>
+
+<!-- фильтр -->
+<div style="display:flex;gap:12px;justify-content:center;margin-bottom:25px;flex-wrap:wrap;">
+<input type="date" id="dateFrom" style="padding:10px;border-radius:10px;border:1px solid rgba(0,255,120,.3);background:#061712;color:#00ff88;font-weight:700;">
+<input type="date" id="dateTo" style="padding:10px;border-radius:10px;border:1px solid rgba(0,255,120,.3);background:#061712;color:#00ff88;font-weight:700;">
+<button onclick="applyDateFilter()" style="padding:10px 18px;border-radius:10px;border:none;background:#00ff88;color:#000;font-weight:800;cursor:pointer;">Показать</button>
+</div>
+
+<div class="stats">
+<div class="stat-box">
+Сделок сегодня
+<div class="stat-big" id="statTrades">0</div>
+</div>
+
+<div class="stat-box">
+Прибыль сегодня
+<div class="stat-big" id="statProfit">$0</div>
+</div>
+
+<div class="stat-box">
+Winrate сегодня
+<div class="stat-big" id="statWin">0%</div>
+</div>
+</div>
+
+<div class="history-box" id="historyList">
+<div class="empty">Загрузка истории...</div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, query, where, limit, getDocs, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain:"ai-boost-10540.firebaseapp.com",
+projectId:"ai-boost-10540",
+storageBucket:"ai-boost-10540.appspot.com",
+messagingSenderId:"1024595520009",
+appId:"1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ===== МГНОВЕННЫЙ ID ИЗ КЕША ===== */
+const cachedID = localStorage.getItem("ai_user_id");
+if(cachedID){
+const el = document.getElementById("userID");
+if(el) el.innerText = cachedID;
+}
+
+let allTradesGlobal=[];
+
+/* ⚡ МГНОВЕННЫЙ КЕШ */
+const CACHE_TRADES = "ai_boost_history_cache";
+
+/* показать сразу из кеша */
+const cachedTrades = localStorage.getItem(CACHE_TRADES);
+
+if(cachedTrades){
+ try{
+   const parsed = JSON.parse(cachedTrades);
+
+   allTradesGlobal = parsed.map(t=>({
+     data:()=>({
+       ...t,
+       created:{
+         toDate:()=> new Date(t.created)
+       }
+     })
+   }));
+
+   showToday(); // ⚡ сразу показать
+ }catch(e){}
+}
+
+/* ===== АВТОРИЗАЦИЯ ===== */
+onAuthStateChanged(auth, async(user)=>{
+if(!user){location.href="login.html";return;}
+
+const snap = await getDoc(doc(db,"users",user.uid));
+if(snap.exists()){
+const id = snap.data().trader_id || "нет";
+
+document.getElementById("userID").innerText = id;
+
+/* кешируем */
+localStorage.setItem("ai_user_id", id);
+}
+
+loadTrades(user.uid);
+});
+
+/* ===== ЗАГРУЗКА СДЕЛОК ===== */
+async function loadTrades(uid){
+
+const q=query(collection(db,"trades"),where("user","==",uid),limit(1000));
+const snap=await getDocs(q);
+
+let docs=[];
+snap.forEach(d=>docs.push(d));
+
+docs.sort((a,b)=>{
+let A=a.data().created?.seconds||0;
+let B=b.data().created?.seconds||0;
+return B-A;
+});
+
+allTradesGlobal = docs;
+
+/* ⚡ сохранить кеш */
+const forCache = docs.map(d=>{
+let data = d.data();
+
+return {
+ ...data,
+ created: data.created?.toDate?.() 
+   ? data.created.toDate()
+   : new Date()
+};
+});
+
+localStorage.setItem(CACHE_TRADES, JSON.stringify(forCache));
+
+showToday();
+}
+
+/* ===== СЕГОДНЯ ===== */
+function showToday(){
+
+let todayStart = new Date();
+todayStart.setHours(0,0,0,0);
+
+let todayEnd = new Date();
+todayEnd.setHours(23,59,59,999);
+
+let filtered = allTradesGlobal.filter(doc=>{
+let d = doc.data();
+if(!d.created) return false;
+
+let t = d.created.toDate();
+return t >= todayStart && t <= todayEnd;
+});
+
+renderTrades(filtered);
+}
+
+/* ===== ФИЛЬТР ПО ДАТАМ ===== */
+window.applyDateFilter = function(){
+
+const fromInput = document.getElementById("dateFrom").value;
+const toInput = document.getElementById("dateTo").value;
+
+if(!fromInput || !toInput){
+alert("Выбери даты");
+return;
+}
+
+let fromDate = new Date(fromInput+"T00:00:00");
+let toDate = new Date(toInput+"T23:59:59");
+
+let filtered = allTradesGlobal.filter(doc=>{
+let d = doc.data();
+if(!d.created) return false;
+
+let tradeTime = d.created.toDate();
+return tradeTime >= fromDate && tradeTime <= toDate;
+});
+
+renderTrades(filtered);
+};
+
+/* ===== РЕНДЕР ===== */
+function renderTrades(docs){
+
+let html="";
+let wins=0;
+let total=0;
+let profits={};
+
+docs.forEach(doc=>{
+let d=doc.data();
+
+total++;
+if(!profits[d.currency]) profits[d.currency]=0;
+profits[d.currency]+=d.profit;
+if(d.profit>0) wins++;
+
+let color=d.profit>0?"#00ff88":"#ff3b3b";
+let date="--"; 
+let time="--";
+
+if(d.created){
+let dd=d.created.toDate();
+date=dd.toLocaleDateString();
+time=dd.toLocaleTimeString().slice(0,5);
+}
+
+html+=`
+<div style="background:#061712;border:1px solid rgba(0,255,120,.2);border-radius:18px;padding:18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<div style="font-weight:800;font-size:18px">${d.pair}</div>
+<div style="font-size:13px;color:#aaa">${date} • ${time}</div>
+</div>
+<div style="text-align:right">
+<div style="font-weight:700">${d.amount} ${d.currency}</div>
+<div style="color:${color};font-weight:900">
+${d.profit>0?"+":""}${d.profit.toFixed(2)} ${d.currency}
+</div>
+</div>
+</div>`;
+});
+
+if(!html) html='<div class="empty">Нет сделок</div>';
+document.getElementById("historyList").innerHTML=html;
+
+/* стат */
+document.getElementById("statTrades").innerText = total;
+
+/* профит */
+let profitHTML="";
+for(let cur in profits){
+let val=profits[cur];
+let color=val>0?"#00ff88":"#ff3b3b";
+let sign=val>0?"+":"";
+profitHTML+=`<div style="color:${color}">${sign}${val.toFixed(0)} ${cur}</div>`;
+}
+if(!profitHTML) profitHTML="$0";
+document.getElementById("statProfit").innerHTML = profitHTML;
+
+/* winrate */
+let winrate = total ? Math.floor((wins/total)*100) : 0;
+let winEl=document.getElementById("statWin");
+winEl.innerText = winrate+"%";
+winEl.style.color = winrate<50?"#ff3b3b":"#00ff88";
+}
+</script>
+</script>
+
+<script>
+/* snow */
+const snowCanvas=document.getElementById("snow");
+const snowCtx=snowCanvas.getContext("2d");
+function resizeSnow(){snowCanvas.width=innerWidth;snowCanvas.height=innerHeight;}
+resizeSnow();window.addEventListener("resize",resizeSnow);
+
+let snow=[];
+for(let i=0;i<120;i++){
+snow.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2,d:Math.random()*1+0.2});
+}
+function drawSnow(){
+snowCtx.clearRect(0,0,innerWidth,innerHeight);
+snowCtx.fillStyle="#00ff88";
+snowCtx.beginPath();
+for(let p of snow){snowCtx.moveTo(p.x,p.y);snowCtx.arc(p.x,p.y,p.r,0,Math.PI*2,true);}
+snowCtx.fill();
+for(let p of snow){p.y+=p.d;if(p.y>innerHeight){p.y=0;p.x=Math.random()*innerWidth;}}
+requestAnimationFrame(drawSnow);
+}
+drawSnow();
+</script>
+
+
+<script>
+/* =========================================
+   ЕДИНЫЙ ONLINE ДЛЯ ВСЕГО САЙТА
+   (НЕ ЛОМАЕТ FIREBASE)
+========================================= */
+
+const ONLINE_KEY = "global_online_ai_boost";
+
+/* старт */
+if(!localStorage.getItem(ONLINE_KEY)){
+let start = 860 + Math.floor(Math.random()*60);
+localStorage.setItem(ONLINE_KEY, start);
+}
+
+/* функция */
+function updateOnlineGlobal(){
+
+let online = parseInt(localStorage.getItem(ONLINE_KEY));
+
+let hour = new Date().getHours();
+
+let min,max;
+
+if(hour >= 0 && hour <= 6){
+min = 420;
+max = 700;
+}
+else if(hour > 6 && hour <= 12){
+min = 650;
+max = 950;
+}
+else{
+min = 850;
+max = 1300;
+}
+
+/* движение */
+let change = Math.random();
+
+if(change > 0.6) online += Math.floor(Math.random()*3);
+if(change < 0.4) online -= Math.floor(Math.random()*2);
+
+/* границы */
+if(online > max) online = max - Math.floor(Math.random()*5);
+if(online < min) online = min + Math.floor(Math.random()*5);
+
+localStorage.setItem(ONLINE_KEY, online);
+
+/* вывод */
+const el=document.getElementById("onlineCount");
+if(el){
+el.innerText="online: "+online;
+}
+}
+
+/* сразу */
+updateOnlineGlobal();
+
+/* каждые 8 сек */
+setInterval(updateOnlineGlobal,8000);
+
+/* синхра вкладок */
+window.addEventListener("storage",updateOnlineGlobal);
+
+
+function toggleMenu(){
+document.getElementById("mobileMenu").classList.toggle("show");
+}
+
+
+
+document.querySelectorAll("body > a").forEach(el=>{
+el.remove();
+});
+</script>
+
+<script>
+window.addEventListener("load",()=>{
+  document.querySelectorAll("body > a").forEach(a=>{
+    if(a.href.includes("rules") || a.href.includes("history") || a.href.includes("signals")){
+      a.remove();
+    }
+  });
+});
+</script>
+
+<script>
+document.querySelectorAll("a").forEach(a=>{
+ if(
+  a.innerText.trim()=="Правила" ||
+  a.innerText.trim()=="История сделок" ||
+  a.innerText.trim()=="Сигналы"
+ ){
+  if(!a.closest(".center-menu") && !a.closest("#mobileMenu")){
+    a.remove();
+  }
+ }
+});
+
+
+function applyDateFilter(){
+
+const fromInput = document.getElementById("dateFrom").value;
+const toInput = document.getElementById("dateTo").value;
+
+if(!fromInput || !toInput){
+alert("Выбери даты");
+return;
+}
+
+let fromDate = new Date(fromInput+"T00:00:00");
+let toDate = new Date(toInput+"T23:59:59");
+
+let filtered=[];
+
+allTradesGlobal.forEach(doc=>{
+let d = doc.data();
+if(!d.created) return;
+
+let tradeTime = d.created.toDate();
+
+if(tradeTime >= fromDate && tradeTime <= toDate){
+filtered.push(doc);
+}
+});
+
+renderTrades(filtered);
+}
+
+</script>
+</body>
+</html>

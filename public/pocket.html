@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Boost</title>
+
+<style>
+html,body{
+height:100%;
+margin:0;
+}
+
+body{
+background:#050505;
+font-family:Arial;
+color:white;
+overflow:hidden;
+
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+}
+.box{
+width:420px;
+max-width:95%;
+background:#0b0b0b;
+padding:40px 28px;
+border-radius:22px;
+border:1px solid rgba(0,255,100,0.25);
+box-shadow:0 0 60px rgba(0,255,100,0.15);
+position:relative;
+z-index:2;
+}
+
+h1{color:white;text-align:center;margin-bottom:15px;font-size:26px;}
+.desc{color:#aaa;text-align:center;font-size:14px;margin-bottom:25px;line-height:1.5;}
+.btn{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;margin-top:12px;transition:0.3s;}
+.btn-pocket{background:#031c12;color:#00ff88;border:1px solid #00ff88;box-shadow:0 0 15px rgba(0,255,120,0.25);}
+.btn-green{background:#00ff66;color:black;}
+.btn-dark{background:#031c12;color:#00ff66;border:1px solid #00ff66;}
+.id-top{display:flex;justify-content:space-between;align-items:center;margin-top:18px;margin-bottom:6px;}
+.find-top{color:#00ff88;font-size:14px;cursor:pointer;font-weight:700;}
+input{width:100%;padding:16px;background:#111;border:1px solid #222;border-radius:12px;color:white;font-size:16px;box-sizing:border-box;}
+#errorBox{color:#ff3b3b;font-size:14px;margin-top:8px;display:none;}
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+
+width:360px;
+max-width:92%;
+max-height:82vh;
+
+background:#0b0b0b;
+border:1px solid rgba(0,255,120,0.25);
+border-radius:22px;
+padding:20px 18px;
+
+color:white;
+
+opacity:0;
+visibility:hidden;
+pointer-events:none;
+
+z-index:9999;
+overflow-y:auto;
+
+box-shadow:0 0 80px rgba(0,255,120,0.18);
+}
+
+/* мгновенное открытие без дерганий */
+.popup.show{
+opacity:1;
+visibility:visible;
+pointer-events:auto;
+}
+
+/* картинки */
+.popup img{
+width:100%;
+border-radius:16px;
+margin-top:10px;
+margin-bottom:14px;
+box-shadow:0 0 25px rgba(0,255,120,0.35);
+}
+
+
+.have-acc-btn{
+background:#e5e5e5;
+color:#000;
+border:none;
+padding:14px 22px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.have-acc-btn:hover{
+background:#d6d6d6;
+}
+
+.bottom-buttons{
+display:flex;
+gap:12px;
+margin-top:14px;
+}
+
+.info-btn{
+flex:1;
+background:#e5e5e5;
+color:#000;
+border:none;
+padding:14px 16px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+transition:0.25s;
+text-align:center;
+}
+
+.info-btn:hover{
+background:#d7d7d7;
+}
+
+
+/* ==== SHAKE ==== */
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-5px)}
+50%{transform:translateX(5px)}
+75%{transform:translateX(-5px)}
+100%{transform:translateX(0)}
+}
+
+.shake{
+animation:shake .35s;
+}
+
+/* ==== GREEN GLOW ==== */
+@keyframes glow{
+0%{box-shadow:0 0 0px #00ff66;}
+50%{box-shadow:0 0 25px #00ff66;}
+100%{box-shadow:0 0 8px #00ff66;}
+}
+
+.glow{
+animation:glow 0.8s ease;
+}
+
+/* мягкий shake для input */
+@keyframes inputShake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-4px)}
+50%{transform:translateX(4px)}
+75%{transform:translateX(-4px)}
+100%{transform:translateX(0)}
+}
+
+.input-shake{
+animation:inputShake .35s ease;
+border-color:#ff3b3b !important;
+box-shadow:0 0 8px rgba(255,0,0,0.4);
+}
+
+@supports (-webkit-touch-callout: none){
+body{
+min-height:-webkit-fill-available;
+}
+}
+
+#overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+opacity:0;
+pointer-events:none;
+z-index:9998;
+}
+
+#popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:360px;
+max-width:92%;
+max-height:82vh;
+background:#0b0b0b;
+border:1px solid rgba(0,255,120,.25);
+border-radius:22px;
+padding:22px 18px;
+color:#fff;
+opacity:0;
+pointer-events:none;
+z-index:9999;
+overflow:auto;
+box-shadow:0 0 60px rgba(0,255,120,.2);
+}
+
+#popup.show{
+opacity:1;
+pointer-events:auto;
+}
+
+#overlay.show{
+opacity:1;
+pointer-events:auto;
+}
+
+#popupClose{
+position:absolute;
+right:14px;
+top:10px;
+font-size:22px;
+cursor:pointer;
+color:#aaa;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="overlay"></div>
+
+<div id="popup">
+<div id="popupClose">✕</div>
+<div id="popupText"></div>
+</div>
+
+<canvas id="snow"></canvas>
+
+<div class="box">
+<h1>Почти готово! Ваш доступ
+активируется после подключения брокера
+</h1>
+
+<div class="desc">
+Для завершения регистрации выберите брокера,<br>
+зарегистрируйтесь и отправьте ваш ID
+</div>
+
+<button class="btn btn-pocket">Зарегистрироваться на POCKET</button>
+
+<div class="id-top">
+<div></div>
+<div class="find-top" onclick="openInfo('id')">Где найти ID?</div>
+</div>
+
+<input id="userid" type="text" placeholder="Введите ваш ID аккаунта">
+
+<div id="errorBox"></div>
+
+<button class="btn btn-green" onclick="checkID()">Создать аккаунт</button>
+
+<button class="btn btn-dark" onclick="window.location.href='index.html'">
+Выйти с аккаунта
+</button>
+
+<div class="bottom-buttons">
+
+<button class="info-btn" onclick="openInfo('why')">
+Зачем нам ваш ID?
+</button>
+
+<button class="info-btn" onclick="window.location.href='delete.html'">
+У меня уже есть аккаунт
+</button>
+
+</div>
+</div>
+
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain: "ai-boost-10540.firebaseapp.com",
+projectId: "ai-boost-10540",
+storageBucket: "ai-boost-10540.appspot.com",
+messagingSenderId: "1024595520009",
+appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.openInfo=function(type){
+
+let html="";
+
+if(type==="id"){
+html=`
+<div style="position:relative">
+
+<div style="
+position:absolute;
+right:0;
+top:-5px;
+font-size:26px;
+cursor:pointer;
+color:#00ff88;
+font-weight:700;
+" onclick="closePop()">✕</div>
+
+<h2 style="
+margin-bottom:18px;
+font-size:24px;
+">Где найти ваш ID?</h2>
+
+<div style="
+color:#00ff88;
+font-weight:700;
+margin-bottom:8px;
+font-size:16px;
+">Шаг 1 — Откройте профиль</div>
+
+<img src="img/id1.jpg" style="
+width:100%;
+border-radius:18px;
+margin-bottom:18px;
+box-shadow:0 0 35px rgba(0,255,100,.35);
+">
+
+<div style="
+color:#00ff88;
+font-weight:700;
+margin-bottom:8px;
+font-size:16px;
+">Шаг 2 — Скопируйте ваш ID</div>
+
+<img src="img/id2.jpg" style="
+width:100%;
+border-radius:18px;
+margin-bottom:12px;
+box-shadow:0 0 35px rgba(0,255,100,.35);
+">
+
+<div style="
+color:#aaa;
+font-size:13px;
+">ID находится в Profile / Профиль вверху </div>
+
+</div>
+`;
+}
+
+if(type==="why"){
+html=`
+<div style="position:relative">
+
+<div style="
+position:absolute;
+right:0;
+top:-5px;
+font-size:26px;
+cursor:pointer;
+color:#00ff88;
+font-weight:700;
+" onclick="closePop()">✕</div>
+
+<h2 style="margin-bottom:10px">Зачем нужен ID?</h2>
+
+<p style="color:#aaa;font-size:14px;line-height:1.5">
+Ваш ID необходим для активации доступа к системе AI BOOST.<br><br>
+
+После регистрации у брокера система автоматически:<br>
+• подключает вас к торговым сигналам<br>
+• активирует закрытые функции платформы<br>
+• открывает доступ к VIP-разделу<br>
+• синхронизирует ваш аккаунт с системой<br><br>
+
+Мы используем ID только для подтверждения регистрации у партнёра и активации доступа.<br><br>
+
+❗ Без указания ID система не сможет определить ваш аккаунт, и доступ к сигналам останется закрытым.<br><br>
+
+Ваш ID — это не пароль и не доступ к средствам. Он не позволяет управлять счётом и используется исключительно для технической привязки.<br><br>
+
+Все данные обрабатываются конфиденциально и не передаются третьим лицам.
+</p>
+
+</div>
+`;
+}
+
+/* сначала вставили контент */
+document.getElementById("popup").innerHTML = html;
+
+/* потом показали */
+document.getElementById("overlay").style.opacity="1";
+document.getElementById("overlay").style.pointerEvents="auto";
+
+document.getElementById("popup").style.opacity="1";
+document.getElementById("popup").style.pointerEvents="auto";
+
+}
+
+window.closePop=function(){
+document.getElementById("overlay").style.opacity="0";
+document.getElementById("overlay").style.pointerEvents="none";
+document.getElementById("popup").style.opacity="0";
+document.getElementById("popup").style.pointerEvents="none";
+}
+
+function showError(text){
+const box=document.getElementById("errorBox");
+box.innerText=text;
+box.style.display="block";
+}
+
+window.checkID=async function(){
+
+const id=document.getElementById("userid").value.trim();
+
+if(id.length<4){
+
+showError("Введите корректный ID");
+
+const input = document.getElementById("userid");
+input.classList.add("input-shake");
+
+setTimeout(()=>{
+input.classList.remove("input-shake");
+},400);
+
+return;
+}
+
+try{
+
+let r=await fetch("/check?trader_id="+id);
+let data=await r.json();
+
+if(data.ok){
+
+localStorage.setItem("trader_id", id);
+localStorage.setItem("hasPocket","true");
+
+const user=auth.currentUser;
+if(user){
+await updateDoc(doc(db,"users",user.uid),{
+hasPocket:true,
+trader_id:id
+});
+}
+
+window.location.href="deposit.html";
+
+}else{
+showError("ID не найден. Зарегистрируйтесь по нашей ссылке");
+
+const box = document.querySelector(".box");
+box.classList.add("shake");
+
+setTimeout(()=>{
+box.classList.remove("shake");
+},400);
+
+}
+
+}catch(e){
+showError("Ошибка соединения с сервером");
+}
+}
+
+let click_id=localStorage.getItem("click_id");
+if(!click_id){
+click_id=Math.random().toString(36).substring(2,12);
+localStorage.setItem("click_id",click_id);
+}
+
+document.querySelector(".btn-pocket").addEventListener("click",()=>{
+window.open(
+"https://u3.shortink.io/register?utm_campaign=836358&utm_source=affiliate&utm_medium=sr&a=h9nxhW8rfWngjm&ac=hiddendinoxtgco&code=WELCOME50&click_id="+click_id,
+"_blank"
+);
+});
+</script>
+
+<script>
+const canvas=document.getElementById("snow");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<120;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2,d:Math.random()*1});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff88";
+ctx.beginPath();
+for(let p of particles){
+ctx.moveTo(p.x,p.y);
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+}
+ctx.fill();
+for(let p of particles){
+p.y+=p.d;
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+}
+}
+let snowInterval = setInterval(draw,33);
+</script>
+
+</body>
+</html>

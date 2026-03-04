@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>AI Boost</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<!-- ===== HEADER ===== -->
+<div class="ai-header">
+
+  <div class="ai-header-inner">
+
+    <!-- ЛОГО -->
+    <div class="ai-logo" onclick="location.href='index.html'">
+      AI.<span>BOOST</span>
+    </div>
+
+    <!-- МЕНЮ ПК -->
+    <div class="ai-menu desktop-menu">
+      <a href="index.html">Главная</a>
+      <a href="about.html">Про нас</a>
+      <a href="instruction.html">Инструкция</a>
+      <a href="#">RU 🌐</a>
+      <button onclick="location.href='login.html'">Войти</button>
+    </div>
+
+    <!-- БУРГЕР -->
+    <div class="ai-burger" onclick="toggleMenu()">☰</div>
+
+  </div>
+
+  <!-- 📱 MOBILE MENU -->
+  <div class="ai-menu mobile-menu" id="mobileMenu">
+    <a href="index.html">Главная</a>
+    <a href="about.html">Про нас</a>
+    <a href="instruction.html">Инструкция</a>
+    <a href="#">RU 🌐</a>
+    <button onclick="location.href='login.html'">Войти</button>
+  </div>
+
+</div>
+
+<!-- HERO -->
+<section class="hero">
+
+<div class="left">
+<h1>Ваш ключ к финансовому успеху</h1>
+<p>Используйте AI-аналитику и получайте точные сигналы</p>
+
+<button class="main-btn" onclick="window.location.href='register.html'">
+Зарегистрироваться
+</button>
+</div>
+
+<div class="right">
+
+<div class="stats-title">Статистика пользователей</div>
+
+<div class="stat-card users">
+<h2 id="homeUsers">0</h2>
+<p>Пользователей сервиса</p>
+</div>
+
+<div class="stat-card success">
+<h2 id="homeWin">0%</h2>
+<p>Успешных сигналов</p>
+</div>
+
+<div class="stat-card fail">
+<h2 id="homeLoss">0%</h2>
+<p>Неудачных сигналов</p>
+</div>
+
+<div class="stat-card profit-green">
+<h2 id="homeProfit">$0</h2>
+<p>Общий профит трейдеров</p>
+</div>
+
+</div>
+</section>
+
+<!-- PROMO -->
+<section class="promo-section">
+<h2><span class="green">Трейдинг</span> для тех, кто готов действовать</h2>
+
+<p>Присоединяйтесь к сообществу лидеров и начните зарабатывать уже сегодня</p>
+
+<button class="main-btn" onclick="window.location.href='register.html'">
+Зарегистрироваться
+</button>
+</section>
+
+<!-- CHART -->
+<section class="chart-section">
+<img src="chart.png" class="chart-image">
+</section>
+
+<!-- PAIRS -->
+<section class="pairs-section">
+<div class="pairs-container">
+<h2>Пары и инструменты для <span class="gradient-text">трейдинга</span></h2>
+
+<p>Каждый сигнал тщательно анализируется, чтобы обеспечить лучшие результаты</p>
+</div>
+</section>
+
+<section class="signals-section">
+<img src="signals.png" class="signals-img">
+</section>
+
+<section class="faq-section">
+  
+  <h2 class="faq-title">Часто задаваемые вопросы</h2>
+  <p class="faq-subtitle">Всё что вам нужно знать для успешной торговли</p>
+
+  <div class="faq-container">
+
+    <div class="faq-item">
+      <div class="faq-question">
+        Как начать торговлю на вашей платформе?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Чтобы начать, зарегистрируйте аккаунт, пополните свой счёт и выберите инструменты для торговли. После этого вы готовы к первым сделкам.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">
+        Нужен ли опыт для торговли?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Нет, наша платформа подходит как для новичков, так и для опытных трейдеров.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">
+        Что такое торговые сигналы и как ими пользоваться?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Торговые сигналы — это рекомендации по покупке или продаже активов на основе анализа рынка. Вы можете использовать их для принятия обоснованных решений при торговле.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">
+        Какие методы пополнения счёта доступны?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Пополнение счёта осуществляется на стороне брокера Pocket Option.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">
+        Есть ли поддержка 24/7?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Да. Если возникнут вопросы — напишите в поддержку Telegram: 
+        <br><br>
+        <a href="https://t.me/aiboostapphelp" target="_blank" style="color:#00ff88;font-weight:700;text-decoration:none;">
+@aiboostapphelp
+</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+
+  <div class="features-container">
+
+   <h2 class="features-title">
+Уверенный <span class="green">трейдинг</span> с нашими решениями
+</h2>
+
+
+    <p class="features-subtitle">
+      Интуитивные инструменты и аналитика для эффективной торговли
+    </p>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <h3>Интуитивный интерфейс</h3>
+        <p>
+          Удобный интерфейс позволяет легко ориентироваться в системе и быстро совершать сделки без лишних действий.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Точные торговые сигналы</h3>
+        <p>
+          Получайте актуальные сигналы на основе AI-анализа рынка.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Быстрый старт</h3>
+        <p>
+          Регистрация занимает всего несколько минут.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="tools-mega">
+
+<div class="tools-top">
+<h2><span>Инструменты</span>, которые повышают ваш успех</h2>
+<p>Все необходимые ресурсы для уверенного трейдинга</p>
+</div>
+
+<div class="tools-flex">
+
+<!-- ГРАФИК -->
+<div class="tools-graph">
+<svg viewBox="0 0 500 300">
+<polyline fill="none" stroke="#00ff66" stroke-width="4"
+points="0,260 80,200 140,220 210,150 280,180 340,120 420,160 500,90"/>
+</svg>
+</div>
+
+<!-- ПРАВЫЕ БЛОКИ -->
+<div class="tools-right">
+
+<div class="tool-item">
+<h3>Аналитические графики</h3>
+<p>Получайте глубокую аналитику рынков для принятия точных решений и понимания движения цены.</p>
+</div>
+
+<div class="tool-item">
+<h3>Точные торговые сигналы</h3>
+<p>Используйте надёжные сигналы для своевременного входа и выхода из сделок.</p>
+</div>
+
+<div class="tool-item">
+<h3>Платформа социального трейдинга</h3>
+<p>Следите за успешными стратегиями трейдеров и увеличивайте свою прибыль.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- HOW -->
+<section class="how-work">
+
+<div class="how-title">
+<h2>Как это <span>работает</span></h2>
+<p>Простой путь до старта в трейдинге</p>
+</div>
+
+<div class="how-steps">
+
+<div class="step-box">
+<span>01.</span>
+<p>Регистрация</p>
+</div>
+
+<div class="step-box">
+<span>02.</span>
+<p>Пополнение счёта</p>
+</div>
+
+<div class="step-box">
+<span>03.</span>
+<p>Выбор инструментов</p>
+</div>
+
+<div class="step-box">
+<span>04.</span>
+<p>Торговля</p>
+</div>
+
+</div>
+
+
+<section class="cta-section">
+
+<div class="cta-waves">
+<canvas id="ctaCanvas"></canvas>
+</div>
+
+<div class="cta-box">
+<h2>Начните зарабатывать уже сегодня!</h2>
+
+<button class="cta-btn" onclick="window.location.href='login.html'">
+Начать зарабатывать
+</button>
+</div>
+
+</section>
+
+
+
+<footer class="footer">
+  <div class="footer-box">
+
+    <div class="footer-logo">
+      <span class="white">AI.</span><span class="green">BOOST</span>
+    </div>
+
+    <div class="footer-text">
+      Авторское право © 2026 AI.BOOST | Все права защищены |
+      Telegram support |
+      Условия использования |
+      Политика конфиденциальности |
+      Cookies
+    </div>
+
+  </div>
+</footer>
+
+<!-- JS -->
+<script>
+function toggleMenu(){
+document.getElementById("mobileMenu").classList.toggle("show");
+}
+</script>
+
+<!-- ❄️ снег -->
+<script>
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let snow=[];
+for(let i=0;i<140;i++){
+snow.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2+1,
+speed:Math.random()*1.5+0.3
+});
+}
+
+function drawSnow(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff66";
+
+for(let s of snow){
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+
+s.y+=s.speed;
+if(s.y>canvas.height){
+s.y=-10;
+s.x=Math.random()*canvas.width;
+}
+}
+}
+setInterval(drawSnow,25);
+</script>
+
+<script>
+/* ================================
+   FAQ OPEN/CLOSE (фикс)
+================================ */
+document.querySelectorAll(".faq-question").forEach(q=>{
+  q.addEventListener("click",()=>{
+
+    const item = q.parentElement;
+    const answer = item.querySelector(".faq-answer");
+    const plus = q.querySelector("span");
+
+    if(answer.style.display==="block"){
+      answer.style.display="none";
+      plus.innerText="+";
+    }else{
+      answer.style.display="block";
+      plus.innerText="−";
+    }
+  });
+});
+
+
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const items = document.querySelectorAll(".faq-item");
+
+  items.forEach(item => {
+    const question = item.querySelector(".faq-question");
+    const answer = item.querySelector(".faq-answer");
+    const plus = question.querySelector("span");
+
+    question.addEventListener("click", function(){
+
+      const isOpen = answer.style.maxHeight;
+
+      // закрываем все
+      document.querySelectorAll(".faq-answer").forEach(a=>{
+        a.style.maxHeight = null;
+      });
+
+      document.querySelectorAll(".faq-question span").forEach(s=>{
+        s.innerText = "+";
+      });
+
+      if(!isOpen){
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        plus.innerText = "−";
+      }
+
+    });
+  });
+
+});
+</script>
+<script>
+const canvasLines = document.getElementById("lines");
+const ctxL = canvasLines.getContext("2d");
+
+function resizeLines(){
+canvasLines.width = window.innerWidth;
+canvasLines.height = canvasLines.offsetHeight;
+}
+resizeLines();
+window.addEventListener("resize", resizeLines);
+
+let lines=[];
+
+for(let i=0;i<25;i++){
+lines.push({
+x:Math.random()*canvasLines.width,
+y:Math.random()*canvasLines.height,
+len:100+Math.random()*200,
+speed:0.3+Math.random()*0.6,
+green:Math.random()>0.5
+});
+}
+
+function drawLines(){
+ctxL.clearRect(0,0,canvasLines.width,canvasLines.height);
+
+for(let l of lines){
+
+ctxL.beginPath();
+ctxL.moveTo(l.x,l.y);
+ctxL.lineTo(l.x+l.len,l.y+l.len/3);
+
+ctxL.strokeStyle = l.green ? "rgba(0,255,120,0.7)" : "rgba(200,200,200,0.3)";
+ctxL.lineWidth = 2;
+ctxL.stroke();
+
+l.x += l.speed;
+l.y += l.speed*0.3;
+
+if(l.x > canvasLines.width){
+l.x = -200;
+l.y = Math.random()*canvasLines.height;
+}
+}
+
+requestAnimationFrame(drawLines);
+}
+drawLines();
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const burger = document.querySelector(".ai-burger");
+const menu = document.getElementById("mobileMenu");
+
+burger.addEventListener("click", function(e){
+e.stopPropagation();
+menu.classList.toggle("show");
+});
+
+document.addEventListener("click", function(e){
+if(!menu.contains(e.target) && !burger.contains(e.target)){
+menu.classList.remove("show");
+}
+});
+
+});
+
+
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain:"ai-boost-10540.firebaseapp.com",
+projectId:"ai-boost-10540",
+storageBucket:"ai-boost-10540.appspot.com",
+messagingSenderId:"1024595520009",
+appId:"1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const statsRef = doc(db,"stats","global");
+
+const CACHE_STATS = "ai_boost_stats_cache";
+
+/* ⚡ мгновенный кеш */
+const cachedStats = localStorage.getItem(CACHE_STATS);
+
+if(cachedStats){
+ try{
+   const d = JSON.parse(cachedStats);
+
+   const u = document.getElementById("homeUsers");
+   const w = document.getElementById("homeWin");
+   const l = document.getElementById("homeLoss");
+   const p = document.getElementById("homeProfit");
+
+   if(u) u.innerText = d.users?.toLocaleString() || "0";
+   if(w) w.innerText = d.win + "%";
+   if(l) l.innerText = d.loss + "%";
+   if(p) p.innerText = "$" + d.profit?.toLocaleString();
+
+ }catch(e){}
+}
+
+/* 🔥 live обновление */
+onSnapshot(statsRef,(snap)=>{
+ if(!snap.exists()) return;
+
+ let d = snap.data();
+
+ const u = document.getElementById("homeUsers");
+ const w = document.getElementById("homeWin");
+ const l = document.getElementById("homeLoss");
+ const p = document.getElementById("homeProfit");
+
+ if(u) u.innerText = d.users.toLocaleString();
+ if(w) w.innerText = d.win + "%";
+ if(l) l.innerText = d.loss + "%";
+ if(p) p.innerText = "$" + d.profit.toLocaleString();
+
+ localStorage.setItem(CACHE_STATS, JSON.stringify(d));
+});
+
+</script>
+
+</body>
+</html>

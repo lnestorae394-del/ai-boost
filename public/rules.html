@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Правила | AI BOOST</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff;overflow-x:hidden}
+
+/* SNOW */
+#snow{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+/* ===== HEADER ===== */
+.ai-header{
+width:92%;
+max-width:1500px;
+margin:14px auto 0;
+position:relative;
+z-index:9999;
+}
+
+.ai-header-inner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 35px;
+border-radius:20px;
+background:rgba(0,0,0,.65);
+border:1.5px solid rgba(0,255,136,.45);
+box-shadow:0 0 25px rgba(0,255,136,.25),
+inset 0 0 25px rgba(0,255,136,.08);
+backdrop-filter:blur(6px);
+position:relative;
+}
+
+.ai-logo{
+font-size:22px;
+font-weight:900;
+color:#fff;
+cursor:pointer;
+}
+.ai-logo span{color:#00ff88}
+
+/* центр меню ПК */
+.center-menu{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:40px;
+}
+
+.center-menu a{
+color:#cfcfcf;
+text-decoration:none;
+font-size:16px;
+font-weight:600;
+}
+.center-menu a:hover{color:#00ff88}
+
+/* правый блок */
+.user-box{
+text-align:right;
+font-size:13px;
+min-width:120px;
+}
+.online{
+color:#00ff88;
+font-weight:700;
+}
+
+/* бургер */
+.ai-burger{
+display:none;
+font-size:28px;
+color:#00ff88;
+cursor:pointer;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+}
+
+/* MOBILE MENU */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 60px rgba(0,255,120,.35);
+width:92%;
+margin:10px auto 0;
+padding:25px 20px;
+}
+
+#mobileMenu a{
+font-size:20px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* ===== CONTENT ===== */
+.wrapper{
+max-width:900px;
+margin:90px auto;
+padding:20px;
+}
+
+.title{
+font-size:52px;
+font-weight:900;
+text-align:center;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+color:#888;
+margin-bottom:60px;
+font-size:18px;
+}
+
+.rule-box{
+background:rgba(5,5,5,.9);
+border:1px solid rgba(0,255,120,.25);
+border-radius:28px;
+padding:40px;
+margin-bottom:25px;
+box-shadow:0 0 40px rgba(0,255,120,.12);
+transition:.35s;
+}
+
+.rule-box:hover{
+transform:translateY(-6px);
+box-shadow:0 0 80px rgba(0,255,120,.25);
+}
+
+.rule-title{
+font-size:24px;
+font-weight:800;
+margin-bottom:12px;
+color:#00ff88;
+}
+
+.rule-text{
+color:#cfcfcf;
+font-size:17px;
+line-height:1.6;
+}
+
+.footer{
+text-align:center;
+color:#444;
+margin:80px 0 40px;
+font-size:13px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+
+.center-menu{display:none}
+.ai-burger{display:block}
+.user-box{display:block}
+
+#mobileMenu.show{display:flex}
+
+.title{font-size:34px}
+.subtitle{font-size:15px}
+.rule-box{padding:25px}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<!-- HEADER -->
+<div class="ai-header">
+<div class="ai-header-inner">
+
+<div class="ai-logo" onclick="location.href='signals.html'">
+AI.<span>BOOST</span>
+</div>
+
+<div class="center-menu">
+<a href="rules.html">Правила</a>
+<a href="history.html">История сделок</a>
+<a href="signals.html">Сигналы</a>
+</div>
+
+<div class="user-box">
+<div>ID: <span id="userID"></span></div>
+<div class="online" id="onlineCount">online: 842</div>
+</div>
+
+<div class="ai-burger" onclick="toggleMenu()">☰</div>
+
+</div>
+
+<div id="mobileMenu">
+<a href="rules.html">Правила</a>
+<a href="history.html">История сделок</a>
+<a href="signals.html">Сигналы</a>
+</div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="wrapper">
+
+<div class="title">Правила трейдинга</div>
+<div class="subtitle">Запомни их. Они делают деньги.</div>
+
+<div class="rule-box">
+<div class="rule-title">Вход 1–5% от баланса</div>
+<div class="rule-text">
+Никогда не заходи всем депозитом.  
+Оптимальный вход — 1-5% от банка.  
+Так даже серия минусов не уничтожит депозит.
+</div>
+</div>
+
+<div class="rule-box">
+<div class="rule-title">Стоп после серии минусов</div>
+<div class="rule-text">
+Получил 3–4 минуса подряд — остановись.  
+Сделай паузу минимум 30 минут.  
+Рынок всегда даёт шанс, депозит — нет.
+</div>
+</div>
+
+<div class="rule-box">
+<div class="rule-title">Торгуй на холодную голову</div>
+<div class="rule-text">
+Никаких сделок в эмоциях.  
+Страх и азарт = слив.  
+Холодная голова = стабильный рост.
+</div>
+</div>
+
+<div class="rule-box">
+<div class="rule-title">Не входи в каждую сделку</div>
+<div class="rule-text">
+Лучше пропустить сигнал чем зайти без уверенности.  
+Качество входов делает деньги. Если ты работаешь на догонах
+соблюдай важное правило: не больше двух перекрытий!
+</div>
+</div>
+
+<div class="rule-box">
+<div class="rule-title">Цель — стабильность</div>
+<div class="rule-text">
+Не пытайся сорвать банк.  
+Главная задача — стабильный рост депозита каждый день.
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleMenu(){
+document.getElementById("mobileMenu").classList.toggle("show");
+}
+
+/* snow */
+const canvas=document.getElementById("snow");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let snow=[];
+for(let i=0;i<140;i++){
+snow.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2+1,
+s:Math.random()*1.5+0.3
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff66";
+
+for(let s of snow){
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+s.y+=s.s;
+if(s.y>canvas.height){
+s.y=-10;
+s.x=Math.random()*canvas.width;
+}
+}
+}
+setInterval(draw,25);
+
+
+
+/* ===============================
+   ГЛОБАЛЬНЫЙ ONLINE ДЛЯ ВСЕГО САЙТА
+   одинаковый на всех страницах
+================================ */
+
+const ONLINE_KEY = "global_online_ai_boost";
+
+/* если нет — создаём */
+if(!localStorage.getItem(ONLINE_KEY)){
+let start = 860 + Math.floor(Math.random()*60);
+localStorage.setItem(ONLINE_KEY, start);
+}
+
+/* функция обновления */
+function updateOnlineGlobal(){
+
+let online = parseInt(localStorage.getItem(ONLINE_KEY));
+
+let hour = new Date().getHours();
+
+/* диапазоны день/ночь */
+let min,max;
+
+if(hour >= 0 && hour <= 6){
+min = 420;
+max = 700;
+}
+else if(hour > 6 && hour <= 12){
+min = 650;
+max = 950;
+}
+else{
+min = 850;
+max = 1300;
+}
+
+/* изменение плавное */
+let change = Math.random();
+
+if(change > 0.6) online += Math.floor(Math.random()*3);
+if(change < 0.4) online -= Math.floor(Math.random()*2);
+
+/* границы */
+if(online > max) online = max - Math.floor(Math.random()*5);
+if(online < min) online = min + Math.floor(Math.random()*5);
+
+localStorage.setItem(ONLINE_KEY, online);
+
+/* показать */
+document.getElementById("onlineCount").innerText =
+"online: " + online;
+
+}
+
+/* сразу */
+updateOnlineGlobal();
+
+/* обновление */
+setInterval(updateOnlineGlobal,8000);
+
+
+/* синхра между вкладками */
+window.addEventListener("storage",()=>{
+updateOnlineGlobal();
+});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain: "ai-boost-10540.firebaseapp.com",
+projectId: "ai-boost-10540",
+storageBucket: "ai-boost-10540.appspot.com",
+messagingSenderId: "1024595520009",
+appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ===============================
+   ⚡ МГНОВЕННЫЙ ID ИЗ КЕША
+================================ */
+
+const CACHE_ID = "ai_boost_user_id";
+
+/* сразу показать из кеша */
+const cached = localStorage.getItem(CACHE_ID);
+if(cached){
+const el = document.getElementById("userID");
+if(el) el.innerText = cached;
+}
+
+/* ===============================
+   🔥 FIREBASE ПОДТЯГИВАЕТ РЕАЛ
+================================ */
+
+onAuthStateChanged(auth, async(user)=>{
+if(!user){
+document.getElementById("userID").innerText="гость";
+return;
+}
+
+try{
+const snap = await getDoc(doc(db,"users",user.uid));
+if(!snap.exists()) return;
+
+const id = snap.data().trader_id || "нет";
+
+/* показать */
+document.getElementById("userID").innerText = id;
+
+/* сохранить кеш */
+localStorage.setItem(CACHE_ID, id);
+
+}catch(e){
+console.log("id load error",e);
+}
+});
+</script>
+
+</body>
+</html>

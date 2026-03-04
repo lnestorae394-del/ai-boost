@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI BOOST VIP</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff;overflow-x:hidden}
+canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:1}
+
+header{
+position:relative;
+z-index:5;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 20px;
+border-bottom:1px solid rgba(0,255,120,0.15);
+background:rgba(0,0,0,0.9);
+}
+
+.logo{font-size:22px;font-weight:800}
+.logo span{color:#00ff7b}
+
+.user{text-align:right;font-size:13px}
+.online{color:#00ff7b;font-weight:700}
+
+.wrapper{
+display:flex;
+justify-content:center;
+padding:30px 12px 60px
+}
+
+.main-block{
+width:100%;
+max-width:420px;
+background:#050505;
+border:1px solid rgba(0,255,120,0.2);
+border-radius:22px;
+padding:25px;
+box-shadow:0 0 30px rgba(0,255,120,0.08);
+min-height:85vh;
+display:flex;
+flex-direction:column;
+}
+
+.section-title{
+font-size:17px;
+margin-bottom:18px;
+font-weight:700
+}
+
+.grid,.time-grid{
+display:grid;
+gap:12px;
+margin-bottom:30px;
+}
+
+.grid{grid-template-columns:1fr 1fr;}
+.time-grid{grid-template-columns:repeat(3,1fr);}
+
+.btn{
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0c0c0c;
+color:#fff;
+font-weight:600;
+text-align:center;
+cursor:pointer;
+transition:.25s;
+}
+
+.btn:hover{
+border:1px solid #00ff7b
+}
+
+.btn.active{
+background:#00ff7b;
+color:#000;
+border:none
+}
+
+.big-btn{
+margin-top:auto;
+width:100%;
+padding:18px;
+border-radius:18px;
+border:none;
+background:#00ff7b;
+color:#000;
+font-size:16px;
+font-weight:800;
+cursor:pointer;
+}
+
+#errorText{
+display:none;
+margin-top:12px;
+text-align:center;
+color:#ff3b3b;
+font-weight:600;
+}
+
+.loader{
+width:70px;
+height:70px;
+border:4px solid rgba(0,255,120,.2);
+border-top:4px solid #00ff88;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:0 auto;
+display:block;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+.curBtn{
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0c0c0c;
+text-align:center;
+cursor:pointer;
+font-weight:700;
+}
+
+.curBtn.active{
+background:#00ff7b;
+color:#000;
+border:none;
+}
+
+/* ===== HEADER NEW ===== */
+.ai-header{
+width:92%;
+max-width:1500px;
+margin:14px auto 0;
+position:relative;
+z-index:9999;
+}
+
+.ai-header-inner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 35px;
+border-radius:20px;
+background:rgba(0,0,0,.65);
+border:1.5px solid rgba(0,255,136,.45);
+box-shadow:0 0 25px rgba(0,255,136,.25),
+inset 0 0 25px rgba(0,255,136,.08);
+backdrop-filter:blur(6px);
+}
+
+.ai-logo{
+font-size:22px;
+font-weight:800;
+color:#fff;
+cursor:pointer;
+}
+.ai-logo span{color:#00ff88}
+
+/* центр меню */
+.center-menu{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:40px;
+}
+
+.center-menu a{
+color:#cfcfcf;
+text-decoration:none;
+font-size:16px;
+font-weight:600;
+}
+.center-menu a:hover{color:#00ff88}
+
+/* правый блок */
+.user-box{
+text-align:right;
+font-size:13px;
+}
+.online{
+color:#00ff88;
+font-weight:700;
+}
+
+/* бургер */
+.ai-burger{
+display:none;
+font-size:28px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* 📱 MOBILE */
+@media(max-width:768px){
+
+.center-menu{display:none}
+
+.ai-burger{display:block}
+
+.user-box{display:none}
+
+#mobileMenu{
+width:95%;
+margin:0 auto;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:24px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 60px rgba(0,255,120,.35);
+overflow:hidden;
+max-height:0;
+padding:0 20px;
+opacity:0;
+transition:.35s;
+}
+
+#mobileMenu.show{
+max-height:420px;
+padding:34px 20px;
+margin-top:8px;
+opacity:1;
+}
+
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+}
+
+/* 🔥 MOBILE MENU ТОЛЬКО ДЛЯ ТЕЛЕФОНА */
+#mobileMenu{
+display:none;
+}
+
+/* показывать только на телефоне */
+@media (max-width:768px){
+#mobileMenu{
+display:flex;
+}
+}
+
+/* ===== MOBILE HEADER EXACT LIKE RULES ===== */
+@media(max-width:768px){
+
+/* скрываем ПК центр меню */
+.center-menu{
+display:none;
+}
+
+/* бургер по центру */
+.ai-burger{
+display:block;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+font-size:28px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* ID + ONLINE справа */
+.user-box{
+display:block;
+font-size:13px;
+text-align:right;
+min-width:110px;
+}
+
+/* мобильное меню */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 60px rgba(0,255,120,.35);
+
+width:92%;
+margin:10px auto 0;
+padding:25px 20px;
+}
+
+#mobileMenu.show{
+display:flex;
+}
+
+#mobileMenu a{
+font-size:20px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+}
+
+.vipStat{
+background:#05130f;
+border:1px solid rgba(0,255,120,.25);
+padding:18px;
+border-radius:18px;
+text-align:center;
+font-weight:600;
+}
+
+.vipNum{
+font-size:26px;
+font-weight:900;
+margin-top:6px;
+color:#00ff88;
+}
+
+.vipNum.red{
+color:#ff3b3b;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<!-- ===== HEADER ===== -->
+<div class="ai-header">
+  <div class="ai-header-inner">
+
+    <div class="ai-logo" onclick="location.href='signals.html'">
+      AI.<span>BOOST</span>
+    </div>
+
+    <div class="center-menu">
+      <a href="rules.html">Правила</a>
+      <a href="history.html">История сделок</a>
+      <a href="signals.html">Сигналы</a>
+    </div>
+
+    <div class="user-box">
+      <div>ID: <span id="userID"></span></div>
+      <div class="online" id="onlineCount">online: 842</div>
+    </div>
+
+    <div class="ai-burger" onclick="toggleMenu()">☰</div>
+
+  </div>
+
+  <div id="mobileMenu">
+    <a href="rules.html">Правила</a>
+    <a href="history.html">История сделок</a>
+    <a href="signals.html">Сигналы</a>
+  </div>
+</div>
+
+<div class="wrapper">
+<div class="main-block" id="mainBlock">
+
+ <!-- ===== VIP PANEL ===== -->
+<div style="
+width:100%;
+max-width:520px;
+margin:0 auto 25px;
+background:#05130f;
+border:1px solid rgba(0,255,120,.25);
+border-radius:22px;
+padding:22px;
+box-shadow:0 0 40px rgba(0,255,120,.08);
+">
+
+<div style="
+text-align:center;
+font-size:13px;
+letter-spacing:2px;
+opacity:.6;
+margin-bottom:18px">
+LIVE PLATFORM STATS
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-bottom:10px">
+<span>Активные трейдеры</span>
+<b id="vipUsers" style="color:#00ff88"></b>
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-bottom:10px">
+<span>Успешные сигналы</span>
+<b id="vipWin" style="color:#00ff88"></b>
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-bottom:10px">
+<span>Неудачные сигналы</span>
+<b id="vipLoss" style="color:#ff3b3b"></b>
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-bottom:10px">
+<span>Общий профит</span>
+<b id="vipProfit" style="color:#00ff88"></b>
+</div>
+
+<div style="display:flex;justify-content:space-between">
+<span>Обновление</span>
+<b id="vipTime" style="color:#00ff88"></b>
+</div>
+
+</div>
+
+<div class="section-title">Выбор пары</div>
+
+<div class="grid">
+<div class="btn">EUR/USD</div>
+<div class="btn">GBP/USD</div>
+<div class="btn">USD/JPY</div>
+<div class="btn">AUD/USD</div>
+<div class="btn">USD/CHF</div>
+<div class="btn">GOLD</div>
+<div class="btn">BTC</div>
+<div class="btn">ETH</div>
+</div>
+
+<div class="section-title">Время сделки</div>
+
+<div class="time-grid">
+<div class="btn">1m</div>
+<div class="btn">3m</div>
+<div class="btn">5m</div>
+<div class="btn">10m</div>
+<div class="btn">15m</div>
+<div class="btn">30m</div>
+<div class="btn">60m</div>
+<div class="btn">120m</div>
+</div>
+
+<button class="big-btn" id="getSignal">ПОЛУЧИТЬ СИГНАЛ</button>
+<div id="errorText">Выбери пару и время</div>
+<!-- ===== LIVE DEAL FLOW ===== -->
+<div style="
+width:100%;
+margin:20px auto 10px;
+background:#041b13;
+border:1px solid rgba(0,255,120,.25);
+border-radius:18px;
+padding:14px 14px 10px 14px;
+position:relative;
+overflow:hidden;
+">
+
+<div style="
+font-size:12px;
+opacity:.5;
+margin-bottom:8px;
+letter-spacing:1px;">
+LIVE TRADES
+</div>
+
+<div id="feedList" style="
+display:flex;
+flex-direction:column;
+gap:6px;
+height:120px;
+overflow:hidden;
+font-weight:700;
+font-size:14px;
+"></div>
+
+<!-- мягкое затухание снизу -->
+<div style="
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:40px;
+background:linear-gradient(to bottom, rgba(4,27,19,0), #041b13);
+pointer-events:none;
+"></div>
+
+
+
+</div>
+</div>
+
+<script>
+
+/* =================================
+   SNOW SYSTEM (VIP)
+================================= */
+
+const snowCanvas = document.getElementById("snow");
+const snowCtx = snowCanvas.getContext("2d");
+
+snowCanvas.width = window.innerWidth;
+snowCanvas.height = window.innerHeight;
+
+let snowParticles=[];
+
+for(let i=0;i<140;i++){
+snowParticles.push({
+x:Math.random()*snowCanvas.width,
+y:Math.random()*snowCanvas.height,
+r:Math.random()*2,
+d:Math.random()*1
+});
+}
+
+setInterval(()=>{
+snowCtx.clearRect(0,0,snowCanvas.width,snowCanvas.height);
+snowCtx.fillStyle="#00ff88";
+snowCtx.beginPath();
+
+for(let p of snowParticles){
+snowCtx.moveTo(p.x,p.y);
+snowCtx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+}
+
+snowCtx.fill();
+
+for(let p of snowParticles){
+p.y+=p.d;
+if(p.y>snowCanvas.height){
+p.y=0;
+p.x=Math.random()*snowCanvas.width;
+}
+}
+},33);
+
+
+/* =================================
+   REALISTIC ONLINE SYSTEM
+================================= */
+
+let online = localStorage.getItem("fake_online");
+
+if(!online){
+online = 850 + Math.floor(Math.random()*40); // старт
+}else{
+online = parseInt(online);
+}
+
+updateOnline();
+
+/* каждые 40 сек */
+setInterval(()=>{
+
+let change = Math.floor(Math.random()*3); // 0-2
+
+if(Math.random()>0.5){
+online += change;
+}else{
+online -= change;
+}
+
+/* пределы */
+if(online > 1000) online = 990;
+if(online < 500) online = 520;
+
+/* сохранить */
+localStorage.setItem("fake_online", online);
+
+updateOnline();
+
+},40000);
+
+function updateOnline(){
+const el = document.getElementById("onlineCount");
+if(el){
+el.innerText = "online: " + online;
+}
+}
+
+/* =================================
+   SELECT BUTTONS
+================================= */
+document.querySelectorAll(".btn").forEach(btn=>{
+btn.onclick=()=>{
+btn.parentElement.querySelectorAll(".btn").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+};
+});
+
+const mainBlock = document.getElementById("mainBlock");
+
+
+/* =================================
+   GET SIGNAL CLICK
+================================= */
+document.getElementById("getSignal").onclick=()=>{
+
+const pair=document.querySelector(".grid .active");
+const time=document.querySelector(".time-grid .active");
+const error=document.getElementById("errorText");
+
+if(!pair||!time){
+error.style.display="block";
+return;
+}
+error.style.display="none";
+
+/* открываем окно ввода */
+document.getElementById("tradeInputBox").style.display="flex";
+
+/* сохраним пару и время */
+window.selectedPair = pair.innerText;
+window.selectedTime = time.innerText;
+};
+
+/* =================================
+   LOADER
+================================= */
+function showLoader(callback){
+mainBlock.innerHTML=`
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:70vh">
+<div class="loader"></div>
+<div style="margin-top:20px;color:#00ff88">AI анализирует рынок...</div>
+</div>`;
+setTimeout(callback,1600);
+}
+
+
+/* =================================
+   AI SIGNAL CORE (VIP)
+================================= */
+function showSignal(pair,time){
+
+/* иногда нет сигнала */
+/* иногда рынок без входа */
+if(Math.random()>0.82){
+
+mainBlock.innerHTML=`
+<div style="
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:70vh;
+text-align:center;
+">
+
+<div class="loader"></div>
+
+<div style="margin-top:20px;color:#00ff88;font-size:18px">
+AI анализирует рынок...
+</div>
+
+<div style="margin-top:10px;color:#888">
+Поиск ликвидности...
+</div>
+
+</div>
+`;
+
+/* через 3 сек дать сигнал */
+setTimeout(()=>{
+requestAnimationFrame(()=>{
+showSignal(pair,time);
+});
+},3000);
+
+
+return;
+}
+
+
+/* направление */
+let isBuy = Math.random()>0.5;
+let dir = isBuy ? "BUY" : "SELL";
+let color = isBuy ? "#00ff88" : "#ff3b3b";
+currentDirection = dir;
+
+/* ===== РЕАЛЬНЫЙ ДИАПАЗОН 53–70 ===== */
+let confidence = Math.floor(53 + Math.random()*18);
+
+/* день чуть сильнее */
+let hour = new Date().getHours();
+
+if(hour >= 10 && hour <= 22){
+confidence += Math.floor(Math.random()*4); // +0-3 днем
+}
+
+/* ночь слабее */
+if(hour >= 0 && hour <= 6){
+confidence -= Math.floor(Math.random()*5);
+}
+
+/* ограничения */
+if(confidence > 70) confidence = 70;
+if(confidence < 53) confidence = 53;
+
+
+/* ===============================
+   ВОЛАТИЛЬНОСТЬ (РУССКИЙ + ЦВЕТ)
+================================ */
+
+let volText = "Низкая";
+let volColor = "#00ff88";
+
+let r = Math.random();
+
+if(r > 0.35){
+volText = "Средняя";
+volColor = "#ffd500";
+}
+if(r > 0.65){
+volText = "Высокая";
+volColor = "#ff9a00";
+}
+if(r > 0.88){
+volText = "Экстремальная";
+volColor = "#ff3b3b";
+}
+
+
+/* ===============================
+   СИЛА СИГНАЛА (РУССКИЙ)
+================================ */
+
+let powerText = "Слабый";
+let powerColor = "#00ff88";
+
+if(confidence >= 58){
+powerText = "Средний";
+powerColor = "#ffd500";
+}
+
+if(confidence >= 64){
+powerText = "Сильный";
+powerColor = "#ff9a00";
+}
+
+if(confidence >= 69){
+powerText = "Очень сильный";
+powerColor = "#ff3b3b";
+}
+
+
+/* ===============================
+   AI СТАТУС (РУССКИЙ)
+================================ */
+
+let statusText = "Анализ рынка";
+let statusColor = "#00ff88";
+
+if(hour >= 0 && hour <= 5){
+statusText = "Низкая ликвидность";
+statusColor = "#ffd500";
+}
+
+if(hour >= 8 && hour <= 12){
+statusText = "Европейская сессия";
+statusColor = "#00ff88";
+}
+
+if(hour >= 13 && hour <= 18){
+statusText = "Высокий объем";
+statusColor = "#ff9a00";
+}
+
+if(r > 0.9){
+statusText = "Импульс рынка";
+statusColor = "#ff3b3b";
+}
+
+
+mainBlock.innerHTML=`
+
+<div style="border:1px solid ${color};
+border-radius:14px;padding:16px;text-align:center;
+font-weight:700;margin-bottom:20px;font-size:20px;color:${color}">
+${pair} • ${dir}
+</div>
+
+<div style="background:#07140f;border-radius:18px;padding:22px;margin-bottom:14px;">
+<div style="font-size:15px;margin-bottom:8px">AI confidence:</div>
+<div style="font-size:44px;font-weight:900;color:#00ff88">${confidence}%</div>
+</div>
+
+<div style="background:#071018;border-radius:18px;padding:18px;margin-bottom:14px;">
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<span>Волатильность:</span>
+<b style="color:${volColor}">${volText}</b>
+</div>
+
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<span>Сила сигнала:</span>
+<b style="color:${powerColor}">${powerText}</b>
+</div>
+
+<div style="display:flex;justify-content:space-between">
+<span>AI статус:</span>
+<b style="color:${statusColor}">${statusText}</b>
+</div>
+</div>
+
+<div id="tradeBox" style="
+background:#031c12;
+border-radius:18px;
+padding:28px;
+text-align:center;
+font-size:20px;
+font-weight:700;
+color:#00ff88;
+min-height:120px;">
+Сигнал активен
+</div>
+
+<div style="margin-top:25px;display:flex;flex-direction:column;gap:16px;">
+
+<button id="takeTrade" style="
+width:100%;
+padding:20px;border-radius:18px;border:none;
+background:#00ff7b;color:#000;font-weight:800;font-size:18px;">
+Открыл сделку</button>
+
+<button onclick="location.reload()" style="
+width:100%;
+padding:20px;border-radius:18px;
+border:1px solid #00ff88;background:#031c12;
+color:#00ff88;font-weight:800;font-size:18px;">
+Назад</button>
+
+</div>
+`;
+
+document.getElementById("takeTrade").onclick=()=>{
+startTimer(time);
+document.getElementById("takeTrade").remove();
+};
+
+/* важно — запуск рынка */
+startRealtime(pair);
+}
+
+
+/* =================================
+   REALTIME MARKET FROM SERVER
+================================= */
+
+let currentPrice = 1.0;
+let currentDirection="BUY";
+let priceInterval=null;
+
+function startRealtime(pair){
+
+fetch("/setpair?pair="+pair);
+
+if(priceInterval) clearInterval(priceInterval);
+
+priceInterval=setInterval(async()=>{
+
+try{
+let res = await fetch("/price");
+let data = await res.json();
+currentPrice = parseFloat(data.price);
+}catch(e){}
+
+},1200);
+
+}
+
+
+function startTimer(time){
+
+const box=document.getElementById("tradeBox");
+
+let minutes=parseInt(time);
+let total=minutes*60;
+const end=Date.now()+total*1000;
+
+const timer=setInterval(()=>{
+
+let diff=Math.floor((end-Date.now())/1000);
+
+/* если закончилось */
+if(diff<=0){
+clearInterval(timer);
+
+/* показываем результат */
+setTimeout(()=>{
+
+box.innerHTML=`
+
+<div style="font-size:20px;margin-bottom:15px">
+Сделка закрыта. Результат?
+</div>
+
+<div style="display:flex;gap:12px">
+
+<button id="plusTrade" style="
+flex:1;
+padding:18px;
+border-radius:14px;
+border:none;
+background:#00ff88;
+color:#000;
+font-weight:800;
+font-size:18px;
+cursor:pointer;">
+ПЛЮС
+</button>
+
+<button id="minusTrade" style="
+flex:1;
+padding:18px;
+border-radius:14px;
+border:none;
+background:#ff3b3b;
+color:#fff;
+font-weight:800;
+font-size:18px;
+cursor:pointer;">
+МИНУС
+</button>
+
+</div>
+`;
+
+/* обработчики */
+document.getElementById("plusTrade").onclick=()=>{
+window.finishTrade("win");
+};
+
+document.getElementById("minusTrade").onclick=()=>{
+window.finishTrade("loss");
+};
+
+},500);
+
+return;
+}
+
+/* таймер */
+let m=Math.floor(diff/60);
+let s=diff%60;
+if(s<10)s="0"+s;
+
+box.innerHTML=`
+Сделка открыта<br>
+<span style="font-size:46px">${m}:${s}</span>
+`;
+
+},500);
+}
+
+
+
+/* =================================
+   СОХРАНЕНИЕ ИСТОРИИ (LOCAL)
+   потом подключим firebase
+================================= */
+
+function saveTradeHistory(trade){
+
+let history = JSON.parse(localStorage.getItem("trade_history") || "[]");
+
+history.unshift(trade);
+
+/* максимум 200 */
+if(history.length>200){
+history = history.slice(0,200);
+}
+
+localStorage.setItem("trade_history", JSON.stringify(history));
+
+}
+
+
+/* =================================
+   NEW SIGNAL BUTTON
+================================= */
+
+function showNewSignalBtn(){
+
+const div=document.createElement("div");
+div.style.marginTop="18px";
+
+div.innerHTML=`
+<button onclick="reloadSignal()" style="
+width:100%;
+padding:18px;
+border-radius:18px;
+border:1px solid #00ff88;
+background:#031c12;
+color:#00ff88;
+font-weight:800;
+font-size:18px;">
+Новый сигнал
+</button>
+`;
+
+document.getElementById("tradeBox").appendChild(div);
+}
+
+function reloadSignal(){
+
+const pair=document.querySelector(".grid .active");
+const time=document.querySelector(".time-grid .active");
+
+if(pair && time){
+showLoader(()=>showSignal(pair.innerText,time.innerText));
+}else{
+location.reload();
+}
+
+}
+
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+getFirestore, doc, getDoc, onSnapshot, updateDoc,
+collection, addDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================= FIREBASE INIT ================= */
+
+const firebaseConfig = {
+apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain: "ai-boost-10540.firebaseapp.com",
+projectId: "ai-boost-10540",
+storageBucket: "ai-boost-10540.appspot.com",
+messagingSenderId: "1024595520009",
+appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+/* мгновенный ID */
+const cachedID = localStorage.getItem("ai_user_id");
+if(cachedID){
+const el=document.getElementById("userID");
+if(el) el.innerText=cachedID;
+}
+
+/* ===================================================
+   🔥 LIVE GLOBAL PLATFORM STATS (REAL FIREBASE)
+=================================================== */
+
+const statsRef = doc(db,"stats","global");
+
+/* ⚡ CACHE STATS INSTANT LOAD */
+const CACHE_STATS = "ai_boost_stats_cache";
+
+const cachedStats = localStorage.getItem(CACHE_STATS);
+if(cachedStats){
+ try{
+  const d = JSON.parse(cachedStats);
+
+  vipUsers.textContent = d.users?.toLocaleString() || "--";
+  vipWin.textContent = d.win + "%";
+  vipLoss.textContent = d.loss + "%";
+  vipProfit.textContent = "$" + d.profit?.toLocaleString();
+  vipTime.textContent = d.time || "--";
+
+ }catch{}
+}
+
+/* мгновенная загрузка */
+(async()=>{
+ try{
+   const snap = await getDoc(statsRef);
+   if(!snap.exists()) return;
+   const d = snap.data();
+
+   vipUsers.textContent = d.users.toLocaleString();
+   vipWin.textContent = d.win + "%";
+   vipLoss.textContent = d.loss + "%";
+   vipProfit.textContent = "$" + d.profit.toLocaleString();
+   vipTime.textContent = d.time;
+
+ }catch(e){
+   console.log("init load error");
+ }
+})();
+
+onSnapshot(statsRef,(snap)=>{
+if(!snap.exists()) return;
+
+let d=snap.data();
+
+vipUsers.innerText=d.users.toLocaleString();
+vipWin.innerText=d.win+"%";
+vipLoss.innerText=d.loss+"%";
+vipProfit.innerText="$"+d.profit.toLocaleString();
+vipTime.innerText=d.time;
+
+/* ⚡ кеш */
+localStorage.setItem(CACHE_STATS, JSON.stringify(d));
+});
+
+/* ===================================================
+   💰 ЗАПИСЬ СДЕЛОК
+=================================================== */
+
+window.finishTrade = function(result){
+
+const box = document.getElementById("tradeBox");
+
+if(result==="win"){
+confetti({particleCount:120,spread:80,origin:{y:0.6}});
+box.innerHTML=`<div style="font-size:24px;color:#00ff88;font-weight:800">Сделка закрыта в +</div>
+<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый сигнал</button>`;
+}else{
+box.innerHTML=`<div style="font-size:24px;color:#ff3b3b;font-weight:800">Сделка закрыта в -</div>
+<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый сигнал</button>`;
+}
+
+setTimeout(async()=>{
+
+let user=auth.currentUser;
+if(!user) return;
+
+let amount=window.tradeAmount||0;
+let payout=window.tradePayout||0;
+let currency=window.tradeCurrency||"USD";
+let pair=window.selectedPair||"-";
+let time=window.selectedTime||"-";
+
+let profit=result==="win"
+? amount*(payout/100)
+: -amount;
+
+await addDoc(collection(db,"trades"),{
+user:user.uid,
+pair,
+timeframe:time,
+amount,
+payout,
+currency,
+profit,
+result,
+created:serverTimestamp()
+});
+
+},50);
+};
+
+
+
+/* ===================================================
+   🆔 USER ID
+=================================================== */
+
+onAuthStateChanged(auth, async(user)=>{
+
+if(!user){
+window.location.href="login.html";
+return;
+}
+
+try{
+const snap = await getDoc(doc(db,"users",user.uid));
+
+if(!snap.exists()){
+userID.innerText="нет";
+return;
+}
+
+const data = snap.data();
+const id = data.trader_id || "нет";
+
+userID.innerText = id;
+
+/* кеш */
+localStorage.setItem("ai_user_id", id);
+
+}catch{
+userID.innerText="нет";
+}
+
+});
+
+/* ===================================================
+   🌐 ONLINE FAKE (общий)
+=================================================== */
+
+const ONLINE_KEY="global_online_ai_boost";
+
+if(!localStorage.getItem(ONLINE_KEY)){
+localStorage.setItem(ONLINE_KEY,860+Math.floor(Math.random()*60));
+}
+
+function updateOnlineGlobal(){
+
+let online=parseInt(localStorage.getItem(ONLINE_KEY));
+let change=Math.random();
+
+if(change>0.6) online+=Math.floor(Math.random()*3);
+if(change<0.4) online-=Math.floor(Math.random()*2);
+
+if(online<400) online=420;
+if(online>1400) online=1200;
+
+localStorage.setItem(ONLINE_KEY,online);
+onlineCount.innerText="online: "+online;
+}
+
+updateOnlineGlobal();
+setInterval(updateOnlineGlobal,8000);
+
+/* =========================================
+   🔥 AUTOGROW USERS (НАВСЕГДА)
+========================================= */
+
+let lastGrowCheck = 0;
+
+setInterval(async()=>{
+
+try{
+
+const snap = await getDoc(statsRef);
+if(!snap.exists()) return;
+
+let d = snap.data();
+let users = Number(d.users);
+
+if(!users) return;
+
+/* каждые 6-10 минут рост */
+let now = Date.now();
+
+if(now - lastGrowCheck < 300000) return; // защита 5 мин
+lastGrowCheck = now;
+
+/* рост */
+let add = Math.floor(Math.random()*3)+2; // +2-4
+
+users += add;
+
+/* максимум в день */
+if(users > 999999) users = 999999;
+
+/* время */
+let h = new Date().getHours().toString().padStart(2,"0");
+
+await updateDoc(statsRef,{
+users: Math.floor(users),
+time: h+":00"
+});
+
+}catch(e){
+console.log("users grow err",e);
+}
+
+},60000);
+
+/* =========================================================
+   🔥 LIVE TRADES GLOBAL (ОДИНАКОВО У ВСЕХ)
+   синхрон firebase
+========================================================= */
+
+const liveRef = doc(db,"liveTrades","stream");
+
+/* ⚡ CACHE LIVE FEED */
+const CACHE_FEED="ai_boost_live_cache";
+
+const cachedFeed = localStorage.getItem(CACHE_FEED);
+if(cachedFeed){
+ try{
+   renderFeed(JSON.parse(cachedFeed));
+ }catch{}
+}
+
+onSnapshot(liveRef,(snap)=>{
+if(!snap.exists()) return;
+
+let data = snap.data();
+let arr = data.list || [];
+
+renderFeed(arr);
+
+/* ⚡ кеш */
+localStorage.setItem(CACHE_FEED, JSON.stringify(arr));
+});
+
+/* рендер */
+function renderFeed(arr){
+const box = document.getElementById("feedList");
+if(!box) return;
+
+box.innerHTML="";
+
+arr.slice().reverse().forEach(t=>{
+const div=document.createElement("div");
+
+let color = t.result==="win" ? "#00ff88" : "#ff3b3b";
+
+div.innerHTML=`
+<span style="color:#888">${t.id}</span>
+${t.pair}
+<span style="color:${color}">
+${t.result==="win" ? "+" : "-"}$${t.amount}
+</span>
+`;
+
+box.appendChild(div);
+});
+}
+
+
+
+setInterval(async()=>{
+
+try{
+
+const statsSnap = await getDoc(statsRef);
+if(!statsSnap.exists()) return;
+
+let stats = statsSnap.data();
+let profit = Number(stats.profit);
+let win = Number(stats.win);
+let users = Number(stats.users);
+
+const liveSnap = await getDoc(liveRef);
+let arr = liveSnap.exists()? liveSnap.data().list || [] : [];
+
+/* пары */
+let pairs=["EUR/USD","GBP/USD","BTC","ETH","GOLD","USD/JPY"];
+let pair=pairs[Math.floor(Math.random()*pairs.length)];
+
+/* ID ВСЕГДА с 12 */
+let lastPart = Math.floor(100 + Math.random()*900); // 3 цифры
+let id = `ID 12****${lastPart}`;
+
+/* суммы */
+let amount;
+if(Math.random()<0.7) amount = Math.floor(Math.random()*250)+40;
+else if(Math.random()<0.9) amount = Math.floor(Math.random()*900)+200;
+else amount = Math.floor(Math.random()*3000)+900;
+
+/* win/loss */
+let isWin = Math.random()>0.27;
+let result = isWin ? "win":"loss";
+
+/* PROFIT sync */
+if(isWin) profit += amount;
+else profit -= Math.floor(amount*0.4);
+
+if(profit<100000) profit=100000;
+
+/* winrate */
+if(Math.random()>0.6){
+ win += Math.random()>0.5?1:-1;
+ if(win>87) win=87;
+ if(win<63) win=63;
+}
+
+/* users */
+if(Math.random()>0.7) users+=1;
+if(Math.random()<0.2) users-=1;
+if(users<1000) users=1000;
+
+arr.push({
+ id: id,
+ pair,
+ amount,
+ result,
+ time: Date.now()
+});
+
+if(arr.length>40) arr = arr.slice(arr.length-40);
+
+let h=new Date().getHours().toString().padStart(2,"0");
+
+/* запись */
+await updateDoc(liveRef,{list:arr});
+
+await updateDoc(statsRef,{
+ profit: Math.floor(profit),
+ users: Math.floor(users),
+ win: Math.floor(win),
+ loss: 100-Math.floor(win),
+ time: h+":00"
+});
+
+}catch(e){
+console.log("market error",e);
+}
+
+},3000);
+
+
+</script>
+
+<!-- ===== ВВОД СДЕЛКИ ===== -->
+<div id="tradeInputBox" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.95);
+z-index:99999;
+display:none;
+align-items:center;
+justify-content:center;
+">
+
+<div style="
+width:420px;
+background:#050505;
+border:1px solid rgba(0,255,120,.3);
+border-radius:22px;
+padding:30px;
+box-shadow:0 0 60px rgba(0,255,120,.2);
+">
+
+<div style="font-size:22px;font-weight:800;margin-bottom:20px;text-align:center">
+Введите данные сделки
+</div>
+
+<!-- ВАЛЮТА -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px">
+<div class="curBtn">USD</div>
+<div class="curBtn">RUB</div>
+<div class="curBtn">UAH</div>
+</div>
+
+<!-- СУММА -->
+<input id="tradeAmount" type="number" placeholder="Сумма сделки"
+style="
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.08);
+background:#0c0c0c;
+color:#fff;
+font-size:16px;
+margin-bottom:12px;
+">
+
+<!-- ПРОЦЕНТ -->
+<input id="tradePayout" type="number" placeholder="Процент выплаты (например 82)"
+style="
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.08);
+background:#0c0c0c;
+color:#fff;
+font-size:16px;
+margin-bottom:20px;
+">
+
+<button id="startSignalBtn" style="
+width:100%;
+padding:18px;
+border-radius:18px;
+border:none;
+background:#00ff7b;
+color:#000;
+font-weight:800;
+font-size:16px;
+cursor:pointer;">
+НАЧАТЬ АНАЛИЗ
+
+</button>
+
+</div>
+</div>
+
+<script>
+
+/* ЖЁСТКОЕ ПОДКЛЮЧЕНИЕ КНОПКИ */
+setTimeout(()=>{
+
+const btn = document.getElementById("startSignalBtn");
+
+if(!btn){
+console.log("кнопка не найдена");
+return;
+}
+
+btn.onclick = function(){
+
+let amount = document.getElementById("tradeAmount").value;
+let payout = document.getElementById("tradePayout").value;
+
+if(!amount || !payout){
+alert("Введи сумму и процент");
+return;
+}
+
+/* сохраняем */
+window.tradeAmount = parseFloat(amount);
+window.tradePayout = parseFloat(payout);
+
+let cur = document.querySelector(".curBtn.active");
+window.tradeCurrency = cur ? cur.innerText : "USD";
+
+/* закрываем окно */
+document.getElementById("tradeInputBox").style.display="none";
+
+/* запускаем сигнал */
+const pair=document.querySelector(".grid .active");
+const time=document.querySelector(".time-grid .active");
+
+if(pair && time){
+showLoader(()=>showSignal(pair.innerText,time.innerText));
+}else{
+alert("Выбери пару и время");
+}
+
+};
+
+console.log("кнопка подключена");
+
+},500);
+
+</script>
+
+<script>
+
+/* ===== ВЫБОР ВАЛЮТЫ ===== */
+
+document.querySelectorAll(".curBtn").forEach(btn=>{
+btn.onclick = ()=>{
+
+/* снять актив */
+document.querySelectorAll(".curBtn").forEach(b=>b.classList.remove("active"));
+
+/* поставить актив */
+btn.classList.add("active");
+
+};
+});
+
+/* дефолт USD */
+setTimeout(()=>{
+let first=document.querySelector(".curBtn");
+if(first) first.classList.add("active");
+},100);
+
+
+function toggleMenu(){
+  const menu = document.getElementById("mobileMenu");
+  if(menu){
+    menu.classList.toggle("show");
+  }
+}
+
+
+</script>
+
+</body>
+</html>

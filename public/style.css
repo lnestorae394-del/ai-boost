@@ -1,0 +1,3562 @@
+/* ===== GLOBAL FIX MOBILE ===== */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+section{
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+}
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+}
+
+/* снег */
+#snow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* HEADER */
+
+
+.header{
+  width:100%;
+  max-width:1400px;
+  margin:20px auto;
+  padding:18px 40px;
+  border-radius:22px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,255,100,0.25);
+}
+
+
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  margin-left: auto;   /* двигает вправо */
+  margin-right: 40px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+
+.hero{
+margin: 30px 0 0 0 !important;
+padding:10px 0;
+}
+
+
+
+.header-container {
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(15,15,15,0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid rgba(0,255,100,0.15);
+}
+
+/* ЛОГО */
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+}
+
+.logo span {
+  color: #00ff66;
+}
+
+/* НАВИГАЦИЯ */
+.nav {
+  display: flex;
+  gap: 40px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #cccccc;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.nav a:hover {
+  color: #00ff66;
+}
+
+/* ПРАВАЯ ЧАСТЬ */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lang {
+  color: white;
+  cursor: pointer;
+}
+
+/* КНОПКА */
+.btn {
+  background: #00ff66;
+  color: black;
+  padding: 10px 25px;
+  border-radius: 25px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  box-shadow: 0 0 15px #00ff66;
+}
+
+
+
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #00ff66;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* КНОПКА РЕГИСТРАЦИИ */
+.register-btn {
+    background: linear-gradient(45deg, #00aa33, #00ff66);
+    border: 1px solid #00ff66;
+    padding: 10px 25px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00ff66;
+}
+
+/* HERO */
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 160px 100px;
+    position: relative;
+    z-index: 1;
+}
+
+.left {
+    max-width: 600px;
+}
+
+.left h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.left p {
+    font-size: 20px;
+    color: #aaa;
+    margin-bottom: 30px;
+}
+
+.main-btn {
+    padding: 18px 50px;
+    background: #00aa33;
+    border: 1px solid #00ff66;
+    border-radius: 8px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00ff66;
+    transition: 0.3s;
+}
+
+.main-btn:hover {
+    background: #00ff66;
+}
+
+/* STATS */
+
+.right {
+    width: 360px;
+}
+
+    .stats-title {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #ccc;
+
+    background: #1a1a1a;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid #2a2a2a;
+
+    display: inline-block;
+}
+
+
+
+/* ОБЩИЙ СТИЛЬ КАРТОЧЕК */
+.stat-card {
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+/* ПОЛЬЗОВАТЕЛИ — НЕОН ЗЕЛЕНЫЙ */
+.stat-card.users {
+    background: #1a1a1a;          /* темно-серый */
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+}
+
+
+/* УСПЕШНЫЕ — НЕОН ЗЕЛЕНЫЙ */
+.stat-card.success {
+    background: rgba(0, 255, 102, 0.08);
+    border: 1px solid #00ff66;
+    box-shadow: 0 0 20px rgba(0,255,102,0.6);
+}
+
+/* НЕУДАЧНЫЕ — НЕОН КРАСНЫЙ */
+.stat-card.fail {
+    background: rgba(255, 0, 0, 0.08);
+    border: 1px solid #ff3333;
+    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.stat-card p {
+    margin-top: 8px;
+    color: #aaa;
+}
+.promo-section {
+    padding: 120px 20px;
+    margin-top: -140px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+
+.promo-section h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.promo-section .green {
+    color: #00ff66;
+}
+
+.promo-section p {
+    font-size: 20px;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.promo-btn {
+    padding: 15px 45px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: 1px solid #00ff66;
+    background: linear-gradient(45deg, #00aa33, #00ff66);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,255,102,0.6);
+    transition: 0.3s ease;
+}
+
+.promo-btn:hover {
+    background: #00ff66;
+    box-shadow: 0 0 35px rgba(0,255,102,0.9);
+}
+.chart-section {
+    margin-top: -300px; /* регулируй высоту */
+}
+
+.chart-image {
+    width: 100%;
+    display: block;
+}
+.pairs-section {
+    padding: 140px 20px 80px;
+    margin-top: -80px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.pairs-container h2 {
+    font-size: 52px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 25px;
+}
+
+.pairs-container p {
+    font-size: 20px;
+    color: #b8b8b8;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #00ff6a, #00c853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.signals-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -40px; /* <-- регулируешь высоту */
+  position: relative;
+  z-index: 2;
+}
+
+.signals-img {
+  width: 85%;
+  max-width: 1400px;
+  height: auto;
+  pointer-events: none;
+}
+.faq-section {
+  padding: 120px 0;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.faq-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.faq-subtitle {
+  color: #bdbdbd;
+  font-size: 18px;
+  margin-bottom: 60px;
+}
+
+.faq-container {
+  width: 80%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(30,30,30,0.9));
+  border: 1px solid rgba(0,255,120,0.3);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.faq-question {
+  padding: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.faq-question span {
+  font-size: 22px;
+  color: #00ff88;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 25px;
+  color: #bdbdbd;
+  font-size: 16px;
+  transition: max-height 0.4s ease;
+}
+
+/* ===== FAQ BLOCK ===== */
+
+.faq-item {
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid #00ff88;
+  border-radius: 18px;
+  padding: 28px 40px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  min-height: 90px;
+}
+
+.faq-item h3 {
+  font-size: 24px;   /* было 20px */
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  text-align: left;
+}
+
+.faq-item p {
+  margin-top: 20px;
+  font-size: 18px;   /* было 16px */
+  line-height: 1.8;
+  color: #d0d0d0;
+}
+.features {
+  padding: 80px 20px;
+  margin-top: -60px; /* <-- этим поднимаешь выше */
+}
+
+
+.features-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center; /* ← ВАЖНО */
+}
+
+
+.features h2 {
+  font-size: 48px;   /* больше */
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: white;
+  text-align: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.green {
+  color: #00ff66;
+}
+
+.features-subtitle {
+  font-size: 22px;
+  color: #cccccc;
+  margin-bottom: 70px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.features-grid {
+  display: flex;
+  justify-content: center; /* центрируем */
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: nowrap;
+}
+
+
+
+.feature-card {
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid rgba(0, 255, 100, 0.4);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 320px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s ease;
+  flex: 1;
+min-width: 300px;
+width: 320px;
+flex: none;
+
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px rgba(0, 255, 100, 0.3);
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #00ff66;
+}
+
+.feature-card p {
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.7;
+}
+.tools-section {
+  padding: 120px 0;
+}
+
+.tools-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: -130px auto 0 auto; /* 🔥 поднимаем весь блок */
+  gap: 60px;
+}
+
+
+/* ГРАФИК */
+.tools-chart {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: -30px; /* 🔥 вот тут можно поднимать */
+}
+
+.chart-svg {
+  width: 450px;
+  filter: drop-shadow(0 0 12px #00ff66);
+}
+
+/* ТЕКСТ */
+.tools-info {
+  flex: 1;
+}
+
+.tool-item {
+  margin-bottom: 40px;
+  border-left: 3px solid #00ff66;
+  padding-left: 20px;
+}
+
+.tool-item h3 {
+  color: #00ff66;
+  margin-bottom: 10px;
+}
+
+.tool-item p {
+  color: #ffffff;
+}
+.tools-title-section {
+  text-align: center;
+  padding: 120px 0 60px 0;
+  position: relative;
+  top: -40px; /* 🔥 регулируй высоту блока */
+}
+
+.tools-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.tools-title .green {
+  color: #00ff66;
+}
+
+.tools-subtitle {
+  font-size: 20px;
+  color: #cccccc;
+}
+/* ===== HOW IT WORKS ===== */
+
+.how-section {
+  position: relative;
+  margin-top: -300px;
+  padding: 20px 0 200px 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* шаги */
+.steps-row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 100px;
+  flex-wrap: wrap;
+}
+
+.step {
+  background: rgba(255,255,255,0.05);
+  padding: 25px 40px;
+  border-radius: 25px;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* волны */
+.waves {
+  position: absolute;
+  width: 100%;
+  bottom: 120px;
+  left: 0;
+  z-index: 0;
+}
+
+.waves svg {
+  width: 100%;
+  height: 200px;
+}
+
+.wave-green {
+  fill: none;
+  stroke: #00ff66;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 10px #00ff66);
+  animation: waveMove 8s linear infinite;
+}
+
+.wave-gray {
+  fill: none;
+  stroke: #555;
+  stroke-width: 2;
+  opacity: 0.7;
+  animation: waveMove 10s linear infinite reverse;
+}
+
+@keyframes waveMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-50px); }
+  100% { transform: translateX(0); }
+}
+
+/* CTA */
+.cta-block{
+max-width:900px;
+margin:80px auto;
+padding:60px 40px;
+text-align:center;
+
+/* 💎 GLASS */
+background:rgba(15,15,15,0.55);
+backdrop-filter:blur(12px);
+
+border-radius:30px;
+border:1px solid rgba(0,255,120,.25);
+
+box-shadow:
+0 0 120px rgba(0,255,120,.06),
+inset 0 0 40px rgba(0,255,120,.04);
+
+position:relative;
+z-index:2;
+}
+
+.cta-block h3 {
+  color: #ffffff;
+  margin-bottom: 30px;
+}
+
+.green-btn {
+  background: #00ff66;
+  color: #000;
+  padding: 15px 40px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.green-btn:hover {
+  box-shadow: 0 0 20px #00ff66;
+}
+.how-section-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.how-section-title h2 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.how-section-title .green {
+  color: #00ff66;
+}
+
+.how-section-title p {
+  font-size: 20px;
+  color: #cccccc;
+}
+.footer {
+  margin-top: -200px; /* 🔥 ПОДНЯЛИ БЛОК */
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-box {
+  width: 100%;
+  max-width: 1200px;
+  padding: 50px 40px;
+  text-align: center;
+
+  background: rgba(15, 15, 15, 0.95);
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 
+    0 0 40px rgba(0,0,0,0.6),
+    inset 0 0 30px rgba(255,255,255,0.02);
+}
+
+/* ЛОГО */
+.footer-logo {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.footer-logo .white {
+  color: #ffffff;
+}
+
+.footer-logo .green {
+  color: #00ff66;
+}
+
+/* ТЕКСТ ПО ЦЕНТРУ И НЕ НА ВСЮ ШИРИНУ */
+.footer-text {
+  max-width: 700px;   /* 🔥 ограничили ширину */
+  margin: 0 auto;     /* центрируем */
+  font-size: 14px;
+  color: #9a9a9a;
+  line-height: 1.8;
+}
+
+.footer-text a {
+  color: #9a9a9a;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.footer-text a:hover {
+  color: #00ff66;
+}
+
+.divider {
+  margin: 0 10px;
+  color: #444;
+}
+/* ======================================
+   🔥 AI BOOST REAL MOBILE FIX FINAL
+   ничего не ломает
+   ====================================== */
+
+@media (max-width:768px){
+
+/* не даем сайту сжиматься */
+body{
+  overflow-x:hidden;
+}
+
+/* контейнер */
+section{
+  padding-left:20px;
+  padding-right:20px;
+}
+
+/* =========================
+   МЕНЮ
+   ========================= */
+.header{
+  width:95%;
+  margin:20px auto;
+  padding:16px;
+  border-radius:18px;
+  position:relative !important;   /* было fixed */
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:10px;
+}
+
+/* логотип */
+.logo{
+  font-size:22px;
+}
+
+/* ссылки */
+.nav-links{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  font-size:15px;
+}
+
+/* язык + кнопка */
+.nav-right{
+  display:flex;
+  justify-content:space-between;
+  width:100%;
+  margin-top:5px;
+}
+
+/* =========================
+   HERO
+   ========================= */
+.hero{
+  padding-top:120px;
+  flex-direction:column;
+  text-align:left;
+}
+
+.left h1{
+  font-size:32px;
+}
+
+.left p{
+  font-size:16px;
+}
+
+.main-btn{
+  width:100%;
+  max-width:320px;
+  margin-top:20px;
+}
+
+/* =========================
+   СТАТИСТИКА
+   ========================= */
+.right{
+  width:100%;
+  margin-top:25px;
+}
+
+/* =========================
+   БЛОК С ГРАФИКОМ
+   НЕ ТРОГАЕМ СТРУКТУРУ
+   ========================= */
+.tools-container{
+  flex-direction:column;
+  gap:30px;
+  margin-top:40px;
+}
+
+.tools-chart{
+  order:1;
+}
+
+.tools-info{
+  order:2;
+}
+
+/* =========================
+   КАК ЭТО РАБОТАЕТ
+   ========================= */
+.how-section{
+  margin-top:80px;
+}
+
+.steps-row{
+  flex-direction:column;
+  gap:16px;
+  margin-top:30px;
+}
+
+.step{
+  width:100%;
+}
+
+/* =========================
+   КАРТОЧКИ
+   ========================= */
+.features-grid{
+  flex-direction:column;
+  gap:20px;
+}
+
+.feature-card{
+  width:100%;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+.footer-box{
+  width:95%;
+  padding:30px 20px;
+}
+
+/* картинки */
+img{
+  max-width:100%;
+}
+
+}
+/* =========================
+   🔥 MOBILE BURGER MENU PRO
+   ========================= */
+
+.burger{
+  display:none;
+  font-size:28px;
+  color:#00ff66;
+  cursor:pointer;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+@media (max-width:768px){
+
+/* HEADER */
+.header{
+  width:92%;
+  margin:20px auto;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-radius:18px;
+  background:rgba(0,0,0,0.9);
+  border:1px solid rgba(0,255,100,0.3);
+}
+
+/* логотип */
+.logo{
+  font-size:22px;
+  font-weight:700;
+}
+
+/* показываем бургер */
+.burger{
+  display:block;
+}
+
+/* скрываем старые ссылки */
+.nav-links,
+.nav-right,
+nav{
+  display:none !important;
+}
+
+/* выпадающее меню */
+.mobile-menu{
+  position:relative !important;   /* было fixed */
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  background:#0c0c0c;
+  border-radius:18px;
+  padding:25px;
+  display:none;
+  flex-direction:column;
+  gap:18px;
+  z-index:9999;
+  border:1px solid rgba(0,255,100,0.3);
+}
+
+/* ссылки */
+.mobile-menu a{
+  color:white;
+  text-decoration:none;
+  font-size:18px;
+}
+
+/* кнопка */
+.menu-btn{
+  background:#00ff66;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:16px;
+}
+
+}
+/* ============================
+   🔥 PREMIUM FLOAT MENU
+   ============================ */
+
+.topbar{
+  position:relative;   /* было fixed */
+  margin-top:18px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  z-index:9999;
+}
+
+
+/* капсула */
+.topbar-inner{
+  width:95%;
+  max-width:1400px;
+  margin:0 auto;
+
+  padding:18px 40px;
+  border-radius:22px;
+
+  background:rgba(20,20,20,0.85);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.15);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+
+/* логотип */
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:white;
+}
+
+.logo span{
+  color:#00ff66;
+}
+
+/* бургер */
+.burger{
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+}
+
+/* ===== выпадающее ===== */
+.menu-box{
+  display:none;
+  position:relative !important;   /* было fixed */
+  top:85px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+
+  background:#0e0e0e;
+  border-radius:20px;
+  padding:25px;
+
+  flex-direction:column;
+  gap:18px;
+  z-index:9999;
+
+  border:1px solid rgba(0,255,120,0.4);
+}
+
+.menu-box a{
+  color:white;
+  text-decoration:none;
+  font-size:18px;
+}
+
+.menu-btn{
+  background:#00ff66;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:16px;
+}
+/* =========================
+   📱 MOBILE FINAL FIX PRO
+   ========================= */
+@media (max-width:768px){
+
+/* HERO */
+.hero{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:120px 20px 40px;
+}
+
+/* заголовок */
+.hero h1{
+  font-size:32px;
+  line-height:1.2;
+  width:100%;
+  max-width:95%;
+}
+
+/* текст */
+.hero p{
+  font-size:15px;
+  width:100%;
+  max-width:95%;
+  margin-bottom:20px;
+}
+
+/* кнопка */
+.main-btn{
+  width:92%;
+  max-width:380px;
+  height:58px;
+  font-size:18px;
+  margin:20px auto;
+}
+
+/* ===== СВЕЧИ ПОД КНОПКОЙ ===== */
+.chart-section{
+  order:3;
+  margin-top:-120px;
+  margin-bottom:20px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+.chart-image{
+  width:92%;
+  max-width:420px;
+}
+
+/* ===== СТАТИСТИКА ===== */
+.right{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  margin-top:10px;
+}
+
+/* текст статистики */
+.stats-title{
+  width:92%;
+  max-width:420px;
+  text-align:center;
+  font-size:16px;
+}
+
+/* карточки */
+.stat-card{
+  width:92%;
+  max-width:420px;
+  padding:26px;
+  border-radius:16px;
+}
+
+/* цифры */
+.stat-card h2{
+  font-size:28px;
+}
+
+.stat-card p{
+  font-size:14px;
+}
+
+/* убираем сжатие */
+.stat-card.users,
+.stat-card.success,
+.stat-card.fail{
+  width:92%;
+  max-width:420px;
+}
+
+/* всё по центру */
+.left{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+}
+/* =========================================
+🔥 AI BOOST POSITION CONTROL (двигай блоки)
+меняешь цифры = двигаешь блок
+========================================= */
+
+/* график с линией + тексты */
+.tools-section{
+  margin-top:-240px;   /* ← двигай вверх/вниз */
+}
+
+/* блок "как это работает" */
+.how-section{
+  margin-top:-80px;   /* ← вверх = - , вниз = + */
+}
+
+/* кнопки 1 2 3 4 */
+.steps-row{
+  margin-top:30px;    /* расстояние от заголовка */
+  margin-bottom:-40px; /* к блоку ниже */
+}
+
+/* блок авторизации */
+.cta-block{
+  margin-top:80px;   /* поднимаем вверх */
+}
+
+/* футер */
+.footer{
+  margin-top:-120px;  /* подтянуть вверх */
+}/* =========================
+   ОБЩЕЕ МЕНЮ
+========================= */
+
+.header{
+  width:95%;
+  max-width:1400px;
+  margin:25px auto;
+  padding:18px 30px;
+  border-radius:20px;
+
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,255,100,0.25);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* логотип */
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:white;
+}
+.logo span{
+  color:#00ff66;
+}
+
+/* ПК меню */
+.nav-pc{
+  display:flex;
+  gap:40px;
+  align-items:center;
+}
+
+.nav-pc a{
+  color:#ccc;
+  text-decoration:none;
+  font-size:16px;
+}
+
+.nav-pc a:hover{
+  color:#00ff66;
+}
+
+/* кнопка */
+.btn-login{
+  background:#00ff66;
+  border:none;
+  padding:12px 26px;
+  border-radius:20px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* бургер скрыт на ПК */
+.burger{
+  display:none;
+  font-size:28px;
+  color:white;
+  cursor:pointer;
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+@media (max-width:768px){
+
+.nav-pc{
+  display:none;
+}
+
+.burger{
+  display:block;
+}
+
+/* выезжающее меню */
+.mobile-menu{
+  position:fixed;
+  top:120px;
+  left:50%;
+  transform:translateX(-50%) scale(0.9);
+  width:88%;
+  max-width:420px;
+
+  background:#0c0c0c;
+  border-radius:20px;
+  padding:30px;
+
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+
+  border:1px solid rgba(0,255,120,0.3);
+  z-index:9999;
+}
+
+/* открыто */
+.mobile-menu.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateX(-50%) scale(1);
+}
+
+.mobile-menu a{
+  color:white;
+  text-decoration:none;
+  font-size:18px;
+  text-align:center;
+}
+
+.mobile-menu .btn-login{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  font-size:17px;
+}
+
+}
+/* =========================
+   📱 MOBILE MENU PERFECT FIX
+   ========================= */
+
+@media (max-width:768px){
+
+/* шапка */
+.header{
+  width:92%;
+  margin:20px auto;
+  padding:18px 20px;
+  border-radius:20px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  background:rgba(15,15,15,0.95);
+  border:1px solid rgba(0,255,120,0.4);
+}
+
+/* логотип слева */
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:white;
+}
+
+/* бургер справа */
+.burger{
+  display:block;
+  font-size:28px;
+  color:#00ff66;
+  cursor:pointer;
+}
+
+/* скрываем обычное меню */
+.nav-links,
+.nav-right{
+  display:none !important;
+}
+
+/* =====================
+   ВЫЕЗЖАЮЩЕЕ МЕНЮ
+   ===================== */
+.mobile-menu{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%) scale(0.9);
+  
+  width:85%;
+  max-width:340px;
+
+  background:#0b0b0b;
+  border-radius:22px;
+  padding:30px;
+
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+
+  z-index:99999;
+  opacity:0;
+  pointer-events:none;
+
+  border:1px solid rgba(0,255,120,0.4);
+  box-shadow:0 0 40px rgba(0,255,120,0.15);
+
+  transition:0.35s;
+}
+
+/* активное */
+.mobile-menu.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:translate(-50%, -50%) scale(1);
+}
+
+/* ссылки */
+.mobile-menu a{
+  color:white;
+  font-size:18px;
+  text-decoration:none;
+  text-align:center;
+}
+
+/* кнопка */
+.menu-btn{
+  background:#00ff66;
+  color:white !important;
+  border:none;
+  padding:16px;
+  border-radius:14px;
+  font-weight:700;
+  font-size:16px;
+}
+
+}
+/* =========================
+   MOBILE FINAL POSITION FIX
+   ========================= */
+
+@media (max-width:768px){
+
+/* ===== HEADER ===== */
+.header{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  flex-direction:row !important;
+  padding:16px 18px !important;
+}
+
+/* логотип влево */
+.logo{
+  text-align:left !important;
+  margin:0 !important;
+  font-size:22px;
+}
+
+/* бургер вправо */
+.burger{
+  margin-left:auto !important;
+  font-size:24px;
+}
+
+/* ===== HERO ЗАГОЛОВОК ===== */
+.hero{
+  padding-top:40px !important;   /* было большое расстояние */
+}
+
+.hero h1{
+  font-size:32px !important;
+  line-height:1.2;
+  margin-top:10px !important;
+  margin-bottom:10px !important;
+}
+
+/* подзаголовок */
+.hero p{
+  font-size:16px;
+  margin-bottom:20px;
+}
+
+}
+/* =========================
+   FINAL MOBILE DOWN FIX
+   опустить меню и фон
+   ========================= */
+
+@media (max-width:768px){
+
+/* опускаем меню ниже */
+.header,
+.topbar,
+.topbar-inner{
+  margin-top:60px !important;   /* регулируй: 20-50 */
+}
+
+@media (max-width:768px){
+
+.hero{
+  margin-top:-240px;
+}
+
+section{
+  margin-top:-130px;
+}
+
+}
+}button{
+  color:#fff !important;
+  -webkit-text-fill-color:white !important;
+}
+
+/* =========================
+   🔥 ВЕРНУТЬ БЛОКИ НА МЕСТА
+   ========================= */
+
+/* блок ИНСТРУМЕНТЫ */
+.tools-section{
+  margin-top:80px !important;
+  position:relative;
+  z-index:2;
+}
+
+/* текст инструменты */
+.tools-section h2{
+  margin-bottom:20px !important;
+}
+
+/* график под инструментами */
+.tools-chart{
+  margin-top:40px !important;
+}
+
+/* =========================
+   FAQ — часто вопросы ниже
+   ========================= */
+.faq-section{
+  margin-top:120px !important;   /* двигает вниз */
+  position:relative;
+  z-index:2;
+}
+
+/* заголовок FAQ */
+.faq-title{
+  margin-bottom:20px !important;
+}
+
+/* =========================
+   HERO FIX ПК
+   ========================= */
+.hero{
+  margin-bottom:80px !important;
+}
+
+/* =========================
+   📱 MOBILE FIX
+   ========================= */
+@media (max-width:768px){
+
+/* инструменты ниже */
+.tools-section{
+  margin-top:60px !important;
+}
+
+/* FAQ ниже */
+.faq-section{
+  margin-top:-80px !important;
+}
+
+/* график */
+.tools-chart{
+  margin-top:-200px !important;
+}
+
+/* текст над графиком */
+.tools-section h2{
+  font-size:28px !important;
+  line-height:1.2;
+  margin-top:-80px;   /* ← ОПУСКАЕТ БЛОК ВНИЗ */
+}
+}
+
+.tools-mega{
+padding:140px 20px;
+background:#000;
+}
+
+.tools-top{
+text-align:center;
+margin-bottom:60px;
+}
+
+.tools-top h2{
+font-size:48px;
+color:white;
+font-weight:900;
+}
+
+.tools-top h2 span{
+color:#00ff66;
+}
+
+.tools-top p{
+color:#ccc;
+margin-top:15px;
+font-size:20px;
+}
+
+.tools-flex{
+max-width:1200px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:80px;
+flex-wrap:wrap;
+}
+
+.tools-graph{
+flex:1;
+min-width:400px;
+}
+
+.tools-graph svg{
+width:100%;
+filter:drop-shadow(0 0 25px #00ff66);
+}
+
+.tools-right{
+flex:1;
+min-width:400px;
+display:flex;
+flex-direction:column;
+gap:30px;
+}
+
+.tool-item{
+border-left:3px solid #00ff66;
+padding-left:18px;
+}
+
+.tool-item h3{
+color:#00ff66;
+font-size:22px;
+margin-bottom:6px;
+}
+
+.tool-item p{
+color:#ccc;
+line-height:1.6;
+}
+
+/* 📱 мобилка */
+@media(max-width:768px){
+
+.tools-top h2{
+font-size:32px;
+}
+
+.tools-flex{
+flex-direction:column;
+text-align:left;
+}
+
+.tools-graph,
+.tools-right{
+min-width:100%;
+}
+
+}
+/* HOW WORK */
+.how-work{
+padding:140px 20px;
+background:radial-gradient(circle at top,#0b0b0b,#000);
+text-align:center;
+}
+
+.how-title h2{
+font-size:48px;
+color:white;
+font-weight:900;
+}
+
+.how-title h2 span{
+color:#00ff66;
+}
+
+.how-title p{
+color:#aaa;
+margin-top:10px;
+font-size:20px;
+}
+
+.how-steps{
+margin-top:60px;
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.step-box{
+width:240px;
+padding:28px;
+border-radius:20px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+color:#fff;
+font-size:18px;
+transition:0.3s;
+backdrop-filter:blur(10px);
+}
+
+.step-box span{
+display:block;
+font-size:22px;
+color:#00ff66;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+.step-box:hover{
+border:1px solid #00ff66;
+transform:translateY(-6px);
+box-shadow:0 0 25px rgba(0,255,100,0.3);
+}
+
+/* мобилка */
+@media(max-width:768px){
+
+.how-title h2{
+font-size:32px;
+}
+
+.step-box{
+width:100%;
+}
+
+}
+/* блок старт */
+.start-now{
+position:relative;
+padding:140px 20px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+.start-box{
+position:relative;
+z-index:2;
+background:rgba(10,10,10,0.85);
+border:1px solid rgba(0,255,120,0.3);
+padding:50px 60px;
+border-radius:30px;
+text-align:center;
+backdrop-filter:blur(10px);
+}
+
+.start-box h2{
+color:white;
+font-size:28px;
+margin-bottom:30px;
+}
+
+.start-btn{
+background:#00ff66;
+color:#000;
+border:none;
+padding:18px 50px;
+font-size:18px;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
+box-shadow:0 0 25px #00ff66;
+transition:.3s;
+}
+
+.start-btn:hover{
+transform:scale(1.05);
+box-shadow:0 0 40px #00ff66;
+}
+
+/* линии фон */
+.start-bg{
+position:absolute;
+width:100%;
+height:100%;
+top:0;
+left:0;
+z-index:0;
+}
+
+#lines{
+width:100%;
+height:100%;
+}
+/* финальный CTA блок */
+.cta-section{
+position:relative;
+padding:160px 20px 120px;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+/* центр коробка */
+.cta-box{
+position:relative;
+z-index:5;
+background:rgba(8,8,8,0.85);
+border:1px solid rgba(255,255,255,0.08);
+padding:60px 80px;
+border-radius:26px;
+text-align:center;
+backdrop-filter:blur(12px);
+box-shadow:0 0 60px rgba(0,0,0,0.6);
+}
+
+.cta-box h2{
+color:#fff;
+font-size:30px;
+margin-bottom:35px;
+font-weight:600;
+}
+
+/* кнопка */
+.cta-btn{
+background:#00ff66;
+color:#000;
+border:none;
+padding:18px 55px;
+font-size:18px;
+font-weight:700;
+border-radius:14px;
+cursor:pointer;
+box-shadow:0 0 30px #00ff66;
+transition:.25s;
+}
+
+.cta-btn:hover{
+transform:scale(1.06);
+box-shadow:0 0 55px #00ff66;
+}
+
+/* фон линии */
+.cta-waves{
+position:absolute;
+width:100%;
+height:100%;
+top:0;
+left:0;
+z-index:1;
+}
+
+#ctaCanvas{
+width:100%;
+height:100%;
+opacity:.9;
+}
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
+position:relative;
+z-index:10;
+}
+
+.logo{
+font-size:24px;
+font-weight:900;
+cursor:pointer;
+}
+
+.logo span{
+color:#00ff88;
+}
+
+.menu{
+display:flex;
+gap:30px;
+align-items:center;
+}
+
+.menu a{
+color:#aaa;
+text-decoration:none;
+font-weight:600;
+transition:.3s;
+}
+
+.menu a:hover{
+color:#00ff66;
+}
+
+.menu a.active{
+color:#00ff66;
+}
+
+
+/* =========================================
+   AI BOOST — FINAL HEADER + MENU FIX
+   УБИВАЕТ ВСЕ СТАРЫЕ СТИЛИ
+   ========================================= */
+
+/* ===== HEADER ===== */
+.main-header{
+display:flex !important;
+justify-content:space-between !important;
+align-items:center !important;
+
+padding:16px 24px !important;
+margin:18px !important;
+
+border-radius:20px !important;
+background:#050505 !important;
+border:1px solid rgba(0,255,120,.25) !important;
+box-shadow:0 0 40px rgba(0,255,120,.12) !important;
+
+position:relative !important;
+z-index:9999 !important;
+}
+
+.logo{
+font-size:24px !important;
+font-weight:900 !important;
+}
+.logo span{color:#00ff88 !important}
+
+/* ПК меню */
+.nav-links{
+display:flex;
+gap:30px;
+align-items:center;
+}
+
+.nav-links a{
+color:#aaa;
+text-decoration:none;
+font-weight:600;
+}
+.nav-links a:hover{color:#00ff66}
+
+.enter-btn{
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:10px 24px;
+border-radius:16px;
+font-weight:800;
+box-shadow:0 0 20px rgba(0,255,120,.5);
+}
+
+/* бургер */
+.burger{
+display:none;
+font-size:28px;
+color:#00ff66;
+cursor:pointer;
+}
+
+/* =========================================
+   📱 MOBILE MENU 1:1 КАК ABOUT
+   ========================================= */
+@media(max-width:900px){
+
+.nav-links{display:none !important;}
+.burger{display:block !important;}
+
+/* меню обычным блоком */
+.mobile-menu{
+display:none;
+
+width:92%;
+margin:15px auto 0 auto;
+
+background:#050505;
+border:1px solid rgba(0,255,120,.25);
+border-radius:22px;
+
+padding:28px 20px;
+
+flex-direction:column;
+align-items:center;
+gap:20px;
+
+box-shadow:0 0 40px rgba(0,255,120,.2);
+}
+
+/* открыто */
+.mobile-menu.show{
+display:flex !important;
+}
+
+/* ссылки */
+.mobile-menu a{
+color:#fff;
+font-size:20px;
+font-weight:600;
+text-decoration:none;
+}
+
+/* кнопка */
+.mobile-menu button{
+margin-top:8px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:16px 34px;
+border-radius:16px;
+font-weight:800;
+font-size:17px;
+box-shadow:0 0 25px rgba(0,255,120,.8);
+}
+
+}
+/* ===== HEADER EXACT LIKE SCREEN 2 ===== */
+@media (min-width:1024px){
+
+/* общий контейнер как у сайта */
+.ai-header{
+    width: 92%;
+    max-width: 1500px;
+    margin: 14px auto 0 auto;
+
+    padding: 18px 35px;
+    border-radius: 22px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* внутренняя часть */
+.ai-header-inner{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+/* меню справа */
+.ai-menu{
+    display:flex !important;
+    align-items:center;
+    gap:34px;
+
+    position:static;
+    background:transparent;
+    padding:0;
+    margin:0;
+    box-shadow:none;
+}
+
+/* ссылки */
+.ai-menu a{
+    color:#cfcfcf;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:500;
+}
+
+.ai-menu a:hover{
+    color:#00ff66;
+}
+
+/* кнопка */
+.ai-menu button{
+    background:#00ff66;
+    border:none;
+    padding:10px 24px;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+    margin-left:10px;
+}
+
+/* бургер убрать */
+.ai-burger{
+    display:none !important;
+}
+
+/* скрыть мобильное меню */
+#mobileMenu{
+    display:none !important;
+}
+
+}
+
+/* ===== HEADER FINAL PERFECT ===== */
+@media (min-width:1024px){
+
+.ai-header{
+    width:92%;
+    max-width:1500px;
+    margin:14px auto 0 auto;
+    padding:16px 30px;
+
+    background:rgba(0,0,0,0.65);
+    border:1.5px solid rgba(0,255,136,0.45);
+    border-radius:20px;
+
+    box-shadow:
+    0 0 25px rgba(0,255,136,0.25),
+    inset 0 0 25px rgba(0,255,136,0.08);
+
+    backdrop-filter: blur(6px);
+
+    display:flex;
+    align-items:center;
+}
+
+/* логотип */
+.ai-logo{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:white;
+}
+
+.ai-logo span{
+    color:#00ff88;
+}
+
+/* меню справа */
+.ai-menu{
+    margin-left:auto;
+    display:flex !important;
+    align-items:center;
+    gap:34px;
+}
+
+/* ссылки */
+.ai-menu a{
+    color:#cfcfcf;
+    text-decoration:none;
+    font-size:16px;
+}
+
+.ai-menu a:hover{
+    color:#00ff66;
+}
+
+/* кнопка */
+.ai-menu button{
+    background:#00ff88;
+    border:none;
+    padding:10px 22px;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+
+    box-shadow:0 0 18px rgba(0,255,136,0.6);
+}
+
+/* бургер убрать */
+.ai-burger{display:none!important;}
+#mobileMenu{display:none!important;}
+
+}
+
+
+/* ===============================
+   MOBILE HEADER IDEAL
+================================ */
+@media (max-width:768px){
+
+/* скрыть ПК меню */
+.desktop-menu{
+display:none !important;
+}
+
+/* бургер */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+}
+
+/* контейнер */
+.ai-header{
+width:92%;
+margin:20px auto;
+}
+
+/* панель */
+.ai-header-inner{
+padding:18px 22px;
+border-radius:26px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 45px rgba(0,255,120,.35);
+background:#050505;
+}
+
+/* моб меню */
+.mobile-menu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:24px;
+
+margin-top:14px;
+padding:35px 20px;
+
+background:#050505;
+border-radius:26px;
+border:1px solid rgba(0,255,120,.35);
+box-shadow:0 0 70px rgba(0,255,120,.35);
+}
+
+/* открыто */
+.mobile-menu.show{
+display:flex;
+animation:fadeMenu .25s ease;
+}
+
+@keyframes fadeMenu{
+from{opacity:0; transform:translateY(-10px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+/* ссылки */
+.mobile-menu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+.mobile-menu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff66,#00ff66);
+color:#000;
+border:none;
+padding:18px 70px;
+border-radius:16px;
+font-size:20px;
+font-weight:800;
+box-shadow:0 0 40px rgba(0,255,120,1);
+}
+}
+
+/* ===============================
+   MOBILE HEADER IDEAL
+================================ */
+@media (max-width:768px){
+
+/* скрыть ПК меню */
+.desktop-menu{
+display:none !important;
+}
+
+/* бургер */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+}
+
+/* контейнер */
+.ai-header{
+width:92%;
+margin:20px auto;
+}
+
+/* панель */
+.ai-header-inner{
+padding:18px 22px;
+border-radius:26px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 45px rgba(0,255,120,.35);
+background:#050505;
+}
+
+/* моб меню */
+.mobile-menu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:24px;
+
+margin-top:14px;
+padding:35px 20px;
+
+background:#050505;
+border-radius:26px;
+border:1px solid rgba(0,255,120,.35);
+box-shadow:0 0 70px rgba(0,255,120,.35);
+}
+
+/* открыто */
+.mobile-menu.show{
+display:flex;
+animation:fadeMenu .25s ease;
+}
+
+@keyframes fadeMenu{
+from{opacity:0; transform:translateY(-10px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+/* ссылки */
+.mobile-menu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+.mobile-menu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 70px;
+border-radius:16px;
+font-size:20px;
+font-weight:800;
+box-shadow:0 0 40px rgba(0,255,120,1);
+}
+}
+
+/* ===============================
+   📱 MOBILE IDEAL FIX
+   ===============================*/
+@media (max-width:700px){
+
+/* header рамка */
+.ai-header{
+width:92%;
+margin:18px auto;
+}
+
+.ai-header-inner{
+padding:18px;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 25px rgba(0,255,120,.35);
+}
+
+/* логотип */
+.ai-logo{
+font-size:24px;
+font-weight:900;
+}
+.ai-logo span{color:#00ff88}
+
+/* бургер справа */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+margin-left:auto;
+}
+
+/* скрываем десктоп меню */
+.ai-header .ai-menu{
+display:none !important;
+}
+
+/* выпадающее меню */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:26px;
+margin-top:16px;
+padding:34px 20px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+}
+
+#mobileMenu.show{
+display:flex;
+animation:menuDrop .25s ease;
+}
+
+/* ссылки */
+#mobileMenu a{
+color:#fff;
+font-size:22px;
+font-weight:700;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+/* hero текст */
+.hero{
+flex-direction:column;
+text-align:center;
+margin-top:20px;
+padding:0 18px;
+}
+
+.hero h1{
+font-size:32px;
+line-height:1.2;
+margin-top:10px;
+}
+
+.hero p{
+font-size:16px;
+color:#aaa;
+margin-top:10px;
+}
+
+/* кнопка регистрация */
+.main-btn{
+width:100%;
+padding:18px;
+font-size:18px;
+border-radius:16px;
+margin-top:20px;
+}
+
+/* правая статистика */
+.right{
+width:100%;
+margin-top:20px;
+display:flex;
+flex-direction:column;
+gap:16px;
+align-items:center;
+}
+
+.stat-card{
+width:100%;
+max-width:340px;
+border-radius:18px;
+padding:26px;
+}
+}
+/* ===== MOBILE HEADER FIX FINAL ===== */
+@media (max-width:700px){
+
+.ai-header{
+width:92%;
+margin:18px auto;
+}
+
+.ai-header-inner{
+display:flex;
+align-items:center;
+justify-content:space-between; /* ключевое */
+padding:18px 20px;
+border-radius:22px;
+background:#050505;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 30px rgba(0,255,120,.35);
+}
+
+/* логотип */
+.ai-logo{
+font-size:24px;
+font-weight:900;
+}
+
+/* бургер справа */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+}
+
+/* СКРЫТЬ десктоп меню */
+.desktop-menu,
+.ai-header .ai-menu:not(#mobileMenu){
+display:none !important;
+}
+
+/* MOBILE MENU */
+#mobileMenu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:24px;
+margin-top:14px;
+padding:34px 20px;
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+}
+
+#mobileMenu.show{
+display:flex;
+}
+
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+}
+/* ===== MOBILE MENU FIX ===== */
+.mobile-menu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+margin-top:15px;
+padding:30px 20px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.35);
+box-shadow:0 0 60px rgba(0,255,120,.25);
+
+position:absolute;
+left:0;
+right:0;
+top:90px;
+width:92%;
+margin-left:auto;
+margin-right:auto;
+
+z-index:999999;
+}
+
+.mobile-menu.show{
+display:flex;
+animation:menuDrop .25s ease;
+}
+
+@keyframes menuDrop{
+from{opacity:0;transform:translateY(-10px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* бургер всегда кликабельный */
+.ai-burger{
+cursor:pointer;
+z-index:9999999;
+position:relative;
+}
+
+/* header поверх всего */
+.ai-header{
+position:relative;
+z-index:999999;
+}
+
+
+
+/* ===== MOBILE MENU HARD FIX ===== */
+
+.mobile-menu{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:22px;
+padding:30px 20px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.35);
+box-shadow:0 0 60px rgba(0,255,120,.25);
+
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+top:95px;
+width:92%;
+
+z-index:999999999;
+}
+
+.mobile-menu.show{
+display:flex !important;
+}
+
+.ai-burger{
+font-size:28px;
+cursor:pointer;
+z-index:999999999;
+position:relative;
+}
+/* ===== MOBILE MENU NORMAL DROPDOWN ===== */
+@media (max-width:700px){
+
+/* скрыть десктоп меню */
+.desktop-menu{
+display:none !important;
+}
+
+/* бургер */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* контейнер */
+.ai-header{
+width:92%;
+margin:18px auto;
+}
+
+/* МОБИЛЬНОЕ МЕНЮ */
+#mobileMenu{
+width:92%;
+margin:0 auto;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:24px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+
+overflow:hidden;
+max-height:0;
+padding:0 20px;
+
+transition:max-height .35s ease, padding .3s ease, margin .3s ease;
+}
+
+/* открыто */
+#mobileMenu.show{
+max-height:500px;
+padding:30px 20px;
+margin-top:14px;
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+}
+
+/* ===== MOBILE MENU FINAL PERFECT ===== */
+@media (max-width:700px){
+
+/* скрыть ПК меню */
+.desktop-menu{
+display:none !important;
+}
+
+/* бургер */
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* header отступ */
+.ai-header{
+margin-bottom:6px;
+}
+
+/* меню */
+#mobileMenu{
+width:92%;
+margin:0 auto;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+
+overflow:hidden;
+max-height:0;
+padding:0 20px;
+
+transform:scaleY(0.9);
+opacity:0;
+
+transform-origin:top center;
+
+transition:
+max-height .35s ease,
+padding .25s ease,
+margin .25s ease,
+transform .25s ease,
+opacity .25s ease;
+}
+
+/* открыто */
+#mobileMenu.show{
+max-height:520px;
+padding:30px 20px;
+margin-top:8px;
+
+transform:scaleY(1);
+opacity:1;
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+}
+
+@media (max-width:700px){
+
+.desktop-menu{
+display:none !important;
+}
+
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff66;
+cursor:pointer;
+}
+
+/* контейнер */
+#mobileMenu{
+width:92%;
+margin:0 auto;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+
+overflow:hidden;
+
+/* ВАЖНО */
+max-height:0;
+padding:0 20px;
+
+opacity:0;
+
+transition:
+max-height .35s ease,
+padding .3s ease,
+opacity .3s ease;
+}
+
+/* открытие */
+#mobileMenu.show{
+max-height:500px;
+padding:30px 20px;
+margin-top:6px;
+opacity:1;
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+}
+
+/* ===== MOBILE MENU FINAL PERFECT ===== */
+@media (max-width:700px){
+
+.desktop-menu{
+display:none !important;
+}
+
+.ai-burger{
+display:block;
+font-size:26px;
+color:#00ff88;
+cursor:pointer;
+}
+
+/* само меню */
+#mobileMenu{
+width:92%;
+margin:0 auto;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+
+overflow:hidden;
+
+/* закрыто */
+max-height:0;
+padding:0 20px;
+opacity:0;
+
+transition:all .35s ease;
+}
+
+/* открыто */
+#mobileMenu.show{
+max-height:500px;
+padding:30px 20px;
+margin-top:8px;
+opacity:1;
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+}
+
+/* ===============================
+   💣 FORCE MOBILE MENU FIX FINAL
+   перекрывает ВСЁ старое
+=============================== */
+@media (max-width:700px){
+
+/* убить ВСЕ старые меню */
+.ai-menu,
+.mobile-menu{
+display:none !important;
+}
+
+/* оставить только mobileMenu */
+#mobileMenu{
+display:flex !important;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+width:92%;
+margin:0 auto;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 40px rgba(0,255,120,.35);
+
+overflow:hidden;
+
+/* закрыто */
+max-height:0 !important;
+padding:0 20px !important;
+opacity:0 !important;
+
+transform:translateY(-20px) scale(.96);
+transform-origin:top center;
+
+transition:all .35s ease !important;
+}
+
+/* ОТКРЫТО */
+#mobileMenu.show{
+max-height:520px !important;
+padding:32px 20px !important;
+margin-top:8px !important;
+
+opacity:1 !important;
+transform:translateY(0) scale(1) !important;
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff88,#00e676);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 30px rgba(0,255,120,1);
+}
+
+/* бургер */
+.ai-burger{
+display:block !important;
+font-size:26px;
+color:#00ff66;
+cursor:pointer;
+z-index:9999999;
+position:relative;
+}
+
+/* header */
+.ai-header{
+margin-bottom:6px;
+position:relative;
+z-index:9999;
+}
+
+}
+
+/* ===== TOTAL HEADER RESET ===== */
+.ai-menu{
+display:none !important;
+}
+
+.desktop-menu{
+display:none !important;
+}
+
+.mobile-menu{
+display:none !important;
+}
+
+#mobileMenu{
+display:none !important;
+}
+
+/* ===== НОРМАЛЬНЫЙ HEADER ===== */
+.ai-header{
+position:relative;
+z-index:999999;
+}
+
+/* ===== БУРГЕР ВСЕГДА КЛИКАБЕЛЬНЫЙ ===== */
+.ai-burger{
+display:block !important;
+font-size:28px;
+color:#00ff66;
+cursor:pointer;
+z-index:99999999;
+position:relative;
+}
+
+/* ===== МОБИЛЬНОЕ МЕНЮ НОВОЕ ===== */
+#mobileMenu{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+top:95px;
+
+width:92%;
+max-width:420px;
+
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 50px rgba(0,255,120,.45);
+
+padding:30px 20px;
+
+display:none;
+z-index:999999999;
+}
+
+/* открытие */
+#mobileMenu.show{
+display:flex !important;
+animation:menuBoom .25s ease;
+}
+
+@keyframes menuBoom{
+from{opacity:0;transform:translate(-50%,-20px);}
+to{opacity:1;transform:translate(-50%,0);}
+}
+
+/* ссылки */
+#mobileMenu a{
+font-size:22px;
+font-weight:700;
+color:#fff;
+text-decoration:none;
+}
+
+/* кнопка */
+#mobileMenu button{
+margin-top:10px;
+background:linear-gradient(45deg,#00ff66,#00ff66);
+color:#000;
+border:none;
+padding:18px 60px;
+border-radius:16px;
+font-size:20px;
+font-weight:900;
+box-shadow:0 0 40px rgba(0,255,120,1);
+}
+
+/* ===== ПК версия вернуть норм меню ===== */
+@media (min-width:900px){
+
+.ai-burger{
+display:none !important;
+}
+
+.desktop-menu{
+display:flex !important;
+gap:34px;
+align-items:center;
+}
+
+.desktop-menu a{
+color:#cfcfcf;
+text-decoration:none;
+font-size:16px;
+}
+
+.desktop-menu a:hover{
+color:#00ff88;
+}
+
+.desktop-menu button{
+background:#00ff88;
+border:none;
+padding:10px 22px;
+border-radius:12px;
+font-weight:700;
+}
+
+#mobileMenu{
+display:none !important;
+}
+
+}
+/* ============================
+   💣 MOBILE MENU HARD RESET
+   УБИРАЕТ ВСЕ translateX
+============================ */
+@media (max-width:900px){
+
+
+  #mobileMenu{
+    position: relative;
+  
+left:50% !important;
+top:0px !important;
+
+width:95%;
+margin-left:-0%;
+max-width:420px;
+
+background:#050505;
+border-radius:22px;
+border:1px solid rgba(0,255,120,.45);
+box-shadow:0 0 50px rgba(0,255,120,.45);
+
+padding:30px 20px;
+
+display:none;
+
+transform:none !important; /* 💥 убили translateX */
+transition:opacity .25s ease, transform .25s ease;
+opacity:0;
+}
+
+/* ОТКРЫТО */
+#mobileMenu.show{
+display:flex !important;
+flex-direction:column;
+align-items:center;
+gap:22px;
+
+left:50% !important;
+transform:translateX(-50%) scale(1) !important;
+opacity:1;
+}
+
+/* закрытие — просто исчезает */
+#mobileMenu:not(.show){
+left:50% !important;
+transform:translateX(-50%) scale(.95) !important;
+opacity:0;
+}
+
+}
+
+.ai-menu button{
+background:#00ff66;
+border:none;
+padding:10px 22px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+color:#000;
+box-shadow:0 0 18px rgba(0,255,102,.6);
+}
+
+.auth-btn{
+background:linear-gradient(135deg,#00ff66,#00c853);
+border:none;
+padding:16px 40px;
+border-radius:14px;
+font-size:18px;
+font-weight:700;
+color:#000;
+cursor:pointer;
+transition:.3s;
+box-shadow:
+0 0 20px rgba(0,255,102,.7),
+0 0 40px rgba(0,255,102,.4),
+inset 0 0 12px rgba(255,255,255,.2);
+}
+
+/* hover */
+.auth-btn:hover{
+transform:translateY(-2px) scale(1.04);
+box-shadow:
+0 0 25px rgba(0,255,102,.9),
+0 0 60px rgba(0,255,102,.6);
+}
+
+/* нажатие */
+.auth-btn:active{
+transform:scale(.97);
+box-shadow:0 0 10px #00ff66;
+}
+
+/* PROFIT VIP BLOCK */
+.profit-green{
+background:rgba(0,255,120,0.08);
+border:1px solid rgba(0,255,120,0.45);
+box-shadow:
+0 0 35px rgba(0,255,120,0.6),
+inset 0 0 25px rgba(0,255,120,0.15);
+border-radius:22px;
+padding:25px;
+margin-top:18px;
+transition:.3s;
+}
+
+/* текст */
+.profit-green h2{
+color:#00ff88;
+font-size:32px;
+font-weight:900;
+margin-bottom:6px;
+text-shadow:0 0 25px rgba(0,255,120,0.7);
+}
+
+.profit-green p{
+color:#9effc7;
+font-size:14px;
+}
+
+/* мягкое дыхание */
+@keyframes glowProfit{
+0%{box-shadow:0 0 25px rgba(0,255,120,0.4);}
+50%{box-shadow:0 0 60px rgba(0,255,120,0.9);}
+100%{box-shadow:0 0 25px rgba(0,255,120,0.4);}
+}
+
+.profit-green{
+animation:glowProfit 3s infinite ease-in-out;
+}
+
+/* =========================================
+   🔥 FORCE FINAL CTA GLASS FIX
+   ПЕРЕКРЫВАЕТ ВСЕ СТАРЫЕ СТИЛИ
+   ========================================= */
+
+.cta-block,
+.cta-box,
+.start-box,
+.start-now .start-box{
+    
+    background: rgba(56, 53, 53, 0.35) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+
+    border:1px solid rgba(0,255,120,.25) !important;
+    border-radius:28px !important;
+
+    box-shadow:
+    0 0 120px rgba(0,255,120,.08),
+    inset 0 0 40px rgba(0,255,120,.05) !important;
+
+    position:relative;
+    z-index:5;
+}
+
+/* текст */
+.cta-block h2,
+.cta-block h3,
+.cta-box h2{
+color:#fff !important;
+}
+
+/* кнопка яркая */
+.cta-block button,
+.cta-btn,
+.start-btn{
+opacity:1 !important;
+filter:none !important;
+background:linear-gradient(45deg,#00ff66,#00ff88) !important;
+box-shadow:0 0 40px rgba(0,255,120,1) !important;
+}
+
+/* =========================================
+   🔥 PERFECT AI BOOST CTA MOBILE STYLE
+   стекло как весь сайт
+   ========================================= */
+
+.cta-block,
+.start-box,
+.cta-box{
+
+background: rgba(10,15,12,0.45) !important;   /* прозрачность */
+backdrop-filter: blur(18px) !important;
+-webkit-backdrop-filter: blur(18px) !important;
+
+border-radius:26px !important;
+border:1px solid rgba(0,255,120,.35) !important;
+
+box-shadow:
+0 0 80px rgba(0,255,120,.15),
+inset 0 0 30px rgba(0,255,120,.08) !important;
+
+padding:45px 25px !important;
+}
+
+/* текст */
+.cta-block h2,
+.cta-block h3{
+color:#fff !important;
+font-size:26px;
+}
+
+/* кнопка */
+.cta-btn,
+.start-btn{
+background:linear-gradient(45deg,#00ff66,#00ff88) !important;
+color:#003311 !important;
+
+box-shadow:
+0 0 35px rgba(0,255,120,.9),
+0 0 80px rgba(0,255,120,.4) !important;
+
+border:none !important;
+opacity:1 !important;
+filter:none !important;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+
+.cta-block,
+.start-box,
+.cta-box{
+margin-top:40px !important;
+padding:40px 20px !important;
+}
+
+/* кнопка шире */
+.cta-btn,
+.start-btn{
+width:85%;
+max-width:320px;
+font-size:18px;
+padding:18px 0;
+border-radius:16px;
+}
+
+/* текст компакт */
+.cta-block h2{
+font-size:24px;
+line-height:1.3;
+}
+
+}
+
+/* =========================================
+   💎 CTA BLOCK = КАК FOOTER AI BOOST
+   1 в 1 стиль стекла
+   ========================================= */
+
+.cta-block,
+.start-box,
+.cta-box{
+
+background: rgba(20,20,20,0.85) !important; /* тот же серый */
+backdrop-filter: blur(12px) !important;
+-webkit-backdrop-filter: blur(12px) !important;
+
+border-radius:26px !important;
+border:1px solid rgba(255,255,255,0.08) !important;
+
+box-shadow:
+0 0 40px rgba(0,0,0,0.6),
+inset 0 0 30px rgba(255,255,255,0.02) !important;
+
+padding:45px 25px !important;
+}
+
+/* текст */
+.cta-block h2,
+.cta-block h3{
+color:#ffffff !important;
+}
+
+/* кнопка оставить неоновую */
+.cta-btn,
+.start-btn{
+background:linear-gradient(45deg,#00ff66,#00ff88) !important;
+color:#003311 !important;
+
+box-shadow:
+0 0 35px rgba(0,255,120,.9),
+0 0 80px rgba(0,255,120,.4) !important;
+
+opacity:1 !important;
+filter:none !important;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+
+.cta-block,
+.start-box,
+.cta-box{
+margin-top:40px !important;
+padding:40px 20px !important;
+}
+
+.cta-btn,
+.start-btn{
+width:85%;
+max-width:320px;
+padding:18px 0;
+font-size:18px;
+}
+
+}
+
+/* =========================================
+   💎 GLASS BLOCK WITH SNOW BEHIND
+   ========================================= */
+
+.cta-block,
+.start-box,
+.cta-box{
+
+background: rgba(15,15,15,0.55) !important; /* прозрачный */
+backdrop-filter: blur(18px);
+-webkit-backdrop-filter: blur(18px);
+
+border-radius:28px;
+border:1px solid rgba(255,255,255,0.08);
+
+box-shadow:
+0 0 60px rgba(0,0,0,0.6),
+inset 0 0 20px rgba(255,255,255,0.03);
+
+position:relative;
+z-index:5; /* выше снега */
+}
+
+/* =========================================
+   💎 ULTRA GLASS FIX PC + MOBILE
+   перебивает все старые стили
+   ========================================= */
+
+.cta-block,
+.start-box,
+.cta-box{
+
+/* стекло */
+background: rgba(15,15,15,0.45) !important;
+backdrop-filter: blur(20px) !important;
+-webkit-backdrop-filter: blur(20px) !important;
+
+/* рамка */
+border:1px solid rgba(255,255,255,0.08) !important;
+border-radius:28px !important;
+
+/* тень */
+box-shadow:
+0 0 80px rgba(0,0,0,0.7),
+inset 0 0 25px rgba(255,255,255,0.03) !important;
+
+/* поверх снега */
+position:relative;
+z-index:5;
+}
+
+/* УБИВАЕМ ВСЕ старые фоны */
+.cta-block *,
+.start-box *,
+.cta-box *{
+background:none !important;
+}
+
+/* кроме кнопки */
+.cta-block button,
+.start-box button,
+.cta-box button{
+background:linear-gradient(45deg,#00ff66,#00ff66) !important;
+box-shadow:0 0 40px rgba(0,255,120,1) !important;
+}

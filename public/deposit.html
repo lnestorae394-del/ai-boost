@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проверка баланса</title>
+
+<style>
+/* твой дизайн не трогал */
+body{
+margin:0;
+background:#050505;
+font-family:Arial;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
+color:white;
+}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+.box{width:520px;max-width:92%;background:#0b0b0b;padding:40px;border-radius:22px;border:1px solid rgba(0,255,100,0.25);box-shadow:0 0 60px rgba(0,255,100,0.15);position:relative;z-index:2;text-align:center;}
+h1{margin-bottom:15px;font-size:28px;}
+.info{font-size:15px;color:#cfcfcf;line-height:1.6;margin-bottom:25px;}
+.balance{font-size:26px;margin:20px 0;}
+.balance span{background:#ff0000;padding:6px 14px;border-radius:8px;}
+.btn{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;margin-top:15px;background:#00ff66;color:black;}
+.loader{margin-top:20px;display:none;}
+.spin{width:40px;height:40px;border:4px solid rgba(0,255,100,0.2);border-top:4px solid #00ff66;border-radius:50%;margin:0 auto;animation:spin 1s linear infinite;}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.status{margin-top:15px;font-size:14px;opacity:0.8;}
+.toast{position:fixed;top:20px;right:20px;background:#111;padding:14px 20px;border-radius:10px;display:none;z-index:999;font-size:14px;}
+.toast.error{border-left:4px solid red;}
+.toast.success{border-left:4px solid #00ff66;}
+/* shake анимация */
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+}
+
+.shake{
+animation:shake 0.4s;
+}
+/* glow при найденном депозите */
+@keyframes greenGlow{
+0%{box-shadow:0 0 0px #00ff66;}
+50%{box-shadow:0 0 25px #00ff66;}
+100%{box-shadow:0 0 10px #00ff66;}
+}
+.glow{
+animation:greenGlow 1s ease;
+}
+@media (max-width:768px){
+.balance{
+margin-top:25px;
+}
+.balance span{
+display:inline-block;
+margin-top:8px;
+padding:8px 18px;
+font-size:24px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="box">
+<h1>Проверка баланса брокера</h1>
+
+<div class="info">
+Минимальный депозит для активации: <b>$10</b>.<br>
+После пополнения нажмите проверить баланс.
+</div>
+
+<div class="balance">
+Ваш текущий баланс: <span id="amount">$0.00</span>
+</div>
+
+<div class="loader" id="loader">
+<div class="spin"></div>
+</div>
+
+<button class="btn" onclick="checkBalance()">
+Проверить баланс
+</button>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
+authDomain: "ai-boost-10540.firebaseapp.com",
+projectId: "ai-boost-10540",
+storageBucket: "ai-boost-10540.appspot.com",
+messagingSenderId: "1024595520009",
+appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const trader = localStorage.getItem("trader_id");
+
+function showToast(text,type){
+const t=document.getElementById("toast");
+t.innerText=text;
+t.className="toast "+type;
+t.style.display="block";
+setTimeout(()=>{t.style.display="none"},4000);
+}
+
+window.checkBalance = async function(){
+
+if(!trader){
+showToast("Ошибка: trader_id нет","error");
+return;
+}
+
+document.getElementById("loader").style.display="block";
+
+try{
+
+let r = await fetch("/check-deposit?trader_id="+trader);
+let data = await r.json();
+
+if(data.ok){
+
+document.getElementById("amount").innerText="$"+data.amount;
+document.getElementById("amount").style.background="#00ff66";
+const amountEl = document.getElementById("amount");
+amountEl.classList.add("glow");
+
+setTimeout(()=>{
+amountEl.classList.remove("glow");
+},1200);
+
+showToast("Депозит найден: $"+data.amount,"success");
+
+/* 🔥 сохраняем депозит */
+const user = auth.currentUser;
+
+await updateDoc(doc(db,"users",user.uid),{
+hasDeposit:true,
+deposit:data.amount
+});
+
+setTimeout(()=>{
+window.location.href="signals.html";
+},1500);
+
+}else{
+showToast("Депозит не найден или меньше $10","error");
+
+const box = document.querySelector(".box");
+box.classList.add("shake");
+
+setTimeout(()=>{
+box.classList.remove("shake");
+},400);
+
+}
+
+}catch(e){
+showToast("Ошибка сервера","error");
+}
+
+document.getElementById("loader").style.display="none";
+}
+</script>
+
+<script>
+// снег
+const canvas=document.getElementById("snow");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<120;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2,d:Math.random()*1});
+}
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff88";
+ctx.beginPath();
+for(let p of particles){
+ctx.moveTo(p.x,p.y);
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+}
+ctx.fill();
+for(let p of particles){
+p.y+=p.d;
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+}
+}
+setInterval(draw,33);
+</script>
+
+</body>
+</html>

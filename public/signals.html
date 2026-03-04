@@ -1225,52 +1225,6 @@ onlineCount.innerText="online: "+online;
 updateOnlineGlobal();
 setInterval(updateOnlineGlobal,8000);
 
-/* =========================================
-   🔥 AUTOGROW USERS (НАВСЕГДА)
-========================================= */
-
-let lastGrowCheck = 0;
-
-setInterval(async()=>{
-
-try{
-
-const snap = await getDoc(statsRef);
-if(!snap.exists()) return;
-
-let d = snap.data();
-let users = Number(d.users);
-
-if(!users) return;
-
-/* каждые 6-10 минут рост */
-let now = Date.now();
-
-if(now - lastGrowCheck < 300000) return; // защита 5 мин
-lastGrowCheck = now;
-
-/* рост */
-let add = Math.floor(Math.random()*3)+2; // +2-4
-
-users += add;
-
-/* максимум в день */
-if(users > 999999) users = 999999;
-
-/* время */
-let h = new Date().getHours().toString().padStart(2,"0");
-
-await updateDoc(statsRef,{
-users: Math.floor(users),
-time: h+":00"
-});
-
-}catch(e){
-console.log("users grow err",e);
-}
-
-},60000);
-
 /* =========================================================
    🔥 LIVE TRADES GLOBAL (ОДИНАКОВО У ВСЕХ)
    синхрон firebase

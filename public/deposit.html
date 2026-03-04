@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+ <script src="https://telegram.org/js/telegram-web-app.js"></script>   
 <script src="/guard.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -215,7 +216,15 @@ p.x=Math.random()*canvas.width;
 setInterval(draw,33);
 </script>
 
+<script>
 
+const tg = window.Telegram.WebApp;
+
+if(tg){
+    tg.expand();
+}
+
+</script>
 
 </body>
 </html>

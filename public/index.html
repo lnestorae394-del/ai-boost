@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+ <script src="https://telegram.org/js/telegram-web-app.js"></script> 
 <script src="/guard.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -566,6 +567,16 @@ onSnapshot(statsRef,(snap)=>{
 
  localStorage.setItem(CACHE_STATS, JSON.stringify(d));
 });
+
+</script>
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+if(tg){
+    tg.expand();
+}
 
 </script>
 

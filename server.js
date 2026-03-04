@@ -66,7 +66,10 @@ const pages = [
 "rules",
 "deposit",
 "pocket",
-"instruction"
+"instruction",
+"delete",
+"about",
+
 ];
 
 pages.forEach(page=>{
@@ -381,3 +384,7 @@ console.log("stats bot error",e);
 }
 
 },15000);
+
+app.get("/*.html",(req,res)=>{
+res.redirect("/");
+});

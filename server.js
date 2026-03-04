@@ -158,3 +158,23 @@ app.listen(3000,()=>{
 console.log("🚀 SERVER START http://localhost:3000");
 console.log("🧪 DEV MODE:",DEV_MODE);
 });
+
+/* =========================
+   🔒 ЗАЩИТА SIGNALS
+========================= */
+
+app.get("/signals", (req,res)=>{
+
+const trader = req.query.trader_id;
+
+if(!trader || !deposits[trader] || deposits[trader] < 10){
+
+console.log("⛔ попытка открыть signals без доступа");
+
+return res.sendFile(__dirname + "/public/index.html");
+
+}
+
+res.sendFile(__dirname + "/public/signals.html");
+
+});

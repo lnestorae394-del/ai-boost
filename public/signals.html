@@ -499,6 +499,14 @@ pointer-events:none;
 
 <script>
 
+
+const access = localStorage.getItem("ai_boost_access");
+
+if(!access){
+  window.location.href = "/register.html";
+}
+
+
 /* =================================
    SNOW SYSTEM (VIP)
 ================================= */

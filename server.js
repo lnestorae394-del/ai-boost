@@ -319,17 +319,23 @@ pair: currentPair
 
 
 /* =========================
+   BLOCK DIRECT HTML ACCESS
+========================= */
+
+app.get(/\.html$/, (req,res)=>{
+res.redirect("/");
+});
+
+/* =========================
    SERVER
 ========================= */
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT,()=>{
-
 console.log("🚀 SERVER START");
 console.log("PORT:",PORT);
 console.log("🧪 DEV MODE:",DEV_MODE);
-
 });
 
 /* =========================
@@ -385,6 +391,3 @@ console.log("stats bot error",e);
 
 },15000);
 
-app.get("/*.html",(req,res)=>{
-res.redirect("/");
-});

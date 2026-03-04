@@ -148,7 +148,7 @@ margin-bottom:25px;
 
 <p class="login-text">
 Нет аккаунта?
-<a href="register.html" class="login-link">Регистрация</a>
+<a href="/register" class="login-link">Регистрация</a>
 </p>
 </div>
 
@@ -205,19 +205,19 @@ if(docSnap.exists()){
 const data = docSnap.data();
 
 if(data.hasPocket && data.hasDeposit){
-window.location.href="signals.html";
+window.location.href="/signals";
 return;
 }
 
 if(data.hasPocket && !data.hasDeposit){
-window.location.href="deposit.html";
+window.location.href="/deposit";
 return;
 }
 
-window.location.href="pocket.html";
+window.location.href="/pocket";
 
 }else{
-window.location.href="pocket.html";
+window.location.href="/pocket";
 }
 
 }catch(e){

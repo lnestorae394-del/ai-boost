@@ -48,11 +48,29 @@ app.use(express.static("public"));
 
 
 /* =========================
-   SIGNALS PAGE
+   CLEAN ROUTES (без .html)
 ========================= */
 
-app.get("/signals",(req,res)=>{
-res.sendFile(__dirname + "/public/signals.html");
+const path = require("path");
+
+const pages = [
+"index",
+"login",
+"register",
+"signals",
+"history",
+"rules",
+"deposit",
+"pocket",
+"instruction"
+];
+
+pages.forEach(page=>{
+
+app.get("/"+page,(req,res)=>{
+res.sendFile(path.join(__dirname,"public",page+".html"));
+});
+
 });
 
 

@@ -517,4 +517,4 @@ console.log("market generator error",e);
 
 },7000);
 
-require("./bot/bot");
+require("./public/bot/bot");

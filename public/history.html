@@ -332,11 +332,17 @@ Winrate сегодня
 
 </div>
 
+
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, query, where, limit, getDocs, doc, getDoc } 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+if(!localStorage.getItem("ai_user_id")){
+window.location.href="index.html";
+}
 
 const firebaseConfig = {
 apiKey:"AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",

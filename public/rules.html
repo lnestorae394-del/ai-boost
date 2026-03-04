@@ -271,6 +271,11 @@ AI.<span>BOOST</span>
 </div>
 
 <script>
+
+if(!localStorage.getItem("ai_user_id")){
+window.location.href="index.html";
+}
+
 function toggleMenu(){
 document.getElementById("mobileMenu").classList.toggle("show");
 }

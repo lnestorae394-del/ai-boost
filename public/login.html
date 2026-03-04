@@ -183,6 +183,7 @@ errorBox.style.display="block";
 return;
 }
 
+/* loader */
 document.body.innerHTML = `
 <div class="loader-wrap">
 <div class="loader"></div>
@@ -195,39 +196,45 @@ try{
 const userCredential = await signInWithEmailAndPassword(auth,email,password);
 const user = userCredential.user;
 
-/* проверяем статус */
+/* получаем данные */
 const docRef = doc(db,"users",user.uid);
 const docSnap = await getDoc(docRef);
 
-if(docSnap.exists()){
-
-const data = docSnap.data();
-
-if(data.hasPocket && data.hasDeposit){
-window.location.href="signals.html";
+if(!docSnap.exists()){
+window.location.href="pocket.html";
 return;
 }
 
+const data = docSnap.data();
+
+/* есть депозит */
+if(data.hasPocket && data.hasDeposit){
+window.location.href="/signals";
+return;
+}
+
+/* есть pocket но нет депозита */
 if(data.hasPocket && !data.hasDeposit){
 window.location.href="deposit.html";
 return;
 }
 
+/* нет pocket */
 window.location.href="pocket.html";
-
-}else{
-window.location.href="pocket.html";
-}
 
 }catch(e){
+
 location.reload();
+
 setTimeout(()=>{
 document.getElementById("errorBox").innerText="Неверный логин или пароль";
 document.getElementById("errorBox").style.display="block";
 },200);
+
 }
 
 }
+
 </script>
 
 <script>

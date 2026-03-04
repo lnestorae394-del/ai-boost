@@ -142,34 +142,46 @@ if(!traderInput){
 return res.json({ok:false});
 }
 
+/* проверяем RAM */
+const foundRAM = Object.values(registeredUsers).includes(traderInput);
+
+if(foundRAM){
+return res.json({ok:true,trader_id:traderInput});
+}
+
+/* проверяем Firebase */
 try{
 
-const snapshot = await db.collection("users")
+const admin = require("firebase-admin");
+
+if(!admin.apps.length){
+
+admin.initializeApp({
+credential: admin.credential.applicationDefault()
+});
+
+}
+
+const db = admin.firestore();
+
+const snap = await db.collection("users")
 .where("trader_id","==",traderInput)
 .get();
 
-if(!snapshot.empty){
+if(!snap.empty){
 
 return res.json({
 ok:true,
-trader_id: traderInput
-});
-
-}else{
-
-return res.json({
-ok:false
+trader_id:traderInput
 });
 
 }
 
 }catch(e){
-
-console.log("check error", e);
-
-return res.json({ok:false});
-
+console.log("firebase check error");
 }
+
+res.json({ok:false});
 
 });
 

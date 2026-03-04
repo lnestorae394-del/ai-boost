@@ -2,6 +2,31 @@ const express = require("express");
 const app = express();
 
 app.use(express.json());
+app.get("/signals.html",(req,res)=>{
+return res.sendFile(__dirname + "/public/index.html");
+});
+
+/* =========================
+   🔒 БЛОК ПРЯМОГО ДОСТУПА К HTML
+========================= */
+
+app.get("/:page.html", (req,res)=>{
+
+const allowed = ["index"]; // только главная разрешена
+
+const page = req.params.page;
+
+if(!allowed.includes(page)){
+    
+console.log("⛔ прямой доступ к странице:", page);
+
+return res.sendFile(__dirname + "/public/index.html");
+}
+
+res.sendFile(__dirname + "/public/" + page + ".html");
+
+});
+
 app.use(express.static("public"));
 
 /* =========================
@@ -167,13 +192,17 @@ app.get("/signals", (req,res)=>{
 
 const trader = req.query.trader_id;
 
-if(!trader || !deposits[trader] || deposits[trader] < 10){
+const registered = Object.values(registeredUsers).includes(trader);
+const amount = deposits[trader] || 0;
 
-console.log("⛔ попытка открыть signals без доступа");
+if(!registered || amount < 10){
+
+console.log("⛔ попытка открыть signals без доступа:", trader);
 
 return res.sendFile(__dirname + "/public/index.html");
-
 }
+
+console.log("✅ доступ к signals:", trader);
 
 res.sendFile(__dirname + "/public/signals.html");
 

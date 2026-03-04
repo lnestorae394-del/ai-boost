@@ -353,7 +353,7 @@ color:#ff3b3b;
     <div class="center-menu">
       <a href="rules.html">Правила</a>
       <a href="history.html">История сделок</a>
-      <a href="signals.html">Сигналы</a>
+      <a href="/signals"></a>    Сигналы</a>
     </div>
 
     <div class="user-box">
@@ -1163,14 +1163,24 @@ created:serverTimestamp()
    🆔 USER ID
 =================================================== */
 
+
+let authLoaded = false;
+
 onAuthStateChanged(auth, async(user)=>{
 
 if(!user){
+
+if(authLoaded){
 window.location.href="login.html";
+}
+
 return;
 }
 
+authLoaded = true;
+
 try{
+
 const snap = await getDoc(doc(db,"users",user.uid));
 
 if(!snap.exists()){

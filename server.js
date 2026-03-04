@@ -5,7 +5,7 @@ app.use(express.json());
 
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./serviceAccountKey.json"); // ключ Firebase
+const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -14,7 +14,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 /* =========================
-   БАЗА
+   БАЗА (RAM)
 ========================= */
 
 let registeredUsers = {};
@@ -23,12 +23,20 @@ let deposits = {};
 const DEV_MODE = true;
 
 
-
 /* =========================
-   STATIC
+   STATIC ФАЙЛЫ
 ========================= */
 
 app.use(express.static("public"));
+
+
+/* =========================
+   ОТКРЫТИЕ SIGNALS
+========================= */
+
+app.get("/signals",(req,res)=>{
+res.sendFile(__dirname + "/public/signals.html");
+});
 
 
 /* =========================
@@ -58,7 +66,7 @@ res.send("OK");
 
 
 /* =========================
-   DEV DEPOSIT
+   DEV DEPOSIT (тест)
 ========================= */
 
 app.get("/dev-deposit",(req,res)=>{
@@ -117,29 +125,21 @@ if(!traderInput){
 return res.json({ok:false});
 }
 
-/* проверяем RAM */
+/* проверка RAM */
 const foundRAM = Object.values(registeredUsers).includes(traderInput);
 
 if(foundRAM){
-return res.json({ok:true,trader_id:traderInput});
+return res.json({
+ok:true,
+trader_id:traderInput
+});
 }
 
-/* проверяем Firebase */
+/* проверка Firebase */
 try{
 
-const admin = require("firebase-admin");
-
-if(!admin.apps.length){
-
-admin.initializeApp({
-credential: admin.credential.applicationDefault()
-});
-
-}
-
-const db = admin.firestore();
-
-const snap = await db.collection("users")
+const snap = await db
+.collection("users")
 .where("trader_id","==",traderInput)
 .get();
 
@@ -153,12 +153,13 @@ trader_id:traderInput
 }
 
 }catch(e){
-console.log("firebase check error");
+console.log("firebase check error",e);
 }
 
 res.json({ok:false});
 
 });
+
 
 /* =========================
    ПРОВЕРКА ДЕПОЗИТА
@@ -219,6 +220,10 @@ if(currentPrice < 1) currentPrice = 1.1;
 setInterval(movePrice,900);
 
 
+/* =========================
+   ПОЛУЧЕНИЕ ЦЕНЫ
+========================= */
+
 app.get("/price",(req,res)=>{
 res.json({
 price: currentPrice,
@@ -226,6 +231,10 @@ pair: currentPair
 });
 });
 
+
+/* =========================
+   ENTRY
+========================= */
 
 app.get("/get-entry",(req,res)=>{
 
@@ -250,9 +259,12 @@ pair: currentPair
    SERVER
 ========================= */
 
-app.listen(3000,()=>{
+const PORT = process.env.PORT || 3000;
 
-console.log("🚀 SERVER START http://localhost:3000");
+app.listen(PORT,()=>{
+
+console.log("🚀 SERVER START");
+console.log("PORT:",PORT);
 console.log("🧪 DEV MODE:",DEV_MODE);
 
 });

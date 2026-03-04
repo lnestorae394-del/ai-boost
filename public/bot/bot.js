@@ -7,10 +7,8 @@ bot.start(async (ctx) => {
 await ctx.replyWithVideo(
 "BAACAgIAAxkBAAMJaaiYS2XbNyULVCs4MaBRvGrwQVUAAmCsAALna0BJjEIHjSEGSnA6BA",
 {
-caption:`90% трейдеров теряют деньги.
-AI BOOST анализирует рынок 
-и показывает движение в реальном времени.
-Увеличьте свои шансы на успешную торговлю с помощью AI BOOST 👇!
+    caption:`
+Увеличьте свои шансы на успешную торговлю с помощью AI BOOST! 👇
 `,
 reply_markup:{
 inline_keyboard:[

@@ -1033,7 +1033,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
 getFirestore, doc, getDoc, onSnapshot, updateDoc,
-collection, addDoc, serverTimestamp
+collection, addDoc, serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ================= FIREBASE INIT ================= */
@@ -1288,7 +1288,13 @@ if(cachedFeed){
  }catch{}
 }
 
+let lastRender = 0;
+
 onSnapshot(liveRef,(snap)=>{
+
+if(Date.now() - lastRender < 2000) return;
+lastRender = Date.now();
+
 if(!snap.exists()) return;
 
 let data = snap.data();
@@ -1296,8 +1302,6 @@ let arr = data.list || [];
 
 renderFeed(arr);
 
-/* ⚡ кеш */
-localStorage.setItem(CACHE_FEED, JSON.stringify(arr));
 });
 
 /* рендер */

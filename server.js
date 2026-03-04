@@ -391,3 +391,118 @@ console.log("stats bot error",e);
 
 },15000);
 
+app.get("/ping",(req,res)=>{
+res.send("ok");
+});
+
+/* =========================
+   LIVE MARKET GENERATOR
+========================= */
+
+setInterval(async()=>{
+
+try{
+
+if(!db) return;
+
+const statsRef = db.collection("stats").doc("global");
+const liveRef = db.collection("liveTrades").doc("stream");
+
+const statsSnap = await statsRef.get();
+const liveSnap = await liveRef.get();
+
+if(!statsSnap.exists) return;
+
+let stats = statsSnap.data();
+
+let profit = Number(stats.profit || 100000);
+let win = Number(stats.win || 70);
+let users = Number(stats.users || 4000);
+
+let arr = liveSnap.exists ? (liveSnap.data().list || []) : [];
+
+/* пары */
+let pairs = ["EUR/USD","GBP/USD","BTC","ETH","GOLD","USD/JPY"];
+let pair = pairs[Math.floor(Math.random()*pairs.length)];
+
+/* ID */
+let id = "ID 12****" + Math.floor(100 + Math.random()*900);
+
+/* сумма */
+let amount;
+
+if(Math.random()<0.7){
+amount = Math.floor(Math.random()*250)+40;
+}else if(Math.random()<0.9){
+amount = Math.floor(Math.random()*900)+200;
+}else{
+amount = Math.floor(Math.random()*3000)+900;
+}
+
+/* win / loss */
+let isWin = Math.random()>0.27;
+let result = isWin ? "win":"loss";
+
+/* PROFIT */
+if(isWin){
+profit += amount;
+}else{
+profit -= Math.floor(amount*0.4);
+}
+
+if(profit < 100000) profit = 100000;
+
+/* winrate */
+if(Math.random()>0.6){
+win += Math.random()>0.5 ? 1 : -1;
+if(win>87) win=87;
+if(win<63) win=63;
+}
+
+/* users */
+if(Math.random()>0.7) users+=1;
+if(Math.random()<0.2) users-=1;
+
+if(users<1000) users=1000;
+
+/* push trade */
+arr.push({
+id,
+pair,
+amount,
+result,
+time: Date.now()
+});
+
+if(arr.length>40){
+arr = arr.slice(arr.length-40);
+}
+
+/* время */
+let h = new Date().getHours().toString().padStart(2,"0");
+
+/* запись */
+await liveRef.set({list:arr});
+
+await statsRef.update({
+profit: Math.floor(profit),
+users: Math.floor(users),
+win: Math.floor(win),
+loss: 100-Math.floor(win),
+time: h+":00"
+});
+
+console.log("📈 trade generated");
+
+}catch(e){
+console.log("market generator error",e);
+}
+
+},7000);
+
+setInterval(()=>{
+
+fetch("https://ai-boost.onrender.com/ping")
+.catch(()=>{});
+
+},600000);

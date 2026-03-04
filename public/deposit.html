@@ -114,7 +114,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const trader = localStorage.getItem("trader_id");
+const trader = localStorage.getItem("ai_user_id");
 
 function showToast(text,type){
 const t=document.getElementById("toast");
@@ -152,13 +152,18 @@ amountEl.classList.remove("glow");
 showToast("Депозит найден: $"+data.amount,"success");
 
 /* 🔥 сохраняем депозит */
+
 const user = auth.currentUser;
+
+if(!user){
+showToast("Ошибка авторизации","error");
+return;
+}
 
 await updateDoc(doc(db,"users",user.uid),{
 hasDeposit:true,
 deposit:data.amount
 });
-
 localStorage.setItem("ai_boost_access","true");
 
 setTimeout(()=>{

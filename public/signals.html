@@ -1161,22 +1161,13 @@ created:serverTimestamp()
 
 
 
-/* ===================================================
-   🆔 USER ID
-=================================================== */
 
-
-let authChecked = false;
+/* ================= USER ID ================= */
 
 onAuthStateChanged(auth, async (user) => {
 
-if(!user && authChecked){
-window.location.href="login.html";
-return;
-}
-
 if(!user){
-authChecked = true;
+window.location.href="login.html";
 return;
 }
 
@@ -1192,38 +1183,16 @@ return;
 const data = snap.data();
 const id = data.trader_id || "нет";
 
-userID.innerText = id;
+const el = document.getElementById("userID");
+if(el) el.innerText = id;
 
-/* кеш */
 localStorage.setItem("ai_user_id", id);
 
 }catch(e){
-console.log("user load error",e);
+console.log("user load error", e);
 }
 
 });
-
-try{
-
-const snap = await getDoc(doc(db,"users",user.uid));
-
-if(!snap.exists()){
-userID.innerText="нет";
-return;
-}
-
-const data = snap.data();
-const id = data.trader_id || "нет";
-
-userID.innerText = id;
-
-/* кеш */
-localStorage.setItem("ai_user_id", id);
-
-}catch{
-userID.innerText="нет";
-}
-
 
 /* ===================================================
    🌐 ONLINE FAKE (общий)

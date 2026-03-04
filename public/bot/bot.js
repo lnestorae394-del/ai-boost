@@ -23,3 +23,7 @@ web_app:{ url:"https://ai-boost.onrender.com/register"}
 });
 
 bot.launch();
+
+bot.on("message", (ctx) => {
+console.log(ctx.message.video);
+});

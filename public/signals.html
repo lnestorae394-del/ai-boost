@@ -499,46 +499,6 @@ pointer-events:none;
 
 <script>
 
-onAuthStateChanged(auth, async(user)=>{
-
-if(!user){
-window.location.href="login.html";
-return;
-}
-
-try{
-
-const snap = await getDoc(doc(db,"users",user.uid));
-
-if(!snap.exists()){
-window.location.href="register.html";
-return;
-}
-
-const data = snap.data();
-
-/* не прошел pocket */
-if(!data.hasPocket){
-window.location.href="pocket.html";
-return;
-}
-
-/* не сделал депозит */
-if(!data.hasDeposit){
-window.location.href="deposit.html";
-return;
-}
-
-/* доступ к сигналам */
-console.log("ACCESS GRANTED");
-
-}catch(e){
-console.log("auth check error");
-}
-
-});
-
-
 /* =================================
    SNOW SYSTEM (VIP)
 ================================= */

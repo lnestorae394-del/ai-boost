@@ -2,11 +2,18 @@
 
 const page = location.pathname;
 
-/* если открывают любой HTML напрямую */
+/* проверяем если открыт html напрямую */
 if(page.endsWith(".html")){
+
+const fromSite = document.referrer.includes(location.host);
+
+/* если человек пришел не с сайта → значит ввод вручную */
+if(!fromSite){
 
 location.replace("/");
 return;
+
+}
 
 }
 
@@ -15,18 +22,7 @@ window.addEventListener("pageshow", function(e){
 
 if(e.persisted){
 
-location.replace("/");
-
-}
-
-});
-
-/* защита devtools cache */
-window.addEventListener("popstate", function(){
-
-if(location.pathname.endsWith(".html")){
-
-location.replace("/");
+location.reload();
 
 }
 

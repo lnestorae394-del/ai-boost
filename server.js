@@ -14,44 +14,6 @@ const DEV_MODE = true;
 
 
 /* =========================
-   🔒 БЛОК ПРЯМОГО ДОСТУПА К HTML
-========================= */
-
-app.get("/:page.html",(req,res)=>{
-
-const page = req.params.page;
-
-const allowedPages = [
-"login",
-"register",
-"deposit",
-"history",
-"instruction",
-"rules"
-];
-
-const referer = req.get("referer");
-
-if(!referer || !referer.includes(req.get("host"))){
-
-console.log("⛔ прямой вход:",page);
-
-return res.sendFile(__dirname + "/public/index.html");
-
-}
-
-if(allowedPages.includes(page)){
-
-return res.sendFile(__dirname + "/public/" + page + ".html");
-
-}
-
-return res.sendFile(__dirname + "/public/index.html");
-
-});
-
-
-/* =========================
    🔒 ЗАЩИТА SIGNALS
 ========================= */
 
@@ -64,7 +26,7 @@ const amount = deposits[trader] || 0;
 
 if(!registered || amount < 10){
 
-console.log("⛔ попытка открыть signals без доступа:",trader);
+console.log("⛔ попытка открыть signals:",trader);
 
 return res.sendFile(__dirname + "/public/index.html");
 
@@ -78,7 +40,7 @@ res.sendFile(__dirname + "/public/signals.html");
 
 
 /* =========================
-   STATIC ФАЙЛЫ
+   STATIC
 ========================= */
 
 app.use(express.static("public"));
@@ -149,7 +111,7 @@ if(trader && amount){
 
 deposits[trader] = amount;
 
-console.log("💰 реальный депозит:",trader,"+",amount);
+console.log("💰 депозит:",trader,"+",amount);
 
 }
 
@@ -202,7 +164,7 @@ const amount = parseFloat(deposits[trader] || 0);
 
 if(amount >= 10){
 
-console.log("✅ доступ:",trader,amount);
+console.log("✅ депозит есть:",trader,amount);
 
 res.json({
 ok:true,
@@ -211,7 +173,7 @@ amount:amount
 
 }else{
 
-console.log("⛔ нет депозита:",trader);
+console.log("⛔ депозита нет:",trader);
 
 res.json({
 ok:false,

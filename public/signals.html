@@ -499,10 +499,6 @@ pointer-events:none;
 
 <script>
 
-
-
-const access = localStorage.getItem("ai_boost_access");
-
 onAuthStateChanged(auth, async(user)=>{
 
 if(!user){
@@ -521,17 +517,23 @@ return;
 
 const data = snap.data();
 
-/* если нет депозита */
+/* не прошел pocket */
+if(!data.hasPocket){
+window.location.href="pocket.html";
+return;
+}
+
+/* не сделал депозит */
 if(!data.hasDeposit){
 window.location.href="deposit.html";
 return;
 }
 
-/* доступ есть */
-console.log("доступ к сигналам разрешен");
+/* доступ к сигналам */
+console.log("ACCESS GRANTED");
 
 }catch(e){
-console.log("auth error");
+console.log("auth check error");
 }
 
 });

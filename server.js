@@ -23,31 +23,6 @@ let deposits = {};
 const DEV_MODE = true;
 
 
-/* =========================
-   🔒 ЗАЩИТА SIGNALS
-========================= */
-
-app.get("/signals",(req,res)=>{
-
-const trader = req.query.trader_id;
-
-const registered = Object.values(registeredUsers).includes(trader);
-const amount = deposits[trader] || 0;
-
-if(!registered || amount < 10){
-
-console.log("⛔ попытка открыть signals:",trader);
-
-return res.sendFile(__dirname + "/public/index.html");
-
-}
-
-console.log("✅ доступ к signals:",trader);
-
-res.sendFile(__dirname + "/public/signals.html");
-
-});
-
 
 /* =========================
    STATIC

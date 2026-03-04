@@ -373,7 +373,8 @@ win += Math.random()>0.5 ? 1 : -1;
 if(win>87) win=87;
 if(win<63) win=63;
 
-let hour = new Date().getHours().toString().padStart(2,"0");
+const kyiv = new Date().toLocaleString("en-US",{timeZone:"Europe/Kyiv"});
+let hour = new Date(kyiv).getHours().toString().padStart(2,"0");
 
 await ref.update({
 users: Math.floor(users),

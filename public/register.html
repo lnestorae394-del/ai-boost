@@ -178,17 +178,15 @@ try{
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 const user = userCredential.user;
 
+/* СОЗДАЕМ ЮЗЕРА В БАЗЕ */
 await setDoc(doc(db, "users", user.uid), {
 email: email,
-trader_id: Math.floor(100000 + Math.random()*900000).toString(),
 hasPocket: false,
 hasDeposit: false
 });
 
 /* перекидываем строго на pocket */
-setTimeout(()=>{
 window.location.href="pocket.html";
-},500);
 
 }catch(e){
 alert(e.message);

@@ -353,7 +353,7 @@ color:#ff3b3b;
     <div class="center-menu">
       <a href="rules.html">Правила</a>
       <a href="history.html">История сделок</a>
-      <a href="/signals">Сигналы</a>
+      <a href="signals.html">Сигналы</a>
     </div>
 
     <div class="user-box">
@@ -498,8 +498,6 @@ pointer-events:none;
 </div>
 
 <script>
-
-
 
 /* =================================
    SNOW SYSTEM (VIP)
@@ -1161,10 +1159,11 @@ created:serverTimestamp()
 
 
 
+/* ===================================================
+   🆔 USER ID
+=================================================== */
 
-/* ================= USER ID ================= */
-
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async(user)=>{
 
 if(!user){
 window.location.href="login.html";
@@ -1172,24 +1171,23 @@ return;
 }
 
 try{
-
 const snap = await getDoc(doc(db,"users",user.uid));
 
 if(!snap.exists()){
-window.location.href="login.html";
+userID.innerText="нет";
 return;
 }
 
 const data = snap.data();
 const id = data.trader_id || "нет";
 
-const el = document.getElementById("userID");
-if(el) el.innerText = id;
+userID.innerText = id;
 
+/* кеш */
 localStorage.setItem("ai_user_id", id);
 
-}catch(e){
-console.log("user load error", e);
+}catch{
+userID.innerText="нет";
 }
 
 });

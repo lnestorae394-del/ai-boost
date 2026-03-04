@@ -5,7 +5,7 @@ const bot = new Telegraf("8512877378:AAGStXnDV1Gif93KQfkHvIadB77Go9pVKdw");
 bot.start(async (ctx) => {
 
 await ctx.replyWithVideo(
-"FILE_ID",
+"BAACAgIAAxkBAAMJaaiYS2XbNyULVCs4MaBRvGrwQVUAAmCsAALna0BJjEIHjSEGSnA6BA",
 {
 caption:`Инструкция AI BOOST`,
 reply_markup:{

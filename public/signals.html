@@ -1498,6 +1498,10 @@ if(tg){
     tg.expand();
 }
 
+setInterval(()=>{
+fetch("/ping").catch(()=>{});
+},20000);
+
 </script>
 
 </body>

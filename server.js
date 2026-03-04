@@ -403,7 +403,10 @@ setInterval(async()=>{
 
 try{
 
-if(!db) return;
+if(!db){
+console.log("firebase not ready");
+return;
+}
 
 const statsRef = db.collection("stats").doc("global");
 const liveRef = db.collection("liveTrades").doc("stream");
@@ -482,7 +485,7 @@ arr = arr.slice(arr.length-40);
 let h = new Date().getHours().toString().padStart(2,"0");
 
 /* запись */
-await liveRef.set({list:arr});
+await liveRef.update({list:arr});
 
 await statsRef.update({
 profit: Math.floor(profit),
@@ -500,9 +503,3 @@ console.log("market generator error",e);
 
 },7000);
 
-setInterval(()=>{
-
-fetch("https://ai-boost.onrender.com/ping")
-.catch(()=>{});
-
-},600000);

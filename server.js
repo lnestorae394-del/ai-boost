@@ -482,7 +482,13 @@ arr = arr.slice(arr.length-40);
 }
 
 /* время */
-let h = new Date().getHours().toString().padStart(2,"0");
+let now = new Date();
+
+let h = now.toLocaleString("en-GB", {
+ timeZone: "Europe/Kyiv",
+ hour: "2-digit",
+ hour12: false
+});
 
 /* запись */
 await liveRef.update({list:arr});

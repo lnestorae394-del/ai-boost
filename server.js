@@ -44,7 +44,11 @@ const DEV_MODE = true;
    STATIC
 ========================= */
 
-app.use(express.static("public"));
+app.set("etag", true);
+
+app.use(express.static("public", {
+  maxAge: "6h"
+}));
 
 
 /* =========================
@@ -324,3 +328,56 @@ console.log("PORT:",PORT);
 console.log("🧪 DEV MODE:",DEV_MODE);
 
 });
+
+/* =========================
+   FIREBASE AUTO STATS BOT
+========================= */
+
+setInterval(async()=>{
+
+try{
+
+const ref = db.collection("stats").doc("global");
+const snap = await ref.get();
+
+if(!snap.exists) return;
+
+let d = snap.data();
+
+let users = Number(d.users || 4000);
+let profit = Number(d.profit || 900000);
+let win = Number(d.win || 74);
+
+/* рост пользователей */
+if(Math.random() > 0.6){
+users += 1;
+}
+
+/* профит */
+profit += Math.floor(Math.random()*500);
+
+/* winrate немного колеблется */
+if(Math.random()>0.8){
+win += Math.random()>0.5 ? 1 : -1;
+}
+
+if(win>87) win=87;
+if(win<63) win=63;
+
+let hour = new Date().getHours().toString().padStart(2,"0");
+
+await ref.update({
+users: Math.floor(users),
+profit: Math.floor(profit),
+win: Math.floor(win),
+loss: 100-Math.floor(win),
+time: hour+":00"
+});
+
+console.log("stats updated");
+
+}catch(e){
+console.log("stats bot error",e);
+}
+
+},15000);

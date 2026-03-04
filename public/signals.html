@@ -1325,8 +1325,17 @@ box.appendChild(div);
 }
 
 
+const MASTER_TAB = "ai_boost_master_tab";
+
+if(localStorage.getItem(MASTER_TAB)){
+console.log("generator already running");
+}else{
+
+localStorage.setItem(MASTER_TAB,"1");
+
 
 setInterval(async()=>{
+
 
 try{
 
@@ -1404,9 +1413,9 @@ await updateDoc(statsRef,{
 console.log("market error",e);
 }
 
-},3000);
+},7000);
 
-
+}
 </script>
 
 <!-- ===== ВВОД СДЕЛКИ ===== -->

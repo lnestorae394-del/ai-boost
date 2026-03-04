@@ -3,6 +3,16 @@ const app = express();
 
 app.use(express.json());
 
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./serviceAccountKey.json"); // ключ Firebase
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+
 /* =========================
    БАЗА
 ========================= */
@@ -124,29 +134,44 @@ res.send("OK");
    ПРОВЕРКА ID
 ========================= */
 
-app.get("/check",(req,res)=>{
+app.get("/check", async (req,res)=>{
 
 const traderInput = req.query.trader_id;
 
-const found = Object.values(registeredUsers).includes(traderInput);
+if(!traderInput){
+return res.json({ok:false});
+}
 
-if(found){
+try{
 
-res.json({
+const snapshot = await db.collection("users")
+.where("trader_id","==",traderInput)
+.get();
+
+if(!snapshot.empty){
+
+return res.json({
 ok:true,
-trader_id:traderInput
+trader_id: traderInput
 });
 
 }else{
 
-res.json({
+return res.json({
 ok:false
 });
 
 }
 
-});
+}catch(e){
 
+console.log("check error", e);
+
+return res.json({ok:false});
+
+}
+
+});
 
 /* =========================
    ПРОВЕРКА ДЕПОЗИТА

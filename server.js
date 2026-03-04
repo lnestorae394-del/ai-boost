@@ -400,6 +400,13 @@ res.send("ok");
    LIVE MARKET GENERATOR
 ========================= */
 
+if(global.aiBoostStarted){
+console.log("generator already running");
+return;
+}
+
+global.aiBoostStarted = true;
+
 setInterval(async()=>{
 
 try{

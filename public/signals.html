@@ -499,9 +499,6 @@ pointer-events:none;
 
 <script>
 
-if(!localStorage.getItem("ai_user_id")){
-window.location.href="index.html";
-}
 
 
 /* =================================
@@ -1169,10 +1166,17 @@ created:serverTimestamp()
 =================================================== */
 
 
+let authChecked = false;
+
 onAuthStateChanged(auth, async (user) => {
 
+if(!user && authChecked){
+window.location.href="login.html";
+return;
+}
+
 if(!user){
-window.location.href = "login.html";
+authChecked = true;
 return;
 }
 

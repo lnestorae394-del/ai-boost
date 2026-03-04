@@ -3,18 +3,35 @@ const app = express();
 
 app.use(express.json());
 
+/* =========================
+   FIREBASE
+========================= */
+
 const admin = require("firebase-admin");
+
+let db = null;
+
+try{
 
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+credential: admin.credential.cert(serviceAccount)
 });
 
-const db = admin.firestore();
+db = admin.firestore();
+
+console.log("🔥 Firebase connected");
+
+}catch(e){
+
+console.log("⚠️ Firebase disabled (serviceAccountKey.json not found)");
+
+}
+
 
 /* =========================
-   БАЗА (RAM)
+   RAM БАЗА
 ========================= */
 
 let registeredUsers = {};
@@ -24,14 +41,14 @@ const DEV_MODE = true;
 
 
 /* =========================
-   STATIC ФАЙЛЫ
+   STATIC
 ========================= */
 
 app.use(express.static("public"));
 
 
 /* =========================
-   ОТКРЫТИЕ SIGNALS
+   SIGNALS PAGE
 ========================= */
 
 app.get("/signals",(req,res)=>{
@@ -40,7 +57,7 @@ res.sendFile(__dirname + "/public/signals.html");
 
 
 /* =========================
-   РЕГА POSTBACK
+   POSTBACK РЕГА
 ========================= */
 
 app.get("/postback",(req,res)=>{
@@ -66,7 +83,7 @@ res.send("OK");
 
 
 /* =========================
-   DEV DEPOSIT (тест)
+   DEV DEPOSIT
 ========================= */
 
 app.get("/dev-deposit",(req,res)=>{
@@ -125,7 +142,7 @@ if(!traderInput){
 return res.json({ok:false});
 }
 
-/* проверка RAM */
+/* RAM */
 const foundRAM = Object.values(registeredUsers).includes(traderInput);
 
 if(foundRAM){
@@ -135,7 +152,9 @@ trader_id:traderInput
 });
 }
 
-/* проверка Firebase */
+/* FIREBASE */
+if(db){
+
 try{
 
 const snap = await db
@@ -154,6 +173,8 @@ trader_id:traderInput
 
 }catch(e){
 console.log("firebase check error",e);
+}
+
 }
 
 res.json({ok:false});
@@ -229,6 +250,23 @@ res.json({
 price: currentPrice,
 pair: currentPair
 });
+});
+
+
+/* =========================
+   SET PAIR (для signals)
+========================= */
+
+app.get("/setpair",(req,res)=>{
+
+const pair = req.query.pair;
+
+if(pair){
+currentPair = pair;
+}
+
+res.json({ok:true});
+
 });
 
 

@@ -6,6 +6,7 @@ app.use(express.json());
 /* =========================
    БАЗА
 ========================= */
+
 let registeredUsers = {};
 let deposits = {};
 
@@ -16,21 +17,36 @@ const DEV_MODE = true;
    🔒 БЛОК ПРЯМОГО ДОСТУПА К HTML
 ========================= */
 
-app.get("/:page.html", (req,res)=>{
-
-const allowed = ["index"]; 
+app.get("/:page.html",(req,res)=>{
 
 const page = req.params.page;
 
-if(!allowed.includes(page)){
+const allowedPages = [
+"login",
+"register",
+"deposit",
+"history",
+"instruction",
+"rules"
+];
 
-console.log("⛔ попытка открыть страницу:", page);
+const referer = req.get("referer");
+
+if(!referer || !referer.includes(req.get("host"))){
+
+console.log("⛔ прямой вход:",page);
 
 return res.sendFile(__dirname + "/public/index.html");
 
 }
 
-res.sendFile(__dirname + "/public/index.html");
+if(allowedPages.includes(page)){
+
+return res.sendFile(__dirname + "/public/" + page + ".html");
+
+}
+
+return res.sendFile(__dirname + "/public/index.html");
 
 });
 
@@ -39,7 +55,7 @@ res.sendFile(__dirname + "/public/index.html");
    🔒 ЗАЩИТА SIGNALS
 ========================= */
 
-app.get("/signals", (req,res)=>{
+app.get("/signals",(req,res)=>{
 
 const trader = req.query.trader_id;
 
@@ -48,13 +64,13 @@ const amount = deposits[trader] || 0;
 
 if(!registered || amount < 10){
 
-console.log("⛔ попытка открыть signals без доступа:", trader);
+console.log("⛔ попытка открыть signals без доступа:",trader);
 
 return res.sendFile(__dirname + "/public/index.html");
 
 }
 
-console.log("✅ доступ к signals:", trader);
+console.log("✅ доступ к signals:",trader);
 
 res.sendFile(__dirname + "/public/signals.html");
 
@@ -108,8 +124,11 @@ const trader = req.query.trader_id;
 const amount = parseFloat(req.query.amount || 25);
 
 if(trader){
+
 deposits[trader] = amount;
+
 console.log("🧪 TEST депозит:",trader,"+",amount);
+
 }
 
 res.send("ok");
@@ -127,8 +146,11 @@ const trader = req.query.trader_id;
 const amount = parseFloat(req.query.amount || 0);
 
 if(trader && amount){
+
 deposits[trader] = amount;
+
 console.log("💰 реальный депозит:",trader,"+",amount);
+
 }
 
 res.send("OK");
@@ -143,12 +165,22 @@ res.send("OK");
 app.get("/check",(req,res)=>{
 
 const traderInput = req.query.trader_id;
+
 const found = Object.values(registeredUsers).includes(traderInput);
 
 if(found){
-res.json({ok:true,trader_id:traderInput});
+
+res.json({
+ok:true,
+trader_id:traderInput
+});
+
 }else{
-res.json({ok:false});
+
+res.json({
+ok:false
+});
+
 }
 
 });
@@ -214,7 +246,10 @@ setInterval(movePrice,900);
 
 
 app.get("/price",(req,res)=>{
-res.json({price: currentPrice,pair: currentPair});
+res.json({
+price: currentPrice,
+pair: currentPair
+});
 });
 
 
@@ -227,7 +262,10 @@ setTimeout(()=>{
 let entry = currentPrice;
 entry += (Math.random()-0.5)*0.00015;
 
-res.json({entry: entry,pair: currentPair});
+res.json({
+entry: entry,
+pair: currentPair
+});
 
 },wait);
 

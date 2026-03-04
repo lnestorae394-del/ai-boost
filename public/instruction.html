@@ -395,8 +395,8 @@ object-fit:contain;
 <!-- VIDEO (вставишь свой mp4) -->
 <div class="video-box">
 
-<video autoplay muted loop playsinline controls>
-<source src="/video/instruction.mp4" type="video/mp4">
+<video controls preload="auto" playsinline>
+<source src="img/video/instruction.mp4" type="video/mp4">
 Ваш браузер не поддерживает видео.
 </video>
 
@@ -531,10 +531,8 @@ console.log("id error");
 function toggleMenu(){
 document.getElementById("mobileMenu").classList.toggle("show");
 }
-</script>
 
 </script>
-
 
 
 </body>

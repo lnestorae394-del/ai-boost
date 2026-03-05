@@ -130,6 +130,17 @@ html, body{
 height:100%;
 }
 
+.error{
+display:none;
+background:#ff2b2b;
+color:#fff;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+text-align:center;
+font-size:14px;
+}
+
 </style>
 </head>
 
@@ -139,6 +150,7 @@ height:100%;
 
 <div class="box">
 <h1>Регистрация</h1>
+<div class="error" id="errorBox"></div>
 
 <input id="email" type="email" placeholder="Email">
 <input id="password" type="password" placeholder="Пароль">
@@ -173,9 +185,13 @@ window.registerUser = async function(){
 
 const email = document.getElementById("email").value.trim();
 const password = document.getElementById("password").value.trim();
+const errorBox = document.getElementById("errorBox");
+
+errorBox.style.display="none";
 
 if(!email || !password){
-alert("Введите email и пароль");
+errorBox.innerText="Введите email и пароль";
+errorBox.style.display="block";
 return;
 }
 
@@ -191,19 +207,42 @@ try{
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 const user = userCredential.user;
 
-/* СОЗДАЕМ ЮЗЕРА В БАЗЕ */
 await setDoc(doc(db, "users", user.uid), {
 email: email,
 hasPocket: false,
 hasDeposit: false
 });
 
-/* перекидываем строго на pocket */
 window.location.href="/pocket";
 
 }catch(e){
-alert(e.message);
+
 location.reload();
+
+setTimeout(()=>{
+
+const errorBox = document.getElementById("errorBox");
+
+if(e.code==="auth/email-already-in-use"){
+errorBox.innerText="Аккаунт уже зарегистрирован";
+}
+
+else if(e.code==="auth/invalid-email"){
+errorBox.innerText="Некорректный email";
+}
+
+else if(e.code==="auth/weak-password"){
+errorBox.innerText="Пароль минимум 6 символов";
+}
+
+else{
+errorBox.innerText="Ошибка регистрации";
+}
+
+errorBox.style.display="block";
+
+},200);
+
 }
 
 }

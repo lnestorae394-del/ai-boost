@@ -233,14 +233,40 @@ window.location.href="/pocket";
 }
 
 }catch(e){
+
 location.reload();
+
 setTimeout(()=>{
-document.getElementById("errorBox").innerText="Неверный логин или пароль";
-document.getElementById("errorBox").style.display="block";
+
+const errorBox = document.getElementById("errorBox");
+
+if(e.code === "auth/user-not-found"){
+errorBox.innerText="Аккаунт не зарегистрирован";
+setTimeout(()=>{
+window.location.href="/register";
+},1500);
+}
+
+else if(e.code === "auth/wrong-password"){
+errorBox.innerText="Неверный пароль";
+}
+
+else if(e.code === "auth/invalid-email"){
+errorBox.innerText="Некорректный email";
+}
+
+else{
+errorBox.innerText="Ошибка входа";
+}
+
+errorBox.style.display="block";
+
 },200);
+
 }
 
 }
+
 </script>
 
 <script>

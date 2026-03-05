@@ -37,6 +37,9 @@ console.log("⚠️ Firebase disabled (serviceAccountKey.json not found)");
    RAM БАЗА
 ========================= */
 
+let registeredUsers = {};
+let deposits = {};
+
 /* =========================
    STATS LOAD
 ========================= */

@@ -1069,36 +1069,28 @@ const statsRef = doc(db,"stats","global");
 const CACHE_STATS = "ai_boost_stats_cache";
 
 const cachedStats = localStorage.getItem(CACHE_STATS);
-if(cachedStats){
- try{
-  const d = JSON.parse(cachedStats);
 
-  vipUsers.textContent = d.users?.toLocaleString() || "--";
-  vipWin.textContent = d.win + "%";
-  vipLoss.textContent = d.loss + "%";
-  vipProfit.textContent = "$" + d.profit?.toLocaleString();
-  vipTime.textContent = d.time || "--";
+async function loadStats(){
 
- }catch{}
+try{
+
+let res = await fetch("/stats?nocache=" + Date.now());
+let d = await res.json();
+
+vipUsers.innerText = d.users.toLocaleString();
+vipWin.innerText = d.win + "%";
+vipLoss.innerText = d.loss + "%";
+vipProfit.innerText = "$" + d.profit.toLocaleString();
+vipTime.innerText = d.time;
+
+}catch(e){
+console.log("stats load error");
 }
 
-/* мгновенная загрузка */
-(async()=>{
- try{
-   const snap = await getDoc(statsRef);
-   if(!snap.exists()) return;
-   const d = snap.data();
+}
 
-   vipUsers.textContent = d.users.toLocaleString();
-   vipWin.textContent = d.win + "%";
-   vipLoss.textContent = d.loss + "%";
-   vipProfit.textContent = "$" + d.profit.toLocaleString();
-   vipTime.textContent = d.time;
-
- }catch(e){
-   console.log("init load error");
- }
-})();
+loadStats();
+setInterval(loadStats,8000);
 
 async function loadStats(){
 
@@ -1251,19 +1243,23 @@ if(cachedFeed){
 
 let lastRender = 0;
 
-onSnapshot(liveRef,(snap)=>{
+async function loadLive(){
 
-if(Date.now() - lastRender < 2000) return;
-lastRender = Date.now();
+try{
 
-if(!snap.exists()) return;
-
-let data = snap.data();
-let arr = data.list || [];
+let res = await fetch("/live?"+Date.now());
+let arr = await res.json();
 
 renderFeed(arr);
 
-});
+}catch(e){
+console.log("live load error");
+}
+
+}
+
+loadLive();
+setInterval(loadLive,3000);
 
 /* рендер */
 function renderFeed(arr){

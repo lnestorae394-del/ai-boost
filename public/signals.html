@@ -1100,20 +1100,27 @@ if(cachedStats){
  }
 })();
 
-onSnapshot(statsRef,(snap)=>{
-if(!snap.exists()) return;
+async function loadStats(){
 
-let d=snap.data();
+try{
 
-vipUsers.innerText=d.users.toLocaleString();
-vipWin.innerText=d.win+"%";
-vipLoss.innerText=d.loss+"%";
-vipProfit.innerText="$"+d.profit.toLocaleString();
-vipTime.innerText=d.time;
+let res = await fetch("/stats");
+let d = await res.json();
 
-/* ⚡ кеш */
-localStorage.setItem(CACHE_STATS, JSON.stringify(d));
-});
+vipUsers.innerText = d.users.toLocaleString();
+vipWin.innerText = d.win + "%";
+vipLoss.innerText = d.loss + "%";
+vipProfit.innerText = "$" + d.profit.toLocaleString();
+vipTime.innerText = d.time;
+
+}catch(e){
+console.log("stats load error");
+}
+
+}
+
+loadStats();
+setInterval(loadStats,10000);
 
 /* ===================================================
    💰 ЗАПИСЬ СДЕЛОК

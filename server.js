@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const fs = require("fs");
 
 app.use(express.json());
 
@@ -33,6 +34,31 @@ console.log("⚠️ Firebase disabled (serviceAccountKey.json not found)");
 /* =========================
    RAM БАЗА
 ========================= */
+
+/* =========================
+   STATS LOAD
+========================= */
+
+let stats = {
+users: 4000,
+profit: 900000,
+win: 74,
+loss: 26,
+time: "12:00"
+};
+
+try{
+const data = fs.readFileSync("stats.json","utf8");
+stats = JSON.parse(data);
+console.log("📊 stats loaded");
+}catch(e){
+console.log("⚠️ stats.json not found, creating...");
+fs.writeFileSync("stats.json", JSON.stringify(stats,null,2));
+}
+
+function saveStats(){
+fs.writeFileSync("stats.json", JSON.stringify(stats,null,2));
+}
 
 let registeredUsers = {};
 let deposits = {};
@@ -339,59 +365,41 @@ console.log("🧪 DEV MODE:",DEV_MODE);
 });
 
 /* =========================
-   FIREBASE AUTO STATS BOT
+   LOCAL STATS GENERATOR
 ========================= */
 
-setInterval(async()=>{
+setInterval(()=>{
 
-try{
-
-const ref = db.collection("stats").doc("global");
-const snap = await ref.get();
-
-if(!snap.exists) return;
-
-let d = snap.data();
-
-let users = Number(d.users || 4000);
-let profit = Number(d.profit || 900000);
-let win = Number(d.win || 74);
-
-/* рост пользователей */
+/* users */
 if(Math.random() > 0.6){
-users += 1;
+stats.users += 1;
 }
 
-/* профит */
-profit += Math.floor(Math.random()*500);
+/* profit */
+stats.profit += Math.floor(Math.random()*500);
 
-/* winrate немного колеблется */
+/* winrate */
 if(Math.random()>0.8){
-win += Math.random()>0.5 ? 1 : -1;
+stats.win += Math.random()>0.5 ? 1 : -1;
 }
 
-if(win>87) win=87;
-if(win<63) win=63;
+if(stats.win>87) stats.win=87;
+if(stats.win<63) stats.win=63;
 
-const kyiv = new Date().toLocaleString("en-US",{timeZone:"Europe/Kyiv"});
+stats.loss = 100 - stats.win;
+
+/* время Киев */
+let kyiv = new Date().toLocaleString("en-US",{timeZone:"Europe/Kyiv"});
 let hour = new Date(kyiv).getHours().toString().padStart(2,"0");
 
-await ref.update({
-users: Math.floor(users),
-profit: Math.floor(profit),
-win: Math.floor(win),
-loss: 100-Math.floor(win),
-time: hour+":00"
-});
+stats.time = hour+":00";
 
-console.log("stats updated");
+/* сохраняем */
+saveStats();
 
-}catch(e){
-console.log("stats bot error",e);
-}
+console.log("📈 stats updated");
 
 },15000);
-
 app.get("/ping",(req,res)=>{
 res.send("ok");
 });
@@ -518,3 +526,7 @@ console.log("market generator error",e);
 },7000);
 
 require("./public/bot/bot");
+
+app.get("/stats",(req,res)=>{
+res.json(stats);
+});

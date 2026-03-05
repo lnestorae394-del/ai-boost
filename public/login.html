@@ -220,6 +220,7 @@ if(docSnap.exists()){
 const data = docSnap.data();
 
 if(data.hasPocket && data.hasDeposit){
+sessionStorage.setItem("auth","1");
 window.location.href="/signals";
 return;
 }

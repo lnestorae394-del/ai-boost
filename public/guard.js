@@ -2,25 +2,25 @@
 
 const page = location.pathname;
 
+/* страницы которые нельзя открывать без входа */
 const protectedPages = [
 "/signals",
+"/signals.html",
 "/flash",
+"/flash.html",
 "/deposit",
-"/pocket",
-"/rules",
-"/history"
+"/pocket"
 ];
 
-/* проверяем есть ли сессия */
-const session = sessionStorage.getItem("site_access");
+const session = sessionStorage.getItem("auth");
 
-/* если открывают защищенную страницу */
+/* если нет сессии */
 if(protectedPages.includes(page) && !session){
-location.replace("/");
+location.replace("/login");
 return;
 }
 
-/* защита кнопки назад */
+/* защита от кэша назад */
 window.addEventListener("pageshow", function(e){
 if(e.persisted){
 location.reload();

@@ -517,9 +517,17 @@ generateTrade();
 require("./public/bot/bot");
 
 app.get("/stats",(req,res)=>{
-res.json(stats);
-});
 
+try{
+const data = fs.readFileSync("stats.json","utf8");
+stats = JSON.parse(data);
+}catch(e){
+console.log("stats reload error", e);
+}
+
+res.json(stats);
+
+});
 app.get("/live",(req,res)=>{
 res.json(liveTrades);
 });

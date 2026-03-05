@@ -209,11 +209,15 @@ try{
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 const user = userCredential.user;
 
+try{
 await setDoc(doc(db,"users",user.uid),{
 email:email,
 hasPocket:false,
 hasDeposit:false
-});
+},{merge:true});
+}catch(err){
+console.log("Firestore write skipped");
+}
 
 window.location.href="/pocket";
 

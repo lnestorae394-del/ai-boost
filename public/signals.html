@@ -1074,7 +1074,7 @@ async function loadStats(){
 
 try{
 
-let res = await fetch("/stats?nocache=" + Date.now());
+let res = await fetch("/stats?"+Date.now());
 let d = await res.json();
 
 vipUsers.innerText = d.users.toLocaleString();
@@ -1090,29 +1090,7 @@ console.log("stats load error");
 }
 
 loadStats();
-setInterval(loadStats,8000);
-
-async function loadStats(){
-
-try{
-
-let res = await fetch("/stats");
-let d = await res.json();
-
-vipUsers.innerText = d.users.toLocaleString();
-vipWin.innerText = d.win + "%";
-vipLoss.innerText = d.loss + "%";
-vipProfit.innerText = "$" + d.profit.toLocaleString();
-vipTime.innerText = d.time;
-
-}catch(e){
-console.log("stats load error");
-}
-
-}
-
-loadStats();
-setInterval(loadStats,10000);
+setInterval(loadStats,6000);
 
 /* ===================================================
    💰 ЗАПИСЬ СДЕЛОК

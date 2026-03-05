@@ -414,23 +414,28 @@ let pairs = ["EUR/USD","GBP/USD","BTC","ETH","GOLD","USD/JPY"];
 
 let pair = pairs[Math.floor(Math.random()*pairs.length)];
 
-let id = "ID " + (100000 + Math.floor(Math.random()*900000));
+let end = Math.floor(100 + Math.random()*900);
+
+let id = "ID 12****" + end;
 
 /* сумма сделки */
 let amount;
 
 let r = Math.random();
 
-if(r < 0.6){
-amount = Math.floor(Math.random()*150)+30;
+if(r < 0.65){
+amount = Math.floor(Math.random()*120)+40;
 }else if(r < 0.9){
-amount = Math.floor(Math.random()*800)+200;
+amount = Math.floor(Math.random()*600)+200;
+}else if(r < 0.98){
+amount = Math.floor(Math.random()*1200)+600;
 }else{
-amount = Math.floor(Math.random()*3000)+1000;
+amount = Math.floor(Math.random()*2000)+2000;
 }
 
 /* win / loss */
-let isWin = Math.random() > 0.28;
+let winrateTarget = 0.63 + Math.random()*0.26;
+let isWin = Math.random() < winrateTarget;
 
 let result = isWin ? "win":"loss";
 
@@ -439,7 +444,7 @@ let result = isWin ? "win":"loss";
 totalTrades++;
 
 if(isWin){
-stats.profit += amount;
+stats.profit += Math.floor(amount*0.7);
 stats.win++;
 }else{
 stats.profit -= Math.floor(amount*0.5);
@@ -460,8 +465,8 @@ stats.loss = 100-winrate;
 
 /* users растут */
 
-if(Math.random()>0.7){
-stats.users += Math.floor(Math.random()*3);
+if(Math.random()>0.85){
+stats.users += Math.floor(Math.random()*2)+1;
 }
 
 /* время */

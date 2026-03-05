@@ -160,7 +160,7 @@ font-size:14px;
 <input id="email" type="email" placeholder="Email">
 <input id="password" type="password" placeholder="Пароль">
 
-<button onclick="registerUser()">Создать аккаунт</button>
+<button type="button" onclick="registerUser()">Создать аккаунт</button>
 
 <p class="login-text">
 Уже есть аккаунт?
@@ -200,6 +200,7 @@ errorBox.style.display="block";
 return;
 }
 
+/* показать loader */
 document.getElementById("loader").style.display="flex";
 
 try{
@@ -207,26 +208,25 @@ try{
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 const user = userCredential.user;
 
-await setDoc(doc(db, "users", user.uid), {
-email: email,
-hasPocket: false,
-hasDeposit: false
+await setDoc(doc(db,"users",user.uid),{
+email:email,
+hasPocket:false,
+hasDeposit:false
 });
 
 window.location.href="/pocket";
 
 }catch(e){
+
+/* убрать loader */
 document.getElementById("loader").style.display="none";
-const errorBox = document.getElementById("errorBox");
 
 if(e.code==="auth/email-already-in-use"){
 errorBox.innerText="Аккаунт уже зарегистрирован";
 }
-
 else if(e.code==="auth/invalid-email"){
 errorBox.innerText="Некорректный email";
 }
-
 else if(e.code==="auth/weak-password"){
 errorBox.innerText="Пароль минимум 6 символов";
 }
@@ -235,7 +235,9 @@ else{
 errorBox.innerText="Ошибка регистрации";
 }
 
-errorBox.style.display="block";}
+errorBox.style.display="block";
+
+}
 
 }
 

@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const fs = require("fs");
+const simpleGit = require("simple-git");
+const git = simpleGit();
 
 app.use(express.json());
 
@@ -509,3 +511,27 @@ res.json(stats);
 app.get("/live",(req,res)=>{
 res.json(liveTrades);
 });
+
+/* =========================
+   AUTO SAVE STATS TO GIT
+========================= */
+
+setInterval(async()=>{
+
+try{
+
+await git.add("stats.json");
+
+await git.commit("auto stats update");
+
+await git.push();
+
+console.log("📦 stats saved to git");
+
+}catch(e){
+
+console.log("git save error", e.message);
+
+}
+
+},300000);

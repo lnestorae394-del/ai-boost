@@ -1,5 +1,14 @@
 const express = require("express");
 const app = express();
+
+process.on("uncaughtException", err => {
+console.error("UNCAUGHT EXCEPTION", err);
+});
+
+process.on("unhandledRejection", err => {
+console.error("UNHANDLED REJECTION", err);
+});
+
 const fs = require("fs");
 const simpleGit = require("simple-git");
 const git = simpleGit();
@@ -513,6 +522,20 @@ res.json(stats);
 
 app.get("/live",(req,res)=>{
 res.json(liveTrades);
+});
+
+/* =========================
+   GLOBAL ERROR HANDLER
+========================= */
+
+app.use((err, req, res, next) => {
+
+console.error("SERVER ERROR:", err);
+
+res.status(500).json({
+error: "server_error"
+});
+
 });
 
 /* =========================

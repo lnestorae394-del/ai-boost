@@ -146,6 +146,11 @@ height:100%;
 
 <body>
 
+    <div id="loader" class="loader-wrap" style="display:none;">
+<div class="loader"></div>
+Проверка доступа...
+</div>
+
 <canvas id="snow"></canvas>
 
 <div class="box">
@@ -156,7 +161,8 @@ height:100%;
 <input id="email" type="email" placeholder="Email">
 <input id="password" type="password" placeholder="Пароль">
 
-<button onclick="loginUser()">Войти</button>
+<button type="button" onclick="loginUser()">Войти</button>
+
 
 <p class="login-text">
 Нет аккаунта?
@@ -196,12 +202,8 @@ errorBox.style.display="block";
 return;
 }
 
-document.body.innerHTML = `
-<div class="loader-wrap">
-<div class="loader"></div>
-Проверка доступа...
-</div>
-`;
+/* показываем loader */
+document.getElementById("loader").style.display="flex";
 
 try{
 
@@ -234,17 +236,12 @@ window.location.href="/pocket";
 
 }catch(e){
 
-location.reload();
-
-setTimeout(()=>{
-
-const errorBox = document.getElementById("errorBox");
+/* убираем loader */
+document.getElementById("loader").style.display="none";
 
 if(e.code === "auth/user-not-found"){
 errorBox.innerText="Аккаунт не зарегистрирован";
-setTimeout(()=>{
-window.location.href="/register";
-},1500);
+
 }
 
 else if(e.code === "auth/wrong-password"){
@@ -259,9 +256,10 @@ else{
 errorBox.innerText="Ошибка входа";
 }
 
+
 errorBox.style.display="block";
 
-},200);
+
 
 }
 

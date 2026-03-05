@@ -130,74 +130,10 @@ html, body{
 height:100%;
 }
 
-
-#errorPopup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.75);
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
-opacity:0;
-pointer-events:none;
-transition:.25s;
-}
-
-#errorPopup.show{
-opacity:1;
-pointer-events:auto;
-}
-
-.errorBox{
-width:340px;
-background:#0b0b0b;
-border:1px solid rgba(0,255,120,.35);
-border-radius:18px;
-padding:24px;
-text-align:center;
-box-shadow:0 0 40px rgba(0,255,120,.15);
-}
-
-.errorTitle{
-color:#00ff88;
-font-size:20px;
-font-weight:700;
-margin-bottom:10px;
-}
-
-#errorText{
-color:#aaa;
-font-size:14px;
-line-height:1.4;
-margin-bottom:18px;
-}
-
-.errorBox button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-background:#00ff88;
-color:#000;
-font-weight:700;
-cursor:pointer;
-}
-
 </style>
 </head>
 
 <body>
-
-<div id="loader" class="loader-wrap" style="display:none;">
-<div class="loader"></div>
-Создание аккаунта...
-</div>
-
-
 
 <canvas id="snow"></canvas>
 
@@ -243,7 +179,13 @@ alert("Введите email и пароль");
 return;
 }
 
-document.getElementById("loader").style.display = "flex";
+document.body.innerHTML = `
+<div class="loader-wrap">
+<div class="loader"></div>
+Создание аккаунта...
+</div>
+`;
+
 try{
 
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
@@ -260,48 +202,8 @@ hasDeposit: false
 window.location.href="/pocket";
 
 }catch(e){
-
-/* СКРЫВАЕМ LOADER */
-document.getElementById("loader").style.display = "none";  
-
-let msg = "Ошибка регистрации";
-
-if(e.code === "auth/email-already-in-use"){
-msg = "Этот email уже зарегистрирован. Попробуйте войти.";
-}
-
-if(e.code === "auth/invalid-email"){
-msg = "Введите корректный email.";
-}
-
-if(e.code === "auth/weak-password"){
-msg = "Пароль должен быть минимум 6 символов.";
-}
-
-if(e.code === "auth/network-request-failed"){
-msg = "Ошибка соединения с сервером.";
-}
-
-/* убираем loader */
-document.body.innerHTML = `
-<canvas id="snow"></canvas>
-<div class="box">
-<h1>Регистрация</h1>
-
-<input id="email" type="email" placeholder="Email">
-<input id="password" type="password" placeholder="Пароль">
-
-<button onclick="registerUser()">Создать аккаунт</button>
-
-<p class="login-text">
-Уже есть аккаунт?
-<a href="/login" class="login-link">Войти</a>
-</p>
-</div>
-`;
-
-showError(msg);
-
+alert(e.message);
+location.reload();
 }
 
 }
@@ -355,20 +257,7 @@ if(tg){
     tg.expand();
 }
 
-function showError(text){
-
-document.getElementById("errorText").innerText = text;
-document.getElementById("errorPopup").classList.add("show");
-
-}
-
-function closeError(){
-document.getElementById("errorPopup").classList.remove("show");
-}
-
 </script>
-
-
 
 </body>
 </html>

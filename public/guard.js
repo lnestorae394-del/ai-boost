@@ -2,46 +2,29 @@
 
 const page = location.pathname;
 
-/* страницы которые нельзя открывать напрямую */
 const protectedPages = [
 "/signals",
 "/flash",
 "/deposit",
-"/pocket"
+"/pocket",
+"/rules",
+"/history"
 ];
 
-/* если человек открыл защищенную страницу */
-if(protectedPages.includes(page)){
+/* проверяем есть ли сессия */
+const session = sessionStorage.getItem("site_access");
 
-const fromSite = document.referrer.includes(location.host);
-
-/* если пришел не с сайта */
-if(!fromSite){
+/* если открывают защищенную страницу */
+if(protectedPages.includes(page) && !session){
 location.replace("/");
 return;
-}
-
-}
-
-/* если открыт html напрямую */
-if(page.endsWith(".html")){
-
-const fromSite = document.referrer.includes(location.host);
-
-if(!fromSite){
-location.replace("/");
-return;
-}
-
 }
 
 /* защита кнопки назад */
 window.addEventListener("pageshow", function(e){
-
 if(e.persisted){
 location.reload();
 }
-
 });
 
 })();

@@ -509,65 +509,72 @@ menu.classList.remove("show");
 
 </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script>
 
-const firebaseConfig = {
-apiKey:"AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
-authDomain:"ai-boost-10540.firebaseapp.com",
-projectId:"ai-boost-10540",
-storageBucket:"ai-boost-10540.appspot.com",
-messagingSenderId:"1024595520009",
-appId:"1:1024595520009:web:650af4d5912ef70da5e6d8"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const statsRef = doc(db,"stats","global");
+/* ================================
+   LIVE STATS (SERVER)
+================================ */
 
 const CACHE_STATS = "ai_boost_stats_cache";
 
-/* ⚡ мгновенный кеш */
-const cachedStats = localStorage.getItem(CACHE_STATS);
+/* загрузка статистики */
+async function loadStats(){
 
-if(cachedStats){
- try{
-   const d = JSON.parse(cachedStats);
+try{
 
-   const u = document.getElementById("homeUsers");
-   const w = document.getElementById("homeWin");
-   const l = document.getElementById("homeLoss");
-   const p = document.getElementById("homeProfit");
+let res = await fetch("/stats?nocache="+Date.now());
+let d = await res.json();
 
-   if(u) u.innerText = d.users?.toLocaleString() || "0";
-   if(w) w.innerText = d.win + "%";
-   if(l) l.innerText = d.loss + "%";
-   if(p) p.innerText = "$" + d.profit?.toLocaleString();
+const u = document.getElementById("homeUsers");
+const w = document.getElementById("homeWin");
+const l = document.getElementById("homeLoss");
+const p = document.getElementById("homeProfit");
 
- }catch(e){}
+if(u) u.innerText = d.users.toLocaleString();
+if(w) w.innerText = d.win + "%";
+if(l) l.innerText = d.loss + "%";
+if(p) p.innerText = "$" + d.profit.toLocaleString();
+
+/* кеш */
+localStorage.setItem(CACHE_STATS, JSON.stringify(d));
+
+}catch(e){
+console.log("stats load error");
 }
 
-/* 🔥 live обновление */
-onSnapshot(statsRef,(snap)=>{
- if(!snap.exists()) return;
+}
 
- let d = snap.data();
+/* мгновенный кеш */
 
- const u = document.getElementById("homeUsers");
- const w = document.getElementById("homeWin");
- const l = document.getElementById("homeLoss");
- const p = document.getElementById("homeProfit");
+const cached = localStorage.getItem(CACHE_STATS);
 
- if(u) u.innerText = d.users.toLocaleString();
- if(w) w.innerText = d.win + "%";
- if(l) l.innerText = d.loss + "%";
- if(p) p.innerText = "$" + d.profit.toLocaleString();
+if(cached){
+try{
 
- localStorage.setItem(CACHE_STATS, JSON.stringify(d));
-});
+let d = JSON.parse(cached);
 
+const u = document.getElementById("homeUsers");
+const w = document.getElementById("homeWin");
+const l = document.getElementById("homeLoss");
+const p = document.getElementById("homeProfit");
+
+if(u) u.innerText = d.users.toLocaleString();
+if(w) w.innerText = d.win + "%";
+if(l) l.innerText = d.loss + "%";
+if(p) p.innerText = "$" + d.profit.toLocaleString();
+
+}catch(e){}
+}
+
+/* загрузка */
+
+loadStats();
+
+/* обновление каждые 10 сек */
+
+setInterval(loadStats,10000);
+
+</script>
 </script>
 
 <script>

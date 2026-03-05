@@ -57,11 +57,22 @@ fs.writeFileSync("stats.json", JSON.stringify(stats,null,2));
 }
 
 function saveStats(){
-fs.writeFileSync("stats.json", JSON.stringify(stats,null,2));
+try{
+
+const tmp = "stats.tmp";
+
+fs.writeFileSync(tmp, JSON.stringify(stats,null,2));
+fs.renameSync(tmp, "stats.json");
+
+}catch(e){
+console.log("stats save error", e);
+}
 }
 
 let liveTrades = [];
 let totalTrades = 0;
+
+let winChance = 0.74;
 
 const DEV_MODE = true;
 
@@ -365,62 +376,50 @@ console.log("🧪 DEV MODE:",DEV_MODE);
 });
 
 /* =========================
-   LOCAL STATS GENERATOR
-========================= */
-
-setInterval(()=>{
-
-/* users */
-if(Math.random() > 0.6){
-stats.users += 1;
-}
-
-/* profit */
-stats.profit += Math.floor(Math.random()*500);
-
-/* winrate */
-if(Math.random()>0.8){
-stats.win += Math.random()>0.5 ? 1 : -1;
-}
-
-if(stats.win>87) stats.win=87;
-if(stats.win<63) stats.win=63;
-
-stats.loss = 100 - stats.win;
-
-/* время Киев */
-let kyiv = new Date().toLocaleString("en-US",{timeZone:"Europe/Kyiv"});
-let hour = new Date(kyiv).getHours().toString().padStart(2,"0");
-
-stats.time = hour+":00";
-
-/* сохраняем */
-saveStats();
-
-console.log("📈 stats updated");
-
-},15000);
-app.get("/ping",(req,res)=>{
-res.send("ok");
-});
-
-/* =========================
    REAL MARKET SIMULATOR
 ========================= */
 
-setInterval(()=>{
+function getMarketDelay(){
+
+let hour = new Date().getHours();
+
+/* ночь */
+if(hour >=0 && hour <7){
+return 7000 + Math.random()*4000;
+}
+
+/* утро */
+if(hour >=7 && hour <12){
+return 4000 + Math.random()*2000;
+}
+
+/* день */
+if(hour >=12 && hour <18){
+return 2000 + Math.random()*1000;
+}
+
+/* вечер пик */
+if(hour >=18 && hour <23){
+return 1200 + Math.random()*600;
+}
+
+/* поздний вечер */
+return 3000 + Math.random()*1500;
+
+}
+
+function generateTrade(){
 
 let pairs = ["EUR/USD","GBP/USD","BTC","ETH","GOLD","USD/JPY"];
 
 let pair = pairs[Math.floor(Math.random()*pairs.length)];
 
 let end = Math.floor(100 + Math.random()*900);
-
 let id = "ID 12****" + end;
 
-/* сумма сделки */
-let amount;
+/* суммы */
 
+let amount;
 let r = Math.random();
 
 if(r < 0.65){
@@ -433,40 +432,30 @@ amount = Math.floor(Math.random()*1200)+600;
 amount = Math.floor(Math.random()*2000)+2000;
 }
 
-/* win / loss */
-let winrateTarget = 0.63 + Math.random()*0.26;
-let isWin = Math.random() < winrateTarget;
+/* плавный винрейт */
 
+if(Math.random()>0.9){
+winChance += (Math.random()-0.5)*0.02;
+}
+
+if(winChance > 0.89) winChance = 0.89;
+if(winChance < 0.63) winChance = 0.63;
+
+let isWin = Math.random() < winChance;
 let result = isWin ? "win":"loss";
 
-/* обновляем статистику */
-
-totalTrades++;
+/* обновляем прибыль */
 
 if(isWin){
 stats.profit += Math.floor(amount*0.7);
-stats.win++;
 }else{
-stats.profit -= Math.floor(amount*0.5);
-stats.loss++;
+stats.profit -= Math.floor(amount*0.3);
 }
 
-/* winrate */
+/* рост пользователей */
 
-let total = stats.win + stats.loss;
-
-let winrate = Math.floor((stats.win/total)*100);
-
-if(winrate > 87) winrate = 87;
-if(winrate < 63) winrate = 63;
-
-stats.win = winrate;
-stats.loss = 100-winrate;
-
-/* users растут */
-
-if(Math.random()>0.85){
-stats.users += Math.floor(Math.random()*2)+1;
+if(Math.random()>0.92){
+stats.users += 1;
 }
 
 /* время */
@@ -476,7 +465,7 @@ let hour = new Date(kyiv).getHours().toString().padStart(2,"0");
 
 stats.time = hour+":00";
 
-/* push trade */
+/* сделки */
 
 liveTrades.push({
 id,
@@ -486,17 +475,30 @@ result,
 time:Date.now()
 });
 
-if(liveTrades.length > 40){
+if(liveTrades.length>40){
 liveTrades = liveTrades.slice(-40);
 }
 
-/* сохраняем */
+/* winrate */
+
+stats.win = Math.round(winChance*100);
+stats.loss = 100 - stats.win;
+
+/* сохранить */
 
 saveStats();
 
 console.log("📈 trade generated");
 
-},4000);
+/* следующая сделка */
+
+setTimeout(generateTrade, getMarketDelay());
+
+}
+
+/* запуск рынка */
+
+generateTrade();
 
 require("./public/bot/bot");
 

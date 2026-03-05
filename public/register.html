@@ -146,6 +146,11 @@ font-size:14px;
 
 <body>
 
+<div id="loader" class="loader-wrap" style="display:none;">
+<div class="loader"></div>
+Создание аккаунта...
+</div>
+
 <canvas id="snow"></canvas>
 
 <div class="box">
@@ -195,12 +200,7 @@ errorBox.style.display="block";
 return;
 }
 
-document.body.innerHTML = `
-<div class="loader-wrap">
-<div class="loader"></div>
-Создание аккаунта...
-</div>
-`;
+document.getElementById("loader").style.display="flex";
 
 try{
 
@@ -216,11 +216,7 @@ hasDeposit: false
 window.location.href="/pocket";
 
 }catch(e){
-
-location.reload();
-
-setTimeout(()=>{
-
+document.getElementById("loader").style.display="none";
 const errorBox = document.getElementById("errorBox");
 
 if(e.code==="auth/email-already-in-use"){
@@ -239,13 +235,11 @@ else{
 errorBox.innerText="Ошибка регистрации";
 }
 
-errorBox.style.display="block";
-
-},200);
+errorBox.style.display="block";}
 
 }
 
-}
+
 </script>
 
 <script>

@@ -187,6 +187,17 @@ font-weight:700;
 cursor:pointer;
 }
 
+.error{
+display:none;
+background:#ff2b2b;
+color:#fff;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+text-align:center;
+font-size:14px;
+}
+
 </style>
 </head>
 
@@ -203,6 +214,8 @@ cursor:pointer;
 
 <div class="box">
 <h1>Регистрация</h1>
+
+<div class="error" id="errorBox"></div>
 
 <input id="email" type="email" placeholder="Email">
 <input id="password" type="password" placeholder="Пароль">
@@ -233,78 +246,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+
 window.registerUser = async function(){
+const errorBox = document.getElementById("errorBox");
+errorBox.innerText = msg;
+errorBox.style.display = "block";
 
-const email = document.getElementById("email").value.trim();
-const password = document.getElementById("password").value.trim();
-
-if(!email || !password){
-alert("Введите email и пароль");
-return;
-}
-
-document.getElementById("loader").style.display = "flex";
-try{
-
-const userCredential = await createUserWithEmailAndPassword(auth,email,password);
-const user = userCredential.user;
-
-/* СОЗДАЕМ ЮЗЕРА В БАЗЕ */
-await setDoc(doc(db, "users", user.uid), {
-email: email,
-hasPocket: false,
-hasDeposit: false
-});
-
-/* перекидываем строго на pocket */
-window.location.href="/pocket";
-
-}catch(e){
-
-/* СКРЫВАЕМ LOADER */
-document.getElementById("loader").style.display = "none";  
-
-let msg = "Ошибка регистрации";
-
-if(e.code === "auth/email-already-in-use"){
-msg = "Этот email уже зарегистрирован. Попробуйте войти.";
-}
-
-if(e.code === "auth/invalid-email"){
-msg = "Введите корректный email.";
-}
-
-if(e.code === "auth/weak-password"){
-msg = "Пароль должен быть минимум 6 символов.";
-}
-
-if(e.code === "auth/network-request-failed"){
-msg = "Ошибка соединения с сервером.";
 }
 
 /* убираем loader */
-document.body.innerHTML = `
-<canvas id="snow"></canvas>
-<div class="box">
-<h1>Регистрация</h1>
+document.getElementById("loader").style.display = "none";
 
-<input id="email" type="email" placeholder="Email">
-<input id="password" type="password" placeholder="Пароль">
-
-<button onclick="registerUser()">Создать аккаунт</button>
-
-<p class="login-text">
-Уже есть аккаунт?
-<a href="/login" class="login-link">Войти</a>
-</p>
-</div>
-`;
 
 showError(msg);
 
-}
 
-}
 </script>
 
 <script>

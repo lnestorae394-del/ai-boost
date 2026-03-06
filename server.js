@@ -54,12 +54,11 @@ let deposits = {};
 ========================= */
 
 let stats = 
-{"users":5589,
-"profit":4093652,
-"win":64,
-"loss":36,
-"time":
-"10:00"}
+{"users":7420,
+"profit":8165828,
+"win":81,
+"loss":19,
+"time":"00:00"}
 
 
 try{
@@ -594,3 +593,32 @@ console.log("git save error", e.message);
 }
 
 },300000);
+
+app.get("/postback",(req,res)=>{
+
+const trader =
+req.query.trader_id ||
+req.query.sub1 ||
+req.query.click_id ||
+req.query.cid;
+
+const amount =
+parseFloat(
+req.query.amount ||
+req.query.sum ||
+req.query.payout ||
+req.query.profit ||
+0
+);
+
+if(trader && amount > 0){
+
+deposits[trader] = amount;
+
+console.log("💰 DEPOSIT:", trader, amount);
+
+}
+
+res.send("OK");
+
+});

@@ -116,7 +116,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const trader = localStorage.getItem("trader_id");
+let trader = localStorage.getItem("trader_id");
+
+/* если нет в localStorage — берем из URL */
+if(!trader){
+const params = new URLSearchParams(window.location.search);
+trader =
+params.get("trader_id") ||
+params.get("click_id") ||
+params.get("sub1") ||
+params.get("subid") ||
+params.get("cid");
+
+if(trader){
+localStorage.setItem("trader_id", trader);
+}
+}
 
 function showToast(text,type){
 const t=document.getElementById("toast");

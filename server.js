@@ -133,56 +133,6 @@ res.sendFile(path.join(__dirname,"public",page+".html"));
 
 
 /* =========================
-   POSTBACK РЕГА
-========================= */
-
-app.get("/postback",(req,res)=>{
-
-const click = req.query.click_id || req.query.clickid;
-const trader = req.query.trader_id || req.query.sub1;
-const amount = parseFloat(req.query.amount || req.query.sum || req.query.payout || 0);
-
-if(click && trader){
-
-registeredUsers[click] = trader;
-
-if(!deposits[trader]){
-deposits[trader] = 0;
-}
-
-console.log("👤 регистрация:",click,"→",trader);
-
-}
-
-/* 🔥 депозит */
-if(trader && amount > 0){
-
-deposits[trader] = amount;
-
-console.log("💰 депозит POSTBACK:",trader,"+",amount);
-
-}
-
-res.send("OK");
-
-});
-
-if(click && trader){
-
-registeredUsers[click] = trader;
-
-if(!deposits[trader]){
-deposits[trader] = 0;
-}
-
-console.log("👤 регистрация:",click,"→",trader);
-
-}
-
-res.send("OK");
-
-
-/* =========================
    DEV DEPOSIT
 ========================= */
 
@@ -596,11 +546,15 @@ console.log("git save error", e.message);
 
 app.get("/postback",(req,res)=>{
 
+const click =
+req.query.click_id ||
+req.query.clickid ||
+req.query.cid;
+
 const trader =
 req.query.trader_id ||
 req.query.sub1 ||
-req.query.click_id ||
-req.query.cid;
+req.query.sub2;
 
 const amount =
 parseFloat(
@@ -611,11 +565,25 @@ req.query.profit ||
 0
 );
 
+/* регистрация */
+if(click && trader){
+
+registeredUsers[click] = trader;
+
+if(!deposits[trader]){
+deposits[trader] = 0;
+}
+
+console.log("👤 REG:", click, "→", trader);
+
+}
+
+/* депозит */
 if(trader && amount > 0){
 
 deposits[trader] = amount;
 
-console.log("💰 DEPOSIT:", trader, amount);
+console.log("💰 DEPOSIT:", trader, "+", amount);
 
 }
 

@@ -590,3 +590,10 @@ console.log("💰 DEPOSIT:", trader, "+", amount);
 res.send("OK");
 
 });
+
+deposits[trader] = amount;
+saveDeposits();
+
+function saveDeposits(){
+fs.writeFileSync("deposits.json", JSON.stringify(deposits,null,2));
+}

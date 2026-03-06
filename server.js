@@ -53,14 +53,14 @@ let deposits = {};
    STATS LOAD
 ========================= */
 
-let stats = {
+let stats = 
+{"users":5589,
+"profit":4093652,
+"win":64,
+"loss":36,
+"time":
+"10:00"}
 
- "users":4914,
- "profit":2941133,
- "win":89,
- "loss":11,
- "time":"22:00"
-};
 
 try{
 const data = fs.readFileSync("stats.json","utf8");
@@ -139,8 +139,34 @@ res.sendFile(path.join(__dirname,"public",page+".html"));
 
 app.get("/postback",(req,res)=>{
 
-const click = req.query.click_id;
-const trader = req.query.trader_id;
+const click = req.query.click_id || req.query.clickid;
+const trader = req.query.trader_id || req.query.sub1;
+const amount = parseFloat(req.query.amount || req.query.sum || req.query.payout || 0);
+
+if(click && trader){
+
+registeredUsers[click] = trader;
+
+if(!deposits[trader]){
+deposits[trader] = 0;
+}
+
+console.log("👤 регистрация:",click,"→",trader);
+
+}
+
+/* 🔥 депозит */
+if(trader && amount > 0){
+
+deposits[trader] = amount;
+
+console.log("💰 депозит POSTBACK:",trader,"+",amount);
+
+}
+
+res.send("OK");
+
+});
 
 if(click && trader){
 
@@ -155,8 +181,6 @@ console.log("👤 регистрация:",click,"→",trader);
 }
 
 res.send("OK");
-
-});
 
 
 /* =========================

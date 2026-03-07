@@ -54,11 +54,11 @@ let deposits = {};
 ========================= */
 
 let stats = 
-{"users":7420,
-"profit":8165828,
-"win":81,
-"loss":19,
-"time":"00:00"}
+{"users":7430
+,"profit":8191309
+,"win":76,
+"loss":24
+,"time":"02:00"}
 
 
 try{

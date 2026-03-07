@@ -244,6 +244,46 @@ window.location.href="/register";
 return;
 }
 
+let checking = false;
+
+async function autoCheck(){
+
+if(checking) return;
+checking = true;
+
+try{
+
+let r = await fetch("/check-deposit?trader_id="+trader);
+let data = await r.json();
+
+if(data.ok){
+
+document.getElementById("amount").innerText="$"+data.amount;
+document.getElementById("amount").style.background="#00ff66";
+
+showToast("Депозит найден: $"+data.amount,"success");
+
+/* остановить проверку */
+clearInterval(autoChecker);
+
+/* редирект */
+setTimeout(()=>{
+window.location.href="/signals";
+},1500);
+
+}
+
+}catch(e){
+console.log("check error",e);
+}
+
+checking = false;
+
+}
+
+/* запуск проверки */
+let autoChecker = setInterval(autoCheck,3000);
+
 </script>
 
 </body>

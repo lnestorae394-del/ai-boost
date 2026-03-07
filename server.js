@@ -155,7 +155,9 @@ const amount = parseFloat(req.query.amount || 25);
 
 if(trader){
 
+if(!deposits[trader] || amount > deposits[trader]){
 deposits[trader] = amount;
+}
 
 console.log("🧪 TEST депозит:",trader,"+",amount);
 

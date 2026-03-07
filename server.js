@@ -49,16 +49,24 @@ console.log("⚠️ Firebase disabled (serviceAccountKey.json not found)");
 let registeredUsers = {};
 let deposits = {};
 
+try{
+const data = fs.readFileSync("deposits.json","utf8");
+deposits = JSON.parse(data);
+console.log("💾 deposits loaded");
+}catch(e){
+console.log("⚠️ deposits.json not found");
+}
+
 /* =========================
    STATS LOAD
 ========================= */
 
 let stats = 
-{"users":7430
-,"profit":8191309
-,"win":76,
-"loss":24
-,"time":"02:00"}
+{"users":8118,
+"profit":9482919,
+"win":67,
+"loss":33,
+"time":"15:00"}
 
 
 try{

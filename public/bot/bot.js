@@ -8,8 +8,11 @@ await ctx.replyWithVideo(
 "BAACAgIAAxkBAAMJaaiYS2XbNyULVCs4MaBRvGrwQVUAAmCsAALna0BJjEIHjSEGSnA6BA",
 {
     caption:`
+Поддержка : 
+@hiddendinoxsupport
+
 Увеличьте свои шансы на успешную торговлю с помощью AI BOOST! 👇
-Поддержка : @hiddendinoxsupport
+
 `,
 reply_markup:{
 inline_keyboard:[

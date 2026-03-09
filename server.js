@@ -62,11 +62,11 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":8118,
-"profit":9482919,
-"win":67,
-"loss":33,
-"time":"15:00"}
+{"users":13964,
+"profit":20105189,
+"win":72,
+"loss":28,
+"time":"01:00"}
 
 
 try{

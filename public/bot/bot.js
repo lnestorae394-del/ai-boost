@@ -9,6 +9,7 @@ await ctx.replyWithVideo(
 {
     caption:`
 Увеличьте свои шансы на успешную торговлю с помощью AI BOOST! 👇
+Поддержка : @hiddendinoxsupport
 `,
 reply_markup:{
 inline_keyboard:[

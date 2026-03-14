@@ -1,4 +1,5 @@
 const TelegramBot = require("node-telegram-bot-api");
+const fetch = require("node-fetch");
 
 /* =========================
 CONFIG
@@ -6,6 +7,7 @@ CONFIG
 
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
+const CHECK_URL = "https://ai-boost.onrender.com/check-deposit?trader_id=";
 
 if(!TOKEN){
 console.error("❌ PARTNER_BOT_TOKEN missing");
@@ -38,68 +40,106 @@ console.log("BOT START ERROR", e);
 startBot();
 
 /* =========================
-RAM DATABASE
+DATABASE
 ========================= */
 
 let partners = {};
+let checkedIDs = {};
 
 /* =========================
 START
 ========================= */
 
-bot.onText(/\/start(?: (.+))?/, (msg, match)=>{
+bot.onText(/\/start/, (msg)=>{
 
 const id = msg.from.id;
-const username = msg.from.username ? "@"+msg.from.username : "нет username";
-const name = msg.from.first_name || "user";
 
-const ref = match[1];
+if(!partners[id]){
 
-/* если пользователь пришёл по рефке */
-
-if(ref && partners[ref]){
-
-partners[ref].clicks += 1;
+partners[id] = {
+ftd:0,
+balance:0
+};
 
 }
-
-/* сообщение пользователю */
 
 bot.sendMessage(id,
-`🤝 AI BOOST Partner Program
+`🤝 AI BOOST Partners
 
-Ваш запрос на подключение партнёрской программы отправлен.
+Отправьте Trader ID клиента для проверки депозита.
 
-Ожидайте, менеджер свяжется с вами.`);
+Пример:
+728192
 
-/* уведомление админу */
-
-bot.sendMessage(ADMIN_ID,
-`⚡ Новый запрос партнёра
-
-Имя: ${name}
-Username: ${username}
-Telegram ID: ${id}`,
-{
-reply_markup:{
-inline_keyboard:[
-[
-{
-text:"✉️ Написать",
-url:`tg://user?id=${id}`
-}
-]
-]
-}
-});
+Команды:
+/stats
+/withdraw`);
 
 });
 
 /* =========================
-ДОБАВЛЕНИЕ POCKET ССЫЛКИ
+STATS
 ========================= */
 
-bot.on("message",(msg)=>{
+bot.onText(/\/stats/, (msg)=>{
+
+const id = msg.from.id;
+
+if(!partners[id]){
+
+return bot.sendMessage(id,"Вы ещё не проверяли клиентов.");
+
+}
+
+let p = partners[id];
+
+bot.sendMessage(id,
+`📊 Ваша статистика
+
+FTD: ${p.ftd}
+Баланс: $${p.balance}`);
+
+});
+
+/* =========================
+WITHDRAW
+========================= */
+
+bot.onText(/\/withdraw/, (msg)=>{
+
+const id = msg.from.id;
+
+if(!partners[id]){
+return bot.sendMessage(id,"Нет статистики.");
+}
+
+let p = partners[id];
+
+if(p.balance < 100){
+
+return bot.sendMessage(id,
+`❌ Минимальная выплата $100
+
+Ваш баланс: $${p.balance}`);
+
+}
+
+bot.sendMessage(ADMIN_ID,
+`💰 Запрос выплаты
+
+Telegram: ${id}
+Сумма: $${p.balance}`);
+
+bot.sendMessage(id,
+"✅ Запрос отправлен.");
+
+});
+
+/* =========================
+CHECK TRADER ID
+========================= */
+
+bot.on("message", async (msg)=>{
 
 const id = msg.from.id;
 const text = msg.text;
@@ -107,126 +147,68 @@ const text = msg.text;
 if(!text) return;
 if(text.startsWith("/")) return;
 
-/* принимаем только pocket */
+/* проверяем что это число */
 
-if(text.includes("shortink")){
+if(!/^\d+$/.test(text)) return;
 
-let exists = Object.values(partners).find(
-p => p.telegram === id
-);
+const trader = text;
 
-if(exists){
+/* проверка на повтор */
+
+if(checkedIDs[trader]){
 
 return bot.sendMessage(id,
-"Вы уже подключены к партнёрской программе.");
+"⚠️ Этот Trader ID уже был засчитан.");
 
 }
 
-/* создаём ref */
+try{
 
-const partnerID =
-"ref_" + Math.random().toString(36).substring(2,10);
+const res = await fetch(CHECK_URL + trader);
+const data = await res.json();
 
-partners[partnerID] = {
+if(data.ok){
 
-telegram:id,
-username:msg.from.username || "none",
-link:text,
+checkedIDs[trader] = true;
 
-clicks:0,
-regs:0,
+if(!partners[id]){
+
+partners[id] = {
 ftd:0,
 balance:0
-
 };
 
-bot.sendMessage(id,
-`✅ Партнёр подключен
-
-Ваша партнёрская ссылка:
-
-https://t.me/aiboost_partner_bot?start=${partnerID}
-
-Отправляйте её пользователям.`);
-
 }
 
-});
+partners[id].ftd += 1;
 
-/* =========================
-СТАТИСТИКА
-========================= */
+/* считаем выплату */
 
-bot.onText(/\/stats/, (msg)=>{
+let reward = data.amount * 0.5;
 
-const id = msg.from.id;
-
-const partner = Object.keys(partners).find(
-p => partners[p].telegram === id
-);
-
-if(!partner){
-
-return bot.sendMessage(id,
-"Вы не подключены к партнёрской программе.");
-
-}
-
-let s = partners[partner];
+partners[id].balance += reward;
 
 bot.sendMessage(id,
-`📊 Статистика
+`✅ Депозит найден
 
-Клики: ${s.clicks}
-Регистрации: ${s.regs}
-FTD: ${s.ftd}
+Trader ID: ${trader}
+Сумма: $${data.amount}
 
-Баланс: $${s.balance}`);
+FTD +1
+Начислено: $${reward}`);
 
-});
-
-/* =========================
-ВЫВОД
-========================= */
-
-bot.onText(/\/withdraw/, (msg)=>{
-
-const id = msg.from.id;
-
-const partner = Object.keys(partners).find(
-p => partners[p].telegram === id
-);
-
-if(!partner){
-
-return bot.sendMessage(id,
-"Вы не партнёр.");
-
-}
-
-let s = partners[partner];
-
-/* минималка */
-
-if(s.balance < 100){
-
-return bot.sendMessage(id,
-`❌ Минимальная сумма вывода $100
-
-Ваш баланс: $${s.balance}`);
-
-}
-
-/* запрос админу */
-
-bot.sendMessage(ADMIN_ID,
-`💰 Запрос выплаты
-
-Partner ID: ${partner}
-Telegram: ${id}
-Сумма: $${s.balance}`);
+}else{
 
 bot.sendMessage(id,
-`✅ Запрос на выплату отправлен.`);
+"❌ Депозит не найден или меньше $10");
+
+}
+
+}catch(e){
+
+bot.sendMessage(id,
+"⚠️ Ошибка проверки.");
+
+}
 
 });

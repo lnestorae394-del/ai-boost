@@ -1,13 +1,49 @@
 const TelegramBot = require("node-telegram-bot-api");
 
-const bot = new TelegramBot(process.env.PARTNER_BOT_TOKEN,{
-polling:true
-});
+/* =========================
+   CONFIG
+========================= */
 
-/* ТВОЙ TELEGRAM ID */
+const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
 
-/* ПАРТНЁРЫ */
+if(!TOKEN){
+console.error("❌ PARTNER_BOT_TOKEN not found");
+return;
+}
+
+/* =========================
+   BOT START
+========================= */
+
+const bot = new TelegramBot(TOKEN,{ polling:false });
+
+async function startBot(){
+
+try{
+
+/* удаляем webhook чтобы избежать 409 */
+await bot.deleteWebHook();
+
+/* запускаем polling */
+await bot.startPolling();
+
+console.log("🤖 Partner bot started");
+
+}catch(e){
+
+console.log("Bot start error",e);
+
+}
+
+}
+
+startBot();
+
+/* =========================
+   ПАРТНЁРЫ (RAM)
+========================= */
+
 let partners = {};
 
 /* =========================
@@ -29,7 +65,7 @@ bot.sendMessage(id,
 
 Ожидайте, менеджер свяжется с вами.`);
 
-/* сообщение админу */
+/* уведомление админу */
 
 bot.sendMessage(ADMIN_ID,
 `⚡ Новый запрос партнёра
@@ -55,7 +91,6 @@ url:`tg://user?id=${id}`
 
 });
 
-
 /* =========================
    ПОДКЛЮЧЕНИЕ ССЫЛКИ
 ========================= */
@@ -66,23 +101,26 @@ const id = msg.from.id;
 const text = msg.text;
 
 if(!text) return;
+if(text.startsWith("/")) return;
 
 /* принимаем только pocket ссылки */
 
 if(text.includes("shortink")){
 
-/* проверка если уже партнёр */
+/* проверяем есть ли уже партнёр */
 
 let exists = Object.values(partners).find(
 p => p.telegram === id
 );
 
 if(exists){
+
 return bot.sendMessage(id,
 "Вы уже подключены к партнёрской программе.");
+
 }
 
-/* создаём ID */
+/* создаём партнёрский id */
 
 const partnerID =
 "ref_" + Math.random().toString(36).substring(2,10);
@@ -109,14 +147,13 @@ bot.sendMessage(id,
 
 Ваша партнёрская ссылка:
 
-https://t.me/aiboost_bot?start=${partnerID}
+https://t.me/aiboost_partner_bot?start=${partnerID}
 
 Отправляйте её пользователям.`);
 
 }
 
 });
-
 
 /* =========================
    СТАТИСТИКА
@@ -131,8 +168,10 @@ p => partners[p].telegram === id
 );
 
 if(!partner){
+
 return bot.sendMessage(id,
 "Вы не подключены к партнёрской программе.");
+
 }
 
 let s = partners[partner];
@@ -147,7 +186,6 @@ FTD: ${s.ftd}
 Баланс: $${s.balance}`);
 
 });
-
 
 /* =========================
    ВЫВОД

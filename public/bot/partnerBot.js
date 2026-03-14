@@ -1,38 +1,35 @@
 const TelegramBot = require("node-telegram-bot-api");
 
 /* =========================
-   CONFIG
+CONFIG
 ========================= */
 
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
 
 if(!TOKEN){
-console.error("❌ PARTNER_BOT_TOKEN not found");
+console.error("❌ PARTNER_BOT_TOKEN missing");
 return;
 }
 
 /* =========================
-   BOT START
+BOT START
 ========================= */
 
-const bot = new TelegramBot(TOKEN,{ polling:false });
+const bot = new TelegramBot(TOKEN);
 
 async function startBot(){
 
 try{
 
-/* удаляем webhook чтобы избежать 409 */
 await bot.deleteWebHook();
-
-/* запускаем polling */
 await bot.startPolling();
 
 console.log("🤖 Partner bot started");
 
 }catch(e){
 
-console.log("Bot start error",e);
+console.log("BOT START ERROR", e);
 
 }
 
@@ -41,20 +38,30 @@ console.log("Bot start error",e);
 startBot();
 
 /* =========================
-   ПАРТНЁРЫ (RAM)
+RAM DATABASE
 ========================= */
 
 let partners = {};
 
 /* =========================
-   START
+START
 ========================= */
 
-bot.onText(/\/start/, (msg)=>{
+bot.onText(/\/start(?: (.+))?/, (msg, match)=>{
 
 const id = msg.from.id;
 const username = msg.from.username ? "@"+msg.from.username : "нет username";
 const name = msg.from.first_name || "user";
+
+const ref = match[1];
+
+/* если пользователь пришёл по рефке */
+
+if(ref && partners[ref]){
+
+partners[ref].clicks += 1;
+
+}
 
 /* сообщение пользователю */
 
@@ -73,7 +80,6 @@ bot.sendMessage(ADMIN_ID,
 Имя: ${name}
 Username: ${username}
 Telegram ID: ${id}`,
-
 {
 reply_markup:{
 inline_keyboard:[
@@ -85,14 +91,12 @@ url:`tg://user?id=${id}`
 ]
 ]
 }
-}
-
-);
+});
 
 });
 
 /* =========================
-   ПОДКЛЮЧЕНИЕ ССЫЛКИ
+ДОБАВЛЕНИЕ POCKET ССЫЛКИ
 ========================= */
 
 bot.on("message",(msg)=>{
@@ -103,11 +107,9 @@ const text = msg.text;
 if(!text) return;
 if(text.startsWith("/")) return;
 
-/* принимаем только pocket ссылки */
+/* принимаем только pocket */
 
 if(text.includes("shortink")){
-
-/* проверяем есть ли уже партнёр */
 
 let exists = Object.values(partners).find(
 p => p.telegram === id
@@ -120,12 +122,10 @@ return bot.sendMessage(id,
 
 }
 
-/* создаём партнёрский id */
+/* создаём ref */
 
 const partnerID =
 "ref_" + Math.random().toString(36).substring(2,10);
-
-/* сохраняем */
 
 partners[partnerID] = {
 
@@ -139,8 +139,6 @@ ftd:0,
 balance:0
 
 };
-
-/* выдаём ссылку */
 
 bot.sendMessage(id,
 `✅ Партнёр подключен
@@ -156,7 +154,7 @@ https://t.me/aiboost_partner_bot?start=${partnerID}
 });
 
 /* =========================
-   СТАТИСТИКА
+СТАТИСТИКА
 ========================= */
 
 bot.onText(/\/stats/, (msg)=>{
@@ -188,19 +186,47 @@ FTD: ${s.ftd}
 });
 
 /* =========================
-   ВЫВОД
+ВЫВОД
 ========================= */
 
 bot.onText(/\/withdraw/, (msg)=>{
 
 const id = msg.from.id;
 
+const partner = Object.keys(partners).find(
+p => partners[p].telegram === id
+);
+
+if(!partner){
+
+return bot.sendMessage(id,
+"Вы не партнёр.");
+
+}
+
+let s = partners[partner];
+
+/* минималка */
+
+if(s.balance < 100){
+
+return bot.sendMessage(id,
+`❌ Минимальная сумма вывода $100
+
+Ваш баланс: $${s.balance}`);
+
+}
+
+/* запрос админу */
+
 bot.sendMessage(ADMIN_ID,
 `💰 Запрос выплаты
 
-Partner: ${id}`);
+Partner ID: ${partner}
+Telegram: ${id}
+Сумма: $${s.balance}`);
 
 bot.sendMessage(id,
-`Запрос на выплату отправлен.`);
+`✅ Запрос на выплату отправлен.`);
 
 });

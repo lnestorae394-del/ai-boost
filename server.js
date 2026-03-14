@@ -15,6 +15,10 @@ const git = simpleGit();
 
 app.use(express.json());
 
+let clickPartners = {};
+let traderPartners = {};
+let partnerStats = {};
+
 /* =========================
    FIREBASE
 ========================= */
@@ -585,12 +589,13 @@ console.log("👤 REG:", click, "→", trader);
 
 }
 
-/* депозит */
 if(trader && amount > 0){
 
 deposits[trader] = amount;
 
 console.log("💰 DEPOSIT:", trader, "+", amount);
+
+saveDeposits();
 
 }
 
@@ -598,8 +603,6 @@ res.send("OK");
 
 });
 
-deposits[trader] = amount;
-saveDeposits();
 
 function saveDeposits(){
 fs.writeFileSync("deposits.json", JSON.stringify(deposits,null,2));

@@ -7,11 +7,13 @@ CONFIG
 
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
+
 const CHECK_URL = "https://ai-boost.onrender.com/check-deposit?trader_id=";
+const APPROVE_URL = "https://ai-boost.onrender.com/check-approve?trader_id=";
 
 if (!TOKEN) {
-  console.error("❌ PARTNER_BOT_TOKEN missing");
-  return;
+console.error("❌ PARTNER_BOT_TOKEN missing");
+return;
 }
 
 /* =========================
@@ -20,14 +22,14 @@ BOT START
 
 const bot = new TelegramBot(TOKEN);
 
-async function startBot() {
-  try {
-    await bot.deleteWebHook();
-    await bot.startPolling();
-    console.log("🤖 Partner bot started");
-  } catch (e) {
-    console.log("BOT START ERROR", e);
-  }
+async function startBot(){
+try{
+await bot.deleteWebHook();
+await bot.startPolling();
+console.log("🤖 Partner bot started");
+}catch(e){
+console.log("BOT START ERROR",e);
+}
 }
 
 startBot();
@@ -37,108 +39,115 @@ DATABASE
 ========================= */
 
 let partners = {};
-let checkedIDs = {};
+let pending = {};
+let approved = {};
 
 /* =========================
 START
 ========================= */
 
-bot.onText(/\/start/, (msg) => {
-  const id = msg.from.id;
+bot.onText(/\/start/, (msg)=>{
 
-  if (!partners[id]) {
-    partners[id] = {
-      ftd: 0,
-      balance: 0,
-      withdraw: false
-    };
-  }
+const id = msg.from.id;
 
-  bot.sendMessage(
-    id,
+if(!partners[id]){
+partners[id] = {
+ftd:0,
+balance:0,
+withdraw:false
+};
+}
+
+bot.sendMessage(id,
+
 `🤝 AI BOOST Partners
 
 Отправьте Trader ID клиента для проверки депозита.
 
-Пример:
-728192
-
 Команды:
 /stats
 /withdraw`
-  );
+
+);
+
 });
 
 /* =========================
 СТАТИСТИКА
 ========================= */
 
-bot.onText(/\/stats/, (msg) => {
-  const id = msg.from.id;
+bot.onText(/\/stats/, (msg)=>{
 
-  if (!partners[id]) {
-    return bot.sendMessage(id, "Нет статистики.");
-  }
+const id = msg.from.id;
 
-  const p = partners[id];
+if(!partners[id]){
+return bot.sendMessage(id,"Нет статистики.");
+}
 
-  bot.sendMessage(
-    id,
+const p = partners[id];
+
+bot.sendMessage(id,
+
 `📊 Ваша статистика
 
 FTD: ${p.ftd}
 Баланс: $${p.balance.toFixed(2)}`
-  );
+
+);
+
 });
 
 /* =========================
 ВЫВОД
 ========================= */
 
-bot.onText(/\/withdraw/, (msg) => {
-  const id = msg.from.id;
+bot.onText(/\/withdraw/, (msg)=>{
 
-  if (!partners[id]) {
-    return bot.sendMessage(id, "Нет статистики.");
-  }
+const id = msg.from.id;
 
-  const p = partners[id];
+if(!partners[id]){
+return bot.sendMessage(id,"Нет статистики.");
+}
 
-  if (p.balance < 100) {
-    return bot.sendMessage(
-      id,
+const p = partners[id];
+
+if(p.balance < 100){
+return bot.sendMessage(id,
+
 `❌ Минимальная выплата $100
 Ваш баланс: $${p.balance.toFixed(2)}`
-    );
-  }
 
-  partners[id].withdraw = true;
+);
+}
 
-  bot.sendMessage(id, "Введите ваш USDT TRC20 адрес");
+partners[id].withdraw = true;
+
+bot.sendMessage(id,"Введите ваш USDT TRC20 адрес");
+
 });
 
 /* =========================
 MESSAGE
 ========================= */
 
-bot.on("message", async (msg) => {
+bot.on("message", async (msg)=>{
 
-  const id = msg.from.id;
-  const text = msg.text;
+const id = msg.from.id;
+const text = msg.text;
 
-  if (!text) return;
-  if (text.startsWith("/")) return;
+if(!text) return;
+if(text.startsWith("/")) return;
 
-  /* =========================
-  ВВОД КОШЕЛЬКА
-  ========================= */
+/* =========================
+КОШЕЛЕК
+========================= */
 
-  if (partners[id] && partners[id].withdraw) {
+if(partners[id] && partners[id].withdraw){
 
-    partners[id].withdraw = false;
+partners[id].withdraw = false;
 
-    bot.sendMessage(
-      ADMIN_ID,
+bot.sendMessage(ADMIN_ID,
+
 `💰 Запрос выплаты
 
 Telegram: ${id}
@@ -146,80 +155,109 @@ Telegram: ${id}
 
 USDT TRC20:
 ${text}`
-    );
 
-    bot.sendMessage(id, "✅ Запрос отправлен.");
+);
 
-    return;
-  }
+bot.sendMessage(id,"✅ Запрос отправлен.");
 
-  /* =========================
-  ПРОВЕРКА TRADER ID
-  ========================= */
+return;
+}
 
-  if (!/^\d+$/.test(text)) return;
+/* =========================
+TRADER ID
+========================= */
 
-  const trader = text;
+if(!/^\d+$/.test(text)) return;
 
-  if (checkedIDs[trader]) {
-    return bot.sendMessage(id, "⚠️ Этот Trader ID уже был засчитан.");
-  }
+const trader = text;
 
-  try {
+/* уже был апрув */
 
-    const res = await fetch(CHECK_URL + trader);
-    const data = await res.json();
+if(approved[trader]){
+return bot.sendMessage(id,"⚠️ Этот депозит уже был апрувнут.");
+}
 
-    if (data.ok) {
+try{
 
-      checkedIDs[trader] = true;
+/* проверяем депозит */
 
-      if (!partners[id]) {
-        partners[id] = {
-          ftd: 0,
-          balance: 0,
-          withdraw: false
-        };
-      }
+const res = await fetch(CHECK_URL + trader);
+const data = await res.json();
 
-      partners[id].ftd += 1;
+if(!data.ok){
+return bot.sendMessage(id,"❌ Депозит не найден или меньше $10");
+}
 
-      /* комиссия */
+/* если ещё не pending */
 
-      let reward = 0;
+if(!pending[trader]){
 
-      if (data.amount >= 10 && data.amount < 20) {
-        reward = data.amount * 0.30;
-      }
+pending[trader] = {
+partner:id,
+amount:data.amount
+};
 
-      if (data.amount >= 20) {
-        reward = data.amount * 0.50;
-      }
+bot.sendMessage(id,
 
-      partners[id].balance += reward;
-
-      bot.sendMessage(
-        id,
-`✅ Депозит найден
+`⏳ Депозит найден
 
 Trader ID: ${trader}
 Сумма: $${data.amount}
 
-FTD +1
+Ожидает апрува`
+
+);
+
+return;
+
+}
+
+/* проверяем апрув */
+
+const approve = await fetch(APPROVE_URL + trader);
+const approveData = await approve.json();
+
+if(!approveData.ok){
+return bot.sendMessage(id,"⏳ Всё ещё ожидает апрува.");
+}
+
+/* если апрув */
+
+approved[trader] = true;
+
+const amount = pending[trader].amount;
+
+let reward = 0;
+
+if(amount >= 10 && amount < 20){
+reward = amount * 0.30;
+}
+
+if(amount >= 20){
+reward = amount * 0.50;
+}
+
+partners[id].ftd += 1;
+partners[id].balance += reward;
+
+delete pending[trader];
+
+bot.sendMessage(id,
+
+`✅ Депозит апрувнут
+
+Trader ID: ${trader}
+FTD: $${amount}
+
 Начислено: $${reward.toFixed(2)}`
-      );
 
-    } else {
+);
 
-      bot.sendMessage(id, "❌ Депозит не найден или меньше $10");
+}catch(e){
 
-    }
+bot.sendMessage(id,"⚠️ Ошибка проверки.");
 
-  } catch (e) {
-
-    bot.sendMessage(id, "⚠️ Ошибка проверки.");
-
-  }
+}
 
 });
 

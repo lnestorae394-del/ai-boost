@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const PARTNER_BOT_ADMIN = 838408932; // твой телеграм
+let approvedDeposits = {};
 
 process.on("uncaughtException", err => {
 console.error("UNCAUGHT EXCEPTION", err);
@@ -555,7 +557,7 @@ console.log("git save error", e.message);
 
 },300000);
 
-app.get("/postback",(req,res)=>{
+app.get("/postback", async (req,res)=>{
 
 const click =
 req.query.click_id ||
@@ -576,26 +578,63 @@ req.query.profit ||
 0
 );
 
+const type = req.query.type || "ftd";
+
 /* регистрация */
+
 if(click && trader){
 
 registeredUsers[click] = trader;
 
-if(!deposits[trader]){
-deposits[trader] = 0;
-}
-
-console.log("👤 REG:", click, "→", trader);
+console.log("👤 REG:", click,"→",trader);
 
 }
 
-if(trader && amount > 0){
+/* первый депозит */
+
+if(trader && amount > 0 && type !== "redeposit"){
 
 deposits[trader] = amount;
 
-console.log("💰 DEPOSIT:", trader, "+", amount);
+console.log("💰 FTD:", trader,"+",amount);
 
 saveDeposits();
+
+}
+
+/* редепозит (апрув) */
+
+if(trader && amount > 0 && type === "redeposit"){
+
+if(!approvedDeposits[trader]){
+
+approvedDeposits[trader] = true;
+
+console.log("🔥 APPROVED:", trader, amount);
+
+/* уведомление */
+
+const bot = require("./public/bot/partnerBot").bot;
+
+try{
+
+await bot.sendMessage(
+PARTNER_BOT_ADMIN,
+`🔥 Новый апрув депозита
+
+Trader ID: ${trader}
+FTD: $${deposits[trader]}
+
+Redeозит: $${amount}
+
+Партнёру начислены проценты`
+);
+
+}catch(e){
+console.log("bot notify error",e);
+}
+
+}
 
 }
 

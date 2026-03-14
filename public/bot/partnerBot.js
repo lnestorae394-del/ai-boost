@@ -222,3 +222,5 @@ FTD +1
   }
 
 });
+
+module.exports = { bot };

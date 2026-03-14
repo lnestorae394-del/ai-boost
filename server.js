@@ -62,11 +62,7 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":13964,
-"profit":20105189,
-"win":72,
-"loss":28,
-"time":"01:00"}
+{"users":23614,"profit":38440282,"win":78,"loss":22,"time":"16:00"}
 
 
 try{
@@ -499,6 +495,7 @@ setTimeout(generateTrade, getMarketDelay());
 generateTrade();
 
 require("./public/bot/bot");
+require("./public/bot/partnerBot");
 
 app.get("/stats",(req,res)=>{
 
@@ -607,3 +604,4 @@ saveDeposits();
 function saveDeposits(){
 fs.writeFileSync("deposits.json", JSON.stringify(deposits,null,2));
 }
+

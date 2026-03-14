@@ -1,17 +1,26 @@
 const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.PARTNER_BOT_TOKEN,{
-    polling:true
+polling:true
 });
 
-const ADMIN_ID = 123456789; // твой telegram id
+/* ТВОЙ TELEGRAM ID */
+const ADMIN_ID = 838408932;
 
+/* ПАРТНЁРЫ */
 let partners = {};
+
+/* =========================
+   START
+========================= */
 
 bot.onText(/\/start/, (msg)=>{
 
 const id = msg.from.id;
-const username = msg.from.username || "no_username";
+const username = msg.from.username ? "@"+msg.from.username : "нет username";
+const name = msg.from.first_name || "user";
+
+/* сообщение пользователю */
 
 bot.sendMessage(id,
 `🤝 AI BOOST Partner Program
@@ -20,14 +29,36 @@ bot.sendMessage(id,
 
 Ожидайте, менеджер свяжется с вами.`);
 
+/* сообщение админу */
+
 bot.sendMessage(ADMIN_ID,
 `⚡ Новый запрос партнёра
 
-User: @${username}
-ID: ${id}`);
+Имя: ${name}
+Username: ${username}
+Telegram ID: ${id}`,
+
+{
+reply_markup:{
+inline_keyboard:[
+[
+{
+text:"✉️ Написать",
+url:`tg://user?id=${id}`
+}
+]
+]
+}
+}
+
+);
 
 });
 
+
+/* =========================
+   ПОДКЛЮЧЕНИЕ ССЫЛКИ
+========================= */
 
 bot.on("message",(msg)=>{
 
@@ -36,23 +67,47 @@ const text = msg.text;
 
 if(!text) return;
 
+/* принимаем только pocket ссылки */
+
 if(text.includes("shortink")){
 
-const partnerID = "ref_" + Math.floor(Math.random()*999999);
+/* проверка если уже партнёр */
+
+let exists = Object.values(partners).find(
+p => p.telegram === id
+);
+
+if(exists){
+return bot.sendMessage(id,
+"Вы уже подключены к партнёрской программе.");
+}
+
+/* создаём ID */
+
+const partnerID =
+"ref_" + Math.random().toString(36).substring(2,10);
+
+/* сохраняем */
 
 partners[partnerID] = {
+
 telegram:id,
+username:msg.from.username || "none",
 link:text,
+
 clicks:0,
 regs:0,
 ftd:0,
 balance:0
+
 };
+
+/* выдаём ссылку */
 
 bot.sendMessage(id,
 `✅ Партнёр подключен
 
-Ваша ссылка:
+Ваша партнёрская ссылка:
 
 https://t.me/aiboost_bot?start=${partnerID}
 
@@ -61,6 +116,11 @@ https://t.me/aiboost_bot?start=${partnerID}
 }
 
 });
+
+
+/* =========================
+   СТАТИСТИКА
+========================= */
 
 bot.onText(/\/stats/, (msg)=>{
 
@@ -71,7 +131,8 @@ p => partners[p].telegram === id
 );
 
 if(!partner){
-return bot.sendMessage(id,"Вы не подключены к партнёрке");
+return bot.sendMessage(id,
+"Вы не подключены к партнёрской программе.");
 }
 
 let s = partners[partner];
@@ -86,6 +147,11 @@ FTD: ${s.ftd}
 Баланс: $${s.balance}`);
 
 });
+
+
+/* =========================
+   ВЫВОД
+========================= */
 
 bot.onText(/\/withdraw/, (msg)=>{
 

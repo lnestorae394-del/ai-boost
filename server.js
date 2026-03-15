@@ -3,6 +3,14 @@ const app = express();
 const PARTNER_BOT_ADMIN = 838408932; // твой телеграм
 let approvedDeposits = {};
 
+try{
+const data = fs.readFileSync("approved.json","utf8");
+approvedDeposits = JSON.parse(data);
+console.log("💾 approved loaded");
+}catch(e){
+console.log("⚠️ approved.json not found");
+}
+
 process.on("uncaughtException", err => {
 console.error("UNCAUGHT EXCEPTION", err);
 });
@@ -650,6 +658,8 @@ if(type === "redeposit" && trader){
 if(!approvedDeposits[trader]){
 
 approvedDeposits[trader] = true;
+saveApproved();
+
 
 console.log("🔥 APPROVED:", trader);
 
@@ -685,5 +695,9 @@ res.send("OK");
 
 function saveDeposits(){
 fs.writeFileSync("deposits.json", JSON.stringify(deposits,null,2));
+}
+
+function saveApproved(){
+fs.writeFileSync("approved.json", JSON.stringify(approvedDeposits,null,2));
 }
 

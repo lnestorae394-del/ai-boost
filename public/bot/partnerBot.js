@@ -6,12 +6,16 @@ const ADMIN_ID = 838408932;
 
 const CHECK_URL = "https://ai-boost.onrender.com/check-deposit?trader_id=";
 
-const bot = new TelegramBot(TOKEN,{ polling:true });
+const bot = new TelegramBot(TOKEN);
+
+bot.deleteWebHook().then(()=>{
+bot.startPolling();
+});
 
 let partners = {};
 let pending = {};
 let approved = {};
-let withdrawRequests = {};
+let withdraw = {};
 
 /* =========================
 START
@@ -22,7 +26,7 @@ bot.onText(/\/start/, (msg)=>{
 const id = msg.from.id;
 
 if(!partners[id]){
-partners[id] = {ftd:0,balance:0};
+partners[id] = { ftd:0, balance:0 };
 }
 
 bot.sendMessage(id,"🤝 AI BOOST Partners",{
@@ -47,7 +51,7 @@ bot.onText(/📊 Статистика/, (msg)=>{
 const id = msg.from.id;
 
 if(!partners[id]){
-return bot.sendMessage(id,"Нет статистики.");
+return bot.sendMessage(id,"Нет статистики");
 }
 
 const p = partners[id];
@@ -80,18 +84,17 @@ bot.sendMessage(msg.from.id,"Введите Trader ID клиента");
 bot.onText(/💰 Вывод/, (msg)=>{
 
 const id = msg.from.id;
-const p = partners[id];
 
-if(p.balance < 100){
+if(!partners[id] || partners[id].balance < 100){
 return bot.sendMessage(id,
 
 `❌ Минимальная выплата $100
-Баланс: $${p.balance}`
+Баланс: $${partners[id] ? partners[id].balance : 0}`
 
 );
 }
 
-withdrawRequests[id] = true;
+withdraw[id] = true;
 
 bot.sendMessage(id,"Введите USDT TRC20 адрес");
 
@@ -108,13 +111,11 @@ const text = msg.text;
 
 if(!text) return;
 
-/* =========================
-ВЫВОД
-========================= */
+/* вывод */
 
-if(withdrawRequests[id]){
+if(withdraw[id]){
 
-withdrawRequests[id] = false;
+withdraw[id] = false;
 
 bot.sendMessage(ADMIN_ID,
 
@@ -131,21 +132,19 @@ reply_markup:{
 inline_keyboard:[
 [
 { text:"✅ Выплачено", callback_data:`paid_${id}` },
-{ text:"❌ Отменить", callback_data:`cancel_${id}` }
+{ text:"❌ Отмена", callback_data:`cancel_${id}` }
 ]
 ]
 }
 });
 
-bot.sendMessage(id,"⏳ Запрос отправлен на проверку");
+bot.sendMessage(id,"⏳ Запрос отправлен");
 
 return;
 
 }
 
-/* =========================
-TRADER ID
-========================= */
+/* проверка Trader ID */
 
 if(!/^\d+$/.test(text)) return;
 
@@ -176,8 +175,6 @@ Trader ID: ${trader}
 
 );
 
-/* уведомление админу */
-
 bot.sendMessage(ADMIN_ID,
 
 `⚡ Новый депозит
@@ -185,9 +182,8 @@ bot.sendMessage(ADMIN_ID,
 Trader ID: ${trader}
 Сумма: $${data.amount}
 
-Команды:
-/approve ${trader}
-/reject ${trader}`
+Апрув:
+/approve ${trader}`
 
 );
 
@@ -200,7 +196,7 @@ bot.sendMessage(id,"⚠️ Ошибка проверки");
 });
 
 /* =========================
-АПРУВ
+APPROVE
 ========================= */
 
 bot.onText(/\/approve (.+)/,(msg,match)=>{
@@ -226,13 +222,10 @@ if(amount >=20){
 reward = amount * 0.50;
 }
 
-partners[partner].ftd +=1;
+partners[partner].ftd += 1;
 partners[partner].balance += reward;
 
-approved[trader] = {
-partner,
-reward
-};
+approved[trader] = { partner, reward };
 
 delete pending[trader];
 
@@ -250,7 +243,7 @@ bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
 });
 
 /* =========================
-ОТМЕНА АПРУВА
+REJECT
 ========================= */
 
 bot.onText(/\/reject (.+)/,(msg,match)=>{
@@ -260,26 +253,18 @@ if(msg.from.id !== ADMIN_ID) return;
 const trader = match[1];
 
 if(!approved[trader]){
-return bot.sendMessage(ADMIN_ID,"❌ Нет такого апрува");
+return bot.sendMessage(ADMIN_ID,"❌ Нет апрува");
 }
 
 const partner = approved[trader].partner;
 const reward = approved[trader].reward;
 
-partners[partner].ftd -=1;
+partners[partner].ftd -= 1;
 partners[partner].balance -= reward;
 
 delete approved[trader];
 
-bot.sendMessage(partner,
-
-`❌ Апрув отменён
-
-Trader ID: ${trader}
-Баланс скорректирован`
-
-);
-
+bot.sendMessage(partner,"❌ Апрув отменён");
 bot.sendMessage(ADMIN_ID,"❌ Апрув отменён");
 
 });
@@ -293,8 +278,6 @@ bot.on("callback_query",(query)=>{
 const data = query.data;
 
 if(!data) return;
-
-/* выплачено */
 
 if(data.startsWith("paid_")){
 
@@ -310,11 +293,7 @@ bot.sendMessage(id,
 
 partners[id].balance = 0;
 
-bot.answerCallbackQuery(query.id);
-
 }
-
-/* отмена */
 
 if(data.startsWith("cancel_")){
 
@@ -322,9 +301,9 @@ const id = data.split("_")[1];
 
 bot.sendMessage(id,"❌ Выплата отклонена");
 
-bot.answerCallbackQuery(query.id);
-
 }
+
+bot.answerCallbackQuery(query.id);
 
 });
 

@@ -444,14 +444,7 @@ bot.answerCallbackQuery(query.id);
 
 
 
-function approveTrader(trader, amount){
-
-if(!pending[trader]){
-console.log("❌ trader not in pending:", trader);
-return;
-}
-
-const partner = pending[trader].partner;
+function approveTrader(trader, partner, amount){
 
 let reward = 0;
 
@@ -497,6 +490,7 @@ Trader ID: ${trader}
 console.log("🔥 AUTO APPROVED:", trader);
 
 }
+
 
 
 module.exports = { bot, approveTrader };

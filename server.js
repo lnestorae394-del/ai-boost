@@ -1,7 +1,17 @@
 const express = require("express");
+const fs = require("fs");
+const simpleGit = require("simple-git");
+
 const app = express();
+const git = simpleGit();
+
 const PARTNER_BOT_ADMIN = 838408932; // твой телеграм
+
 let approvedDeposits = {};
+
+/* =========================
+LOAD APPROVED
+========================= */
 
 try{
 const data = fs.readFileSync("approved.json","utf8");
@@ -11,6 +21,10 @@ console.log("💾 approved loaded");
 console.log("⚠️ approved.json not found");
 }
 
+/* =========================
+ERROR HANDLERS
+========================= */
+
 process.on("uncaughtException", err => {
 console.error("UNCAUGHT EXCEPTION", err);
 });
@@ -19,15 +33,12 @@ process.on("unhandledRejection", err => {
 console.error("UNHANDLED REJECTION", err);
 });
 
-const fs = require("fs");
-const simpleGit = require("simple-git");
-const git = simpleGit();
-
 app.use(express.json());
 
 let clickPartners = {};
 let traderPartners = {};
 let partnerStats = {};
+
 
 /* =========================
    FIREBASE
@@ -685,11 +696,9 @@ try{
 
 const { approveTrader } = require("./public/bot/partnerBot");
 
-const { bot } = require("./public/bot/partnerBot");
+approveTrader(trader, partner, firstDeposit);
 
-const { approveTrader } = require("./public/bot/partnerBot");
 
-approveTrader(trader, firstDeposit);
 
 
 

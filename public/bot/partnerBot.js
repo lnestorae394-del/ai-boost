@@ -463,18 +463,12 @@ if(amount >=20){
 reward = amount * 0.50;
 }
 
-/* создаем партнера если нет */
-
 if(!partners[partner]){
 partners[partner] = {ftd:0,balance:0};
 }
 
-/* начисление */
-
 partners[partner].ftd += 1;
 partners[partner].balance += reward;
-
-/* история */
 
 if(!history[partner]){
 history[partner] = [];
@@ -486,11 +480,7 @@ reward,
 date: now()
 });
 
-/* удаляем из ожидания */
-
 delete pending[trader];
-
-/* уведомление */
 
 bot.sendMessage(
 partner,
@@ -507,6 +497,7 @@ Trader ID: ${trader}
 console.log("🔥 AUTO APPROVED:", trader);
 
 }
+
 
 module.exports = { bot, approveTrader };
 

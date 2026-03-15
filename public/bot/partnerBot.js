@@ -1,42 +1,17 @@
 const TelegramBot = require("node-telegram-bot-api");
 const fetch = require("node-fetch");
 
-/* =========================
-CONFIG
-========================= */
-
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
 
 const CHECK_URL = "https://ai-boost.onrender.com/check-deposit?trader_id=";
 const APPROVE_URL = "https://ai-boost.onrender.com/check-approve?trader_id=";
 
-if (!TOKEN) {
-console.error("❌ PARTNER_BOT_TOKEN missing");
-return;
-}
-
-/* =========================
-BOT START
-========================= */
-
 const bot = new TelegramBot(TOKEN);
 
-async function startBot(){
-try{
-await bot.deleteWebHook();
-await bot.startPolling();
-console.log("🤖 Partner bot started");
-}catch(e){
-console.log("BOT START ERROR",e);
-}
-}
-
-startBot();
-
-/* =========================
-DATABASE
-========================= */
+bot.deleteWebHook().then(()=>{
+bot.startPolling();
+});
 
 let partners = {};
 let pending = {};
@@ -58,15 +33,48 @@ withdraw:false
 };
 }
 
+bot.sendMessage(id,"🤝 AI BOOST Partners",{
+reply_markup:{
+keyboard:[
+["⏳ Ждут апрува"],
+["📊 Статистика"],
+["💰 Вывод"]
+],
+resize_keyboard:true
+}
+});
+
+});
+
+/* =========================
+ЖДУТ АПРУВА
+========================= */
+
+bot.onText(/⏳ Ждут апрува/, (msg)=>{
+
+const id = msg.from.id;
+
+let list = [];
+
+for(let t in pending){
+
+if(pending[t].partner === id){
+
+list.push(`ID: ${t} ($${pending[t].amount})`);
+
+}
+
+}
+
+if(list.length===0){
+return bot.sendMessage(id,"Нет депозитов ожидающих апрува.");
+}
+
 bot.sendMessage(id,
 
-`🤝 AI BOOST Partners
+`⏳ Ожидают апрува
 
-Отправьте Trader ID клиента для проверки депозита.
-
-Команды:
-/stats
-/withdraw`
+${list.join("\n")}`
 
 );
 
@@ -76,15 +84,15 @@ bot.sendMessage(id,
 СТАТИСТИКА
 ========================= */
 
-bot.onText(/\/stats/, (msg)=>{
+bot.onText(/📊 Статистика/, (msg)=>{
 
 const id = msg.from.id;
 
-if(!partners[id]){
+const p = partners[id];
+
+if(!p){
 return bot.sendMessage(id,"Нет статистики.");
 }
-
-const p = partners[id];
 
 bot.sendMessage(id,
 
@@ -101,13 +109,9 @@ FTD: ${p.ftd}
 ВЫВОД
 ========================= */
 
-bot.onText(/\/withdraw/, (msg)=>{
+bot.onText(/💰 Вывод/, (msg)=>{
 
 const id = msg.from.id;
-
-if(!partners[id]){
-return bot.sendMessage(id,"Нет статистики.");
-}
 
 const p = partners[id];
 
@@ -136,10 +140,11 @@ const id = msg.from.id;
 const text = msg.text;
 
 if(!text) return;
+
 if(text.startsWith("/")) return;
 
 /* =========================
-КОШЕЛЕК
+ВЫВОД
 ========================= */
 
 if(partners[id] && partners[id].withdraw){
@@ -161,6 +166,7 @@ ${text}`
 bot.sendMessage(id,"✅ Запрос отправлен.");
 
 return;
+
 }
 
 /* =========================
@@ -171,24 +177,20 @@ if(!/^\d+$/.test(text)) return;
 
 const trader = text;
 
-/* уже был апрув */
-
 if(approved[trader]){
 return bot.sendMessage(id,"⚠️ Этот депозит уже был апрувнут.");
 }
 
 try{
 
-/* проверяем депозит */
-
 const res = await fetch(CHECK_URL + trader);
 const data = await res.json();
 
 if(!data.ok){
-return bot.sendMessage(id,"❌ Депозит не найден или меньше $10");
+return bot.sendMessage(id,"❌ Депозит не найден");
 }
 
-/* если ещё не pending */
+/* если первый раз */
 
 if(!pending[trader]){
 
@@ -197,7 +199,7 @@ partner:id,
 amount:data.amount
 };
 
-bot.sendMessage(id,
+return bot.sendMessage(id,
 
 `⏳ Депозит найден
 
@@ -207,8 +209,6 @@ Trader ID: ${trader}
 Ожидает апрува`
 
 );
-
-return;
 
 }
 
@@ -221,7 +221,7 @@ if(!approveData.ok){
 return bot.sendMessage(id,"⏳ Всё ещё ожидает апрува.");
 }
 
-/* если апрув */
+/* апрув */
 
 approved[trader] = true;
 
@@ -229,15 +229,15 @@ const amount = pending[trader].amount;
 
 let reward = 0;
 
-if(amount >= 10 && amount < 20){
-reward = amount * 0.30;
+if(amount >=10 && amount <20){
+reward = amount*0.30;
 }
 
-if(amount >= 20){
-reward = amount * 0.50;
+if(amount>=20){
+reward = amount*0.50;
 }
 
-partners[id].ftd += 1;
+partners[id].ftd +=1;
 partners[id].balance += reward;
 
 delete pending[trader];
@@ -247,7 +247,6 @@ bot.sendMessage(id,
 `✅ Депозит апрувнут
 
 Trader ID: ${trader}
-FTD: $${amount}
 
 Начислено: $${reward.toFixed(2)}`
 

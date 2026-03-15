@@ -68,7 +68,7 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":23614,"profit":38440282,"win":78,"loss":22,"time":"16:00"}
+{"users":25328,"profit":41657191,"win":87,"loss":13,"time":"15:00"}
 
 
 try{
@@ -279,6 +279,34 @@ amount:0
 }
 
 });
+
+
+/* =========================
+   ПРОВЕРКА АПРУВА
+========================= */
+
+app.get("/check-approve",(req,res)=>{
+
+const trader = req.query.trader_id;
+
+if(!trader){
+return res.json({ok:false});
+}
+
+if(approvedDeposits[trader]){
+console.log("✅ approve found:", trader);
+
+return res.json({
+ok:true
+});
+}
+
+res.json({
+ok:false
+});
+
+});
+
 
 
 /* =========================

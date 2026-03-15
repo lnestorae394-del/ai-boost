@@ -443,3 +443,58 @@ bot.answerCallbackQuery(query.id);
 });
 
 module.exports = { bot };
+
+function approveTrader(trader, partner, amount){
+
+let reward = 0;
+
+if(amount >=10 && amount <20){
+reward = amount * 0.30;
+}
+
+if(amount >=20){
+reward = amount * 0.50;
+}
+
+/* начисление */
+
+if(!partners[partner]){
+partners[partner] = {ftd:0,balance:0};
+}
+
+partners[partner].ftd += 1;
+partners[partner].balance += reward;
+
+/* история */
+
+if(!history[partner]){
+history[partner] = [];
+}
+
+history[partner].push({
+trader,
+reward,
+date: now()
+});
+
+/* убираем из pending */
+
+delete pending[trader];
+
+/* уведомление партнёру */
+
+bot.sendMessage(
+partner,
+`✅ Человек апрувнут
+
+Trader ID: ${trader}
+Первый депозит: $${amount}
+
+Начислено: $${reward.toFixed(2)}
+
+Комиссия поступила на баланс`
+);
+
+}
+
+module.exports = { bot, approveTrader };

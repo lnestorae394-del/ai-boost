@@ -665,61 +665,36 @@ REDEPOSIT (APPROVE)
 
 if(type === "redeposit" && trader){
 
-if(!registeredUsers){
-return res.send("unknown trader");
-}
- 
-if(amount < 5){
-return res.send("small deposit");
+/* защита чтобы не платить дважды */
+
+if(approvedDeposits[trader]){
+return res.send("already approved");
 }
 
-const key = trader + "_" + amount;
-
-if(!approvedDeposits[key]){
-
-approvedDeposits[key] = true;
+approvedDeposits[trader] = true;
 saveApproved();
 
 console.log("🔥 REDEPOSIT APPROVED:", trader, amount);
 
-/* поиск партнера */
-
 const partner = traderPartners[trader];
+const firstDeposit = deposits[trader] || 0;
 
 if(partner){
 
-let reward = amount * 0.50;
-
-if(!partnerStats[partner]){
-partnerStats[partner] = { ftd:0, balance:0 };
-}
-
-partnerStats[partner].balance += reward;
-
-console.log("💸 REWARD:", partner, "+", reward);
-
 try{
 
-const { bot } = require("./public/bot/partnerBot");
+const { approveTrader } = require("./public/bot/partnerBot");
 
-await bot.sendMessage(
-partner,
-`🔥 Повторный депозит
-
-Trader ID: ${trader}
-Сумма: $${amount}
-
-Начислено: $${reward.toFixed(2)}`
-);
+approveTrader(trader, partner, firstDeposit);
 
 }catch(e){
-console.log("partner notify error",e);
+console.log("bot approve error",e);
 }
 
 }
 
 }
-}
+
 
 
 

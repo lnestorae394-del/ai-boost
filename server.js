@@ -214,51 +214,21 @@ res.send("OK");
 });
 
 
-/* =========================
-   ПРОВЕРКА ID
-========================= */
+app.get("/check",(req,res)=>{
 
-app.get("/check", async (req,res)=>{
+const trader = req.query.trader_id;
 
-const traderInput = req.query.trader_id;
-
-if(!traderInput){
+if(!trader){
 return res.json({ok:false});
 }
 
-/* RAM */
-const foundRAM = registeredUsers[traderInput];
+/* проверяем только тех кто пришёл через postback */
 
-if(foundRAM){
+if(traders[trader]){
 return res.json({
 ok:true,
-trader_id:traderInput
+trader_id:trader
 });
-}
-
-/* FIREBASE */
-if(db){
-
-try{
-
-const snap = await db
-.collection("users")
-.where("trader_id","==",traderInput)
-.get();
-
-if(!snap.empty){
-
-return res.json({
-ok:true,
-trader_id:traderInput
-});
-
-}
-
-}catch(e){
-console.log("firebase check error",e);
-}
-
 }
 
 res.json({ok:false});
@@ -762,37 +732,3 @@ fs.writeFileSync("approved.json", JSON.stringify(approvedDeposits,null,2));
 SAVE TRADER ID
 ========================= */
 
-app.post("/save-trader", async (req,res)=>{
-
-const trader = req.body.trader_id;
-
-if(!trader){
-return res.json({ok:false});
-}
-
-/* RAM */
-registeredUsers[trader] = trader;
-
-/* FIREBASE */
-if(db){
-
-try{
-
-await db.collection("users")
-.doc(trader)
-.set({
-trader_id: trader,
-created_at: Date.now()
-},{merge:true});
-
-}catch(e){
-console.log("firebase save error",e);
-}
-
-}
-
-console.log("💾 trader saved:",trader);
-
-res.json({ok:true});
-
-});

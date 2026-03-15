@@ -614,15 +614,7 @@ if(click && trader){
 
 registeredUsers[click] = trader;
 
-/* сохраняем trader в файл */
-traders[trader] = {
-click_id: click,
-created: Date.now()
-};
-
-saveTraders();
-
-/* СОХРАНЯЕМ В FIREBASE */
+/* сохраняем в firebase */
 
 if(db){
 
@@ -634,7 +626,7 @@ click_id: click,
 created: Date.now()
 });
 
-console.log("🔥 saved to firebase:", trader);
+console.log("🔥 saved referral:", trader);
 
 }catch(e){
 console.log("firebase save error", e);
@@ -642,16 +634,8 @@ console.log("firebase save error", e);
 
 }
 
-/* сохраняем партнера */
+/* сохраняем локально */
 
-if(clickPartners[click]){
-traderPartners[trader] = clickPartners[click];
-}
-
-console.log("👤 REG:", click,"→",trader);
-
-
-/* сохраняем trader */
 traders[trader] = {
 click_id: click,
 created: Date.now()
@@ -659,8 +643,7 @@ created: Date.now()
 
 saveTraders();
 
-
-/* сохраняем партнера */
+/* партнер */
 
 if(clickPartners[click]){
 traderPartners[trader] = clickPartners[click];

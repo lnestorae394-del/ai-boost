@@ -685,7 +685,8 @@ try{
 
 const { approveTrader } = require("./public/bot/partnerBot");
 
-approveTrader(trader, partner, firstDeposit);
+approveTrader(trader, firstDeposit);
+
 
 }catch(e){
 console.log("bot approve error",e);

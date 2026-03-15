@@ -17,6 +17,17 @@ let pending = {};
 let approved = {};
 let withdraw = {};
 
+let history = {};      // история депозитов
+let withdrawHistory = {}; // история выводов
+
+function now(){
+
+return new Date().toLocaleString("ru-RU",{
+timeZone:"Europe/Kyiv"
+});
+
+}
+
 /* =========================
 START
 ========================= */
@@ -32,8 +43,8 @@ partners[id] = { ftd:0, balance:0 };
 bot.sendMessage(id,"🤝 AI BOOST Partners",{
 reply_markup:{
 keyboard:[
-["🔎 Чек депозит"],
-["📊 Статистика"],
+["🔎 Чек депозит","⏳ Ожидают апруфа"],
+["📊 Статистика","📜 История"],
 ["💰 Вывод"]
 ],
 resize_keyboard:true
@@ -67,6 +78,65 @@ FTD: ${p.ftd}
 
 });
 
+bot.onText(/⏳ Ожидают апруфа/, (msg)=>{
+
+const id = msg.from.id;
+
+let text = "⏳ Ожидают апруфа\n\n";
+let found = false;
+
+for(const trader in pending){
+
+if(pending[trader].partner === id){
+
+found = true;
+
+text +=
+`Trader ID: ${trader}
+Сумма: $${pending[trader].amount}
+Дата: ${pending[trader].date}
+
+`;
+
+}
+
+}
+
+if(!found){
+text += "Нет депозитов на проверке";
+}
+
+bot.sendMessage(id,text);
+
+});
+
+
+bot.onText(/📜 История/, (msg)=>{
+
+const id = msg.from.id;
+
+if(!history[id]){
+return bot.sendMessage(id,"История пуста");
+}
+
+let text = "📜 Апрувнутые депозиты\n\n";
+
+history[id].slice(-20).forEach(h=>{
+
+text +=
+`Trader: ${h.trader}
+Начислено: $${h.reward}
+Дата: ${h.date}
+
+`;
+
+});
+
+bot.sendMessage(id,text);
+
+});
+
+
 /* =========================
 ЧЕК ДЕПОЗИТ
 ========================= */
@@ -97,7 +167,6 @@ return bot.sendMessage(id,
 withdraw[id] = true;
 
 bot.sendMessage(id,"Введите USDT TRC20 адрес");
-
 });
 
 /* =========================
@@ -117,38 +186,71 @@ if(withdraw[id]){
 
 withdraw[id] = false;
 
-bot.sendMessage(ADMIN_ID,
+const date = now();
 
+/* сообщение админу */
+
+bot.sendMessage(
+ADMIN_ID,
 `💰 Запрос вывода
 
-Partner: ${id}
+Telegram ID: ${id}
 Сумма: $${partners[id].balance}
 
 Адрес:
-${text}`,
+${text}
 
+Дата: ${date}`,
 {
 reply_markup:{
 inline_keyboard:[
 [
 { text:"✅ Выплачено", callback_data:`paid_${id}` },
-{ text:"❌ Отмена", callback_data:`cancel_${id}` }
+{ text:"❌ Отклонить", callback_data:`cancel_${id}` }
 ]
 ]
 }
-});
+}
+);
 
-bot.sendMessage(id,"⏳ Запрос отправлен");
+/* сообщение партнёру */
+
+bot.sendMessage(
+id,
+"⏳ Запрос на вывод отправлен. Ожидайте подтверждения."
+);
 
 return;
 
 }
+
+
 
 /* проверка Trader ID */
 
 if(!/^\d+$/.test(text)) return;
 
 const trader = text;
+
+if(pending[trader] || approved[trader]){
+
+return bot.sendMessage(
+id,
+"⛔ Этот Trader ID уже был отправлен на проверку"
+);
+
+}
+if(history[id]){
+
+const used = history[id].find(h => h.trader === trader);
+
+if(used){
+return bot.sendMessage(id,"⛔ Этот Trader ID уже был апрувнут ранее");
+}
+
+}
+
+
 
 try{
 
@@ -161,7 +263,8 @@ return bot.sendMessage(id,"❌ Депозит не найден");
 
 pending[trader] = {
 partner:id,
-amount:data.amount
+amount:data.amount,
+date: now()
 };
 
 bot.sendMessage(id,
@@ -225,18 +328,39 @@ reward = amount * 0.50;
 partners[partner].ftd += 1;
 partners[partner].balance += reward;
 
-approved[trader] = { partner, reward };
+approved[trader] = {
+partner,
+reward,
+date: now()
+};
+
+if(!history[partner]){
+history[partner] = [];
+}
+
+history[partner].push({
+
+trader,
+reward,
+date: now()
+
+});
+
 
 delete pending[trader];
 
 bot.sendMessage(partner,
 
-`✅ Депозит апрувнут
+`🔥 Ваш клиент апрувнут
 
 Trader ID: ${trader}
-Начислено: $${reward.toFixed(2)}`
 
++1 FTD
+Начислено: $${reward.toFixed(2)}
+
+Дата: ${now()}`
 );
+
 
 bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
 
@@ -290,6 +414,17 @@ bot.sendMessage(id,
 Сумма: $${partners[id].balance}`
 
 );
+
+if(!withdrawHistory[id]){
+withdrawHistory[id] = [];
+}
+
+withdrawHistory[id].push({
+
+amount: partners[id].balance,
+date: now()
+
+});
 
 partners[id].balance = 0;
 

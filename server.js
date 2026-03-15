@@ -156,8 +156,10 @@ res.sendFile(path.join(__dirname,"public",page+".html"));
 
 app.get("/dev-deposit",(req,res)=>{
 
-if(!DEV_MODE){
-return res.send("dev mode off");
+const adminKey = req.query.key;
+
+if(adminKey !== process.env.DEV_KEY){
+return res.send("forbidden");
 }
 
 const trader = req.query.trader_id;
@@ -176,6 +178,7 @@ console.log("🧪 TEST депозит:",trader,"+",amount);
 res.send("ok");
 
 });
+
 
 
 /* =========================

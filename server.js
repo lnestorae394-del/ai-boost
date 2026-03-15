@@ -685,7 +685,12 @@ try{
 
 const { approveTrader } = require("./public/bot/partnerBot");
 
-approveTrader(trader, firstDeposit);
+const { bot } = require("./public/bot/partnerBot");
+
+await bot.sendMessage(
+PARTNER_BOT_ADMIN,
+`/autoapprove ${trader}`
+);
 
 
 }catch(e){

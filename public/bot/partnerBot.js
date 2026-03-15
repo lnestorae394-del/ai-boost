@@ -442,20 +442,16 @@ bot.answerCallbackQuery(query.id);
 
 });
 
-module.exports = { bot };
 
-function approveTrader(trader, partner, amount){
 
-/* если партнер не передан — ищем в pending */
+function approveTrader(trader, amount){
 
-if(!partner && pending[trader]){
-partner = pending[trader].partner;
-}
-
-if(!partner){
-console.log("❌ partner not found for trader", trader);
+if(!pending[trader]){
+console.log("❌ trader not in pending:", trader);
 return;
 }
+
+const partner = pending[trader].partner;
 
 let reward = 0;
 
@@ -508,8 +504,23 @@ Trader ID: ${trader}
 Комиссия поступила на баланс`
 );
 
-console.log("✅ AUTO APPROVED:", trader, partner);
+console.log("🔥 AUTO APPROVED:", trader);
 
 }
 
 module.exports = { bot, approveTrader };
+
+
+bot.onText(/\/autoapprove (.+)/,(msg,match)=>{
+
+if(msg.from.id !== ADMIN_ID) return;
+
+const trader = match[1];
+const partner = pending[trader]?.partner;
+const amount = pending[trader]?.amount;
+
+if(!partner) return;
+
+approveTrader(trader, amount);
+
+});

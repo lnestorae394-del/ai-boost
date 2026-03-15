@@ -606,7 +606,12 @@ req.query.profit ||
 0
 );
 
-const type = req.query.type || "ftd";
+const type =
+req.query.type ||
+req.query.event ||
+req.query.status ||
+"ftd";
+
 
 /* регистрация */
 
@@ -632,7 +637,7 @@ saveDeposits();
 
 /* редепозит (апрув) */
 
-if(trader && amount > 0 && type === "redeposit"){
+if(trader && amount > 0 && (type === "redeposit" || type === "redeposit_ftd")){
 
 if(!approvedDeposits[trader]){
 

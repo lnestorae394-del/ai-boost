@@ -10,7 +10,6 @@ const bot = new TelegramBot(TOKEN,{ polling:true });
 
 let partners = {};
 let pending = {};
-let approved = {};
 let withdrawRequests = {};
 
 /* =========================
@@ -46,17 +45,19 @@ bot.onText(/📊 Статистика/, (msg)=>{
 
 const id = msg.from.id;
 
-const p = partners[id];
-
-if(!p){
+if(!partners[id]){
 return bot.sendMessage(id,"Нет статистики.");
 }
 
+const p = partners[id];
+
 bot.sendMessage(id,
+
 `📊 Ваша статистика
 
 FTD: ${p.ftd}
 Баланс: $${p.balance}`
+
 );
 
 });
@@ -82,8 +83,11 @@ const p = partners[id];
 
 if(p.balance < 100){
 return bot.sendMessage(id,
+
 `❌ Минимальная выплата $100
-Баланс: $${p.balance}`);
+Баланс: $${p.balance}`
+
+);
 }
 
 withdrawRequests[id] = true;
@@ -113,6 +117,7 @@ if(withdrawRequests[id]){
 withdrawRequests[id] = false;
 
 bot.sendMessage(ADMIN_ID,
+
 `💰 Запрос вывода
 
 Partner: ${id}
@@ -120,6 +125,7 @@ Partner: ${id}
 
 Адрес:
 ${text}`,
+
 {
 reply_markup:{
 inline_keyboard:[
@@ -132,6 +138,8 @@ inline_keyboard:[
 });
 
 bot.sendMessage(id,"⏳ Запрос отправлен на проверку");
+
+return;
 
 }
 
@@ -158,24 +166,28 @@ amount:data.amount
 };
 
 bot.sendMessage(id,
+
 `⏳ Депозит найден
 
 Trader ID: ${trader}
 Сумма: $${data.amount}
 
 Ожидает апрува`
+
 );
 
 /* уведомление админу */
 
 bot.sendMessage(ADMIN_ID,
+
 `⚡ Новый депозит
 
 Trader ID: ${trader}
 Сумма: $${data.amount}
 
-Напишите:
+Команда апрува:
 /approve ${trader}`
+
 );
 
 }catch(e){
@@ -190,34 +202,18 @@ bot.sendMessage(id,"⚠️ Ошибка проверки");
 АПРУВ (АДМИН)
 ========================= */
 
-bot.onText(/\/approve (.+)/, async (msg,match)=>{
+bot.onText(/\/approve (.+)/, (msg,match)=>{
 
 if(msg.from.id !== ADMIN_ID) return;
 
 const trader = match[1];
 
-try{
-
-const res = await fetch(CHECK_URL + trader);
-const data = await res.json();
-
-if(!data.ok){
-return bot.sendMessage(ADMIN_ID,"❌ Депозит не найден");
+if(!pending[trader]){
+return bot.sendMessage(ADMIN_ID,"❌ Этот депозит не ожидает апрува");
 }
 
-let partner = null;
-
-for(let t in pending){
-if(t === trader){
-partner = pending[t].partner;
-}
-}
-
-if(!partner){
-return bot.sendMessage(ADMIN_ID,"❌ Партнёр не найден");
-}
-
-const amount = data.amount;
+const partner = pending[trader].partner;
+const amount = pending[trader].amount;
 
 let reward = 0;
 
@@ -245,14 +241,7 @@ Trader ID: ${trader}
 
 bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
 
-}catch(e){
-
-bot.sendMessage(ADMIN_ID,"⚠️ Ошибка апрува");
-
-}
-
 });
-
 
 /* =========================
 ВЫПЛАТА
@@ -264,14 +253,18 @@ const data = query.data;
 
 if(!data) return;
 
+/* выплачено */
+
 if(data.startsWith("paid_")){
 
 const id = data.split("_")[1];
 
 bot.sendMessage(id,
+
 `💸 Выплата отправлена
 
 Сумма: $${partners[id].balance}`
+
 );
 
 partners[id].balance = 0;
@@ -279,6 +272,8 @@ partners[id].balance = 0;
 bot.answerCallbackQuery(query.id);
 
 }
+
+/* отмена */
 
 if(data.startsWith("cancel_")){
 
@@ -293,48 +288,3 @@ bot.answerCallbackQuery(query.id);
 });
 
 module.exports = { bot };
-
-/* =========================
-ADMIN APPROVE
-========================= */
-
-bot.onText(/\/approve (.+)/, (msg, match)=>{
-
-if(msg.from.id !== ADMIN_ID) return;
-
-const trader = match[1];
-
-if(!pending[trader]){
-return bot.sendMessage(ADMIN_ID,"❌ Этот ID не ожидает апрува");
-}
-
-const partner = pending[trader].partner;
-const amount = pending[trader].amount;
-
-let reward = 0;
-
-if(amount >=10 && amount <20){
-reward = amount * 0.30;
-}
-
-if(amount >=20){
-reward = amount * 0.50;
-}
-
-partners[partner].ftd += 1;
-partners[partner].balance += reward;
-
-delete pending[trader];
-
-bot.sendMessage(partner,
-
-`✅ Депозит апрувнут
-
-Trader ID: ${trader}
-Начислено: $${reward.toFixed(2)}`
-
-);
-
-bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
-
-});

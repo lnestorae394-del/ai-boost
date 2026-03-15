@@ -190,20 +190,34 @@ bot.sendMessage(id,"⚠️ Ошибка проверки");
 АПРУВ (АДМИН)
 ========================= */
 
-bot.onText(/\/approve (.+)/,(msg,match)=>{
+bot.onText(/\/approve (.+)/, async (msg,match)=>{
 
 if(msg.from.id !== ADMIN_ID) return;
 
 const trader = match[1];
 
-if(!pending[trader]){
+try{
 
-return bot.sendMessage(ADMIN_ID,"ID не найден");
+const res = await fetch(CHECK_URL + trader);
+const data = await res.json();
 
+if(!data.ok){
+return bot.sendMessage(ADMIN_ID,"❌ Депозит не найден");
 }
 
-const partner = pending[trader].partner;
-const amount = pending[trader].amount;
+let partner = null;
+
+for(let t in pending){
+if(t === trader){
+partner = pending[t].partner;
+}
+}
+
+if(!partner){
+return bot.sendMessage(ADMIN_ID,"❌ Партнёр не найден");
+}
+
+const amount = data.amount;
 
 let reward = 0;
 
@@ -221,16 +235,24 @@ partners[partner].balance += reward;
 delete pending[trader];
 
 bot.sendMessage(partner,
+
 `✅ Депозит апрувнут
 
 Trader ID: ${trader}
-
 Начислено: $${reward.toFixed(2)}`
+
 );
 
-bot.sendMessage(ADMIN_ID,"Апрув выполнен");
+bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
+
+}catch(e){
+
+bot.sendMessage(ADMIN_ID,"⚠️ Ошибка апрува");
+
+}
 
 });
+
 
 /* =========================
 ВЫПЛАТА

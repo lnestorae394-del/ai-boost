@@ -637,15 +637,13 @@ saveDeposits();
 
 /* редепозит (апрув) */
 
-if(trader && amount > 0 && (type === "redeposit" || type === "redeposit_ftd")){
+if(type === "redeposit" && trader){
 
 if(!approvedDeposits[trader]){
 
 approvedDeposits[trader] = true;
 
-console.log("🔥 APPROVED:", trader, amount);
-
-/* уведомление */
+console.log("🔥 APPROVED:", trader);
 
 const bot = require("./public/bot/partnerBot").bot;
 
@@ -656,9 +654,7 @@ PARTNER_BOT_ADMIN,
 `🔥 Новый апрув депозита
 
 Trader ID: ${trader}
-FTD: $${deposits[trader]}
-
-Redeозит: $${amount}
+FTD: $${deposits[trader] || 0}
 
 Партнёру начислены проценты`
 );

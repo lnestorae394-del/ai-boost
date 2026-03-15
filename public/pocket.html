@@ -429,11 +429,11 @@ box.innerText=text;
 box.style.display="block";
 }
 
-window.checkID=async function(){
+window.checkID = async function(){
 
-const id=document.getElementById("userid").value.trim();
+const id = document.getElementById("userid").value.trim();
 
-if(id.length<4){
+if(id.length < 4){
 
 showError("Введите корректный ID");
 
@@ -449,15 +449,27 @@ return;
 
 try{
 
-let r=await fetch("/check?trader_id="+id);
-let data=await r.json();
+/* СОХРАНЯЕМ ID */
 
-if(data.ok){
+await fetch("/save-trader",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+trader_id:id
+})
+});
+
+/* сохраняем локально */
 
 localStorage.setItem("trader_id", id);
 localStorage.setItem("hasPocket","true");
 
-const user=auth.currentUser;
+/* firebase */
+
+const user = auth.currentUser;
+
 if(user){
 await updateDoc(doc(db,"users",user.uid),{
 hasPocket:true,
@@ -465,23 +477,16 @@ trader_id:id
 });
 }
 
+/* сразу пускаем дальше */
+
 window.location.href="/deposit";
 
-}else{
-showError("ID не найден. Зарегистрируйтесь по нашей ссылке");
-
-const box = document.querySelector(".box");
-box.classList.add("shake");
-
-setTimeout(()=>{
-box.classList.remove("shake");
-},400);
-
-}
-
 }catch(e){
+
 showError("Ошибка соединения с сервером");
+
 }
+
 }
 
 let click_id=localStorage.getItem("click_id");

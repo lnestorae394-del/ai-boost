@@ -731,3 +731,41 @@ function saveApproved(){
 fs.writeFileSync("approved.json", JSON.stringify(approvedDeposits,null,2));
 }
 
+/* =========================
+SAVE TRADER ID
+========================= */
+
+app.post("/save-trader", async (req,res)=>{
+
+const trader = req.body.trader_id;
+
+if(!trader){
+return res.json({ok:false});
+}
+
+/* RAM */
+registeredUsers[trader] = trader;
+
+/* FIREBASE */
+if(db){
+
+try{
+
+await db.collection("users")
+.doc(trader)
+.set({
+trader_id: trader,
+created_at: Date.now()
+},{merge:true});
+
+}catch(e){
+console.log("firebase save error",e);
+}
+
+}
+
+console.log("💾 trader saved:",trader);
+
+res.json({ok:true});
+
+});

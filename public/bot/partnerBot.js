@@ -10,6 +10,7 @@ const bot = new TelegramBot(TOKEN,{ polling:true });
 
 let partners = {};
 let pending = {};
+let approved = {};
 let withdrawRequests = {};
 
 /* =========================
@@ -106,7 +107,6 @@ const id = msg.from.id;
 const text = msg.text;
 
 if(!text) return;
-if(text.startsWith("/")) return;
 
 /* =========================
 ВЫВОД
@@ -185,8 +185,9 @@ bot.sendMessage(ADMIN_ID,
 Trader ID: ${trader}
 Сумма: $${data.amount}
 
-Команда апрува:
-/approve ${trader}`
+Команды:
+/approve ${trader}
+/reject ${trader}`
 
 );
 
@@ -199,17 +200,17 @@ bot.sendMessage(id,"⚠️ Ошибка проверки");
 });
 
 /* =========================
-АПРУВ (АДМИН)
+АПРУВ
 ========================= */
 
-bot.onText(/\/approve (.+)/, (msg,match)=>{
+bot.onText(/\/approve (.+)/,(msg,match)=>{
 
 if(msg.from.id !== ADMIN_ID) return;
 
 const trader = match[1];
 
 if(!pending[trader]){
-return bot.sendMessage(ADMIN_ID,"❌ Этот депозит не ожидает апрува");
+return bot.sendMessage(ADMIN_ID,"❌ Нет такого депозита");
 }
 
 const partner = pending[trader].partner;
@@ -228,6 +229,11 @@ reward = amount * 0.50;
 partners[partner].ftd +=1;
 partners[partner].balance += reward;
 
+approved[trader] = {
+partner,
+reward
+};
+
 delete pending[trader];
 
 bot.sendMessage(partner,
@@ -240,6 +246,41 @@ Trader ID: ${trader}
 );
 
 bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
+
+});
+
+/* =========================
+ОТМЕНА АПРУВА
+========================= */
+
+bot.onText(/\/reject (.+)/,(msg,match)=>{
+
+if(msg.from.id !== ADMIN_ID) return;
+
+const trader = match[1];
+
+if(!approved[trader]){
+return bot.sendMessage(ADMIN_ID,"❌ Нет такого апрува");
+}
+
+const partner = approved[trader].partner;
+const reward = approved[trader].reward;
+
+partners[partner].ftd -=1;
+partners[partner].balance -= reward;
+
+delete approved[trader];
+
+bot.sendMessage(partner,
+
+`❌ Апрув отменён
+
+Trader ID: ${trader}
+Баланс скорректирован`
+
+);
+
+bot.sendMessage(ADMIN_ID,"❌ Апрув отменён");
 
 });
 

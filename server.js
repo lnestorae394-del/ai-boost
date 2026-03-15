@@ -227,7 +227,7 @@ return res.json({ok:false});
 }
 
 /* RAM */
-const foundRAM = Object.values(registeredUsers).includes(traderInput);
+const foundRAM = registeredUsers[traderInput];
 
 if(foundRAM){
 return res.json({
@@ -644,6 +644,15 @@ if(click && trader){
 
 registeredUsers[click] = trader;
 
+/* сохраняем trader */
+traders[trader] = {
+click_id: click,
+created: Date.now()
+};
+
+saveTraders();
+
+
 /* сохраняем партнера */
 
 if(clickPartners[click]){
@@ -725,6 +734,24 @@ res.send("OK");
 
 function saveDeposits(){
 fs.writeFileSync("deposits.json", JSON.stringify(deposits,null,2));
+}
+
+/* =========================
+   TRADERS LOAD
+========================= */
+
+let traders = {};
+
+try{
+const data = fs.readFileSync("traders.json","utf8");
+traders = JSON.parse(data);
+console.log("💾 traders loaded");
+}catch(e){
+console.log("⚠️ traders.json not found");
+}
+
+function saveTraders(){
+fs.writeFileSync("traders.json", JSON.stringify(traders,null,2));
 }
 
 function saveApproved(){

@@ -621,6 +621,7 @@ req.query.status ||
 "ftd";
 
 
+
 /* =========================
 REGISTRATION
 ========================= */
@@ -628,6 +629,12 @@ REGISTRATION
 if(click && trader){
 
 registeredUsers[click] = trader;
+
+/* сохраняем партнера */
+
+if(clickPartners[click]){
+traderPartners[trader] = clickPartners[click];
+}
 
 console.log("👤 REG:", click,"→",trader);
 
@@ -655,37 +662,63 @@ REDEPOSIT (APPROVE)
 
 if(type === "redeposit" && trader){
 
-if(!approvedDeposits[trader]){
+if(!registeredUsers){
+return res.send("unknown trader");
+}
+ 
+if(amount < 5){
+return res.send("small deposit");
+}
 
-approvedDeposits[trader] = true;
+const key = trader + "_" + amount;
+
+if(!approvedDeposits[key]){
+
+approvedDeposits[key] = true;
 saveApproved();
 
+console.log("🔥 REDEPOSIT APPROVED:", trader, amount);
 
-console.log("🔥 APPROVED:", trader);
+/* поиск партнера */
+
+const partner = traderPartners[trader];
+
+if(partner){
+
+let reward = amount * 0.50;
+
+if(!partnerStats[partner]){
+partnerStats[partner] = { ftd:0, balance:0 };
+}
+
+partnerStats[partner].balance += reward;
+
+console.log("💸 REWARD:", partner, "+", reward);
 
 try{
 
 const { bot } = require("./public/bot/partnerBot");
 
 await bot.sendMessage(
-PARTNER_BOT_ADMIN,
-`🔥 Новый апрув депозита
+partner,
+`🔥 Повторный депозит
 
 Trader ID: ${trader}
-FTD: $${deposits[trader] || 0}
+Сумма: $${amount}
 
-Партнёру начислены проценты`
+Начислено: $${reward.toFixed(2)}`
 );
 
 }catch(e){
-
-console.log("bot notify error",e);
-
+console.log("partner notify error",e);
 }
 
 }
 
 }
+}
+
+
 
 res.send("OK");
 

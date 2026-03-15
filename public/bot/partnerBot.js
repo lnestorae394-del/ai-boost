@@ -293,3 +293,48 @@ bot.answerCallbackQuery(query.id);
 });
 
 module.exports = { bot };
+
+/* =========================
+ADMIN APPROVE
+========================= */
+
+bot.onText(/\/approve (.+)/, (msg, match)=>{
+
+if(msg.from.id !== ADMIN_ID) return;
+
+const trader = match[1];
+
+if(!pending[trader]){
+return bot.sendMessage(ADMIN_ID,"❌ Этот ID не ожидает апрува");
+}
+
+const partner = pending[trader].partner;
+const amount = pending[trader].amount;
+
+let reward = 0;
+
+if(amount >=10 && amount <20){
+reward = amount * 0.30;
+}
+
+if(amount >=20){
+reward = amount * 0.50;
+}
+
+partners[partner].ftd += 1;
+partners[partner].balance += reward;
+
+delete pending[trader];
+
+bot.sendMessage(partner,
+
+`✅ Депозит апрувнут
+
+Trader ID: ${trader}
+Начислено: $${reward.toFixed(2)}`
+
+);
+
+bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
+
+});

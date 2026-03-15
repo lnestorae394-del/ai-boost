@@ -613,7 +613,9 @@ req.query.status ||
 "ftd";
 
 
-/* регистрация */
+/* =========================
+REGISTRATION
+========================= */
 
 if(click && trader){
 
@@ -623,7 +625,10 @@ console.log("👤 REG:", click,"→",trader);
 
 }
 
-/* первый депозит */
+
+/* =========================
+FIRST DEPOSIT (FTD)
+========================= */
 
 if(trader && amount > 0 && type !== "redeposit"){
 
@@ -635,7 +640,10 @@ saveDeposits();
 
 }
 
-/* редепозит (апрув) */
+
+/* =========================
+REDEPOSIT (APPROVE)
+========================= */
 
 if(type === "redeposit" && trader){
 
@@ -645,9 +653,9 @@ approvedDeposits[trader] = true;
 
 console.log("🔥 APPROVED:", trader);
 
-const bot = require("./public/bot/partnerBot").bot;
-
 try{
+
+const { bot } = require("./public/bot/partnerBot");
 
 await bot.sendMessage(
 PARTNER_BOT_ADMIN,
@@ -660,7 +668,9 @@ FTD: $${deposits[trader] || 0}
 );
 
 }catch(e){
+
 console.log("bot notify error",e);
+
 }
 
 }
@@ -670,6 +680,7 @@ console.log("bot notify error",e);
 res.send("OK");
 
 });
+
 
 
 function saveDeposits(){

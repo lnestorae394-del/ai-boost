@@ -694,9 +694,13 @@ if(partner){
 
 try{
 
-const { approveTrader } = require("./public/bot/partnerBot");
+const { bot } = require("./public/bot/partnerBot");
 
-approveTrader(trader, partner, firstDeposit);
+await bot.sendMessage(
+PARTNER_BOT_ADMIN,
+`/autoapprove ${trader}`
+);
+
 
 
 

@@ -40,7 +40,16 @@ if(!partners[id]){
 partners[id] = { ftd:0, balance:0 };
 }
 
-bot.sendMessage(id,"🤝 AI BOOST Partners",{
+bot.sendMessage(id,
+
+`🤝 Приветствуем в AI BOOST Partners
+
+🆔 Ваш Telegram ID:
+${id}
+
+Используйте его для работы с партнёрской системой.`,
+
+{
 reply_markup:{
 keyboard:[
 ["🔎 Чек депозит","⏳ Ожидают апруфа"],
@@ -52,6 +61,7 @@ resize_keyboard:true
 });
 
 });
+
 
 /* =========================
 СТАТИСТИКА
@@ -71,8 +81,11 @@ bot.sendMessage(id,
 
 `📊 Ваша статистика
 
+Telegram ID: ${id}
+
 FTD: ${p.ftd}
 Баланс: $${p.balance}`
+
 
 );
 

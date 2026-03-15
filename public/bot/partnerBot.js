@@ -446,6 +446,17 @@ module.exports = { bot };
 
 function approveTrader(trader, partner, amount){
 
+/* если партнер не передан — ищем в pending */
+
+if(!partner && pending[trader]){
+partner = pending[trader].partner;
+}
+
+if(!partner){
+console.log("❌ partner not found for trader", trader);
+return;
+}
+
 let reward = 0;
 
 if(amount >=10 && amount <20){
@@ -456,11 +467,13 @@ if(amount >=20){
 reward = amount * 0.50;
 }
 
-/* начисление */
+/* создаем партнера если нет */
 
 if(!partners[partner]){
 partners[partner] = {ftd:0,balance:0};
 }
+
+/* начисление */
 
 partners[partner].ftd += 1;
 partners[partner].balance += reward;
@@ -477,11 +490,11 @@ reward,
 date: now()
 });
 
-/* убираем из pending */
+/* удаляем из ожидания */
 
 delete pending[trader];
 
-/* уведомление партнёру */
+/* уведомление */
 
 bot.sendMessage(
 partner,
@@ -494,6 +507,8 @@ Trader ID: ${trader}
 
 Комиссия поступила на баланс`
 );
+
+console.log("✅ AUTO APPROVED:", trader, partner);
 
 }
 

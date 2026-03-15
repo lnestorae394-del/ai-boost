@@ -444,8 +444,40 @@ setTimeout(()=>{
 input.classList.remove("input-shake");
 },400);
 
-return;
+app.get("/check", async (req,res)=>{
+
+const trader = req.query.trader_id;
+
+if(!trader){
+return res.json({ok:false});
 }
+
+/* проверяем firebase */
+
+if(db){
+
+try{
+
+const doc = await db.collection("referrals").doc(trader).get();
+
+if(doc.exists){
+return res.json({
+ok:true,
+trader_id: trader
+});
+}
+
+}catch(e){
+console.log("firebase check error", e);
+}
+
+}
+
+return res.json({ok:false});
+
+});
+
+return;}
 
 try{
 

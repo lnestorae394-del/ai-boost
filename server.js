@@ -614,6 +614,43 @@ if(click && trader){
 
 registeredUsers[click] = trader;
 
+/* сохраняем trader в файл */
+traders[trader] = {
+click_id: click,
+created: Date.now()
+};
+
+saveTraders();
+
+/* СОХРАНЯЕМ В FIREBASE */
+
+if(db){
+
+try{
+
+await db.collection("referrals").doc(trader).set({
+trader_id: trader,
+click_id: click,
+created: Date.now()
+});
+
+console.log("🔥 saved to firebase:", trader);
+
+}catch(e){
+console.log("firebase save error", e);
+}
+
+}
+
+/* сохраняем партнера */
+
+if(clickPartners[click]){
+traderPartners[trader] = clickPartners[click];
+}
+
+console.log("👤 REG:", click,"→",trader);
+
+
 /* сохраняем trader */
 traders[trader] = {
 click_id: click,

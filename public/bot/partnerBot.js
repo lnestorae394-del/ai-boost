@@ -1,40 +1,32 @@
 const TelegramBot = require("node-telegram-bot-api");
 const admin = require("firebase-admin");
 
-/* =========================
-CONFIG
-========================= */
-
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
 
-/* =========================
-INIT
-========================= */
+/* FIREBASE */
+
+if (!admin.apps.length) {
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
+
+admin.initializeApp({
+credential: admin.credential.cert(serviceAccount)
+});
+}
+
+const db = admin.firestore();
 
 const bot = new TelegramBot(TOKEN);
 bot.deleteWebHook().then(()=>bot.startPolling());
 
-const db = admin.firestore();
-
-/* =========================
-HELPERS
-========================= */
+/* ========================= */
 
 function now(){
-return new Date().toLocaleString("ru-RU",{
-timeZone:"Europe/Kyiv"
-});
-}
-
-function calcReward(amount){
-if(amount >=10 && amount <20) return amount * 0.30;
-if(amount >=20) return amount * 0.50;
-return 0;
+return new Date().toLocaleString("ru-RU",{timeZone:"Europe/Kyiv"});
 }
 
 /* =========================
-START + REF
+START + РЕФКА
 ========================= */
 
 bot.onText(/\/start(?: (.+))?/, async (msg,match)=>{
@@ -44,22 +36,16 @@ const username = msg.from.username || "";
 
 const ref = match[1];
 
-/* создаём партнёра если нет */
+/* создаём партнёра */
 
-const partnerRef = db.collection("partners").doc(id);
-const doc = await partnerRef.get();
-
-if(!doc.exists){
-await partnerRef.set({
+await db.collection("partners").doc(id).set({
 reg:0,
 ftd:0,
 balance:0,
-pending:0,
 username
-});
-}
+},{merge:true});
 
-/* если пришёл по рефке */
+/* регистрация */
 
 if(ref && ref !== id){
 
@@ -71,6 +57,7 @@ created: Date.now()
 await db.collection("partners").doc(ref).update({
 reg: admin.firestore.FieldValue.increment(1)
 });
+
 }
 
 /* ссылки */
@@ -82,10 +69,10 @@ bot.sendMessage(id,
 
 `🤝 AI BOOST PARTNERS
 
-🆔 ID: ${id}
-👤 Username: @${username}
+ID: ${id}
+@${username}
 
-🔗 Ваша ссылка:
+🔗 Бот:
 ${botLink}
 
 🌐 Сайт:
@@ -95,8 +82,8 @@ ${siteLink}`,
 reply_markup:{
 keyboard:[
 ["👤 Профиль"],
-["📥 Ожидание","📜 История"],
-["💸 Выплаты","💰 Вывод"],
+["📜 История"],
+["💰 Вывод"],
 ["📞 Поддержка"]
 ],
 resize_keyboard:true
@@ -114,23 +101,16 @@ bot.onText(/👤 Профиль/, async (msg)=>{
 const id = String(msg.from.id);
 
 const doc = await db.collection("partners").doc(id).get();
-
-if(!doc.exists){
-return bot.sendMessage(id,"Нет данных");
-}
-
 const p = doc.data();
 
 bot.sendMessage(id,
 
 `👤 Профиль
 
-ID: ${id}
+Регистрации: ${p.reg}
+FTD: ${p.ftd}
 
-👥 Регистрации: ${p.reg}
-💰 FTD: ${p.ftd}
-
-💵 Баланс: $${p.balance}`
+Баланс: $${p.balance}`
 );
 
 });
@@ -143,26 +123,27 @@ bot.onText(/📜 История/, async (msg)=>{
 
 const id = String(msg.from.id);
 
-const snap = await db.collection("traders")
+const snap = await db.collection("referrals")
 .where("partner","==",id)
-.where("status","==","ftd")
+.where("ftd","==",true)
 .get();
 
 if(snap.empty){
-return bot.sendMessage(id,"История пуста");
+return bot.sendMessage(id,"Пусто");
 }
 
 let text = "📜 История\n\n";
 
 snap.docs.slice(-20).forEach(doc=>{
+
 const d = doc.data();
 
 text +=
-`Trader: ${doc.id}
-Сумма: $${d.amount}
-Начислено: $${d.reward}
+`ID: ${doc.id}
+$${d.amount}
 
 `;
+
 });
 
 bot.sendMessage(id,text);
@@ -173,7 +154,7 @@ bot.sendMessage(id,text);
 ВЫВОД
 ========================= */
 
-let withdrawState = {};
+let withdraw = {};
 
 bot.onText(/💰 Вывод/, async (msg)=>{
 
@@ -183,12 +164,12 @@ const doc = await db.collection("partners").doc(id).get();
 const balance = doc.data().balance;
 
 if(balance < 100){
-return bot.sendMessage(id,`❌ Минимум $100\nБаланс: $${balance}`);
+return bot.sendMessage(id,`❌ Мин $100\nБаланс: $${balance}`);
 }
 
-withdrawState[id] = true;
+withdraw[id] = true;
 
-bot.sendMessage(id,"Введите TRC20 адрес");
+bot.sendMessage(id,"Введите TRC20");
 
 });
 
@@ -199,14 +180,12 @@ const text = msg.text;
 
 if(!text) return;
 
-/* ввод адреса */
+if(withdraw[id]){
 
-if(withdrawState[id]){
+withdraw[id] = false;
 
-withdrawState[id] = false;
-
-const partnerDoc = await db.collection("partners").doc(id).get();
-const amount = partnerDoc.data().balance;
+const doc = await db.collection("partners").doc(id).get();
+const amount = doc.data().balance;
 
 /* создаём вывод */
 
@@ -218,7 +197,7 @@ status:"pending",
 date:Date.now()
 });
 
-/* обнуляем баланс */
+/* обнуляем */
 
 await db.collection("partners").doc(id).update({
 balance:0
@@ -228,80 +207,50 @@ balance:0
 
 bot.sendMessage(ADMIN_ID,
 
-`💰 Запрос вывода
+`💰 Вывод
 
-ID: ${id}
-Сумма: $${amount}
+${id}
+$${amount}
 
-Адрес:
 ${text}`,
 
 {
 reply_markup:{
 inline_keyboard:[
 [
-{ text:"✅ Выплачено", callback_data:`paid_${id}` },
-{ text:"❌ Отклонить", callback_data:`cancel_${id}` }
+{ text:"✅", callback_data:`paid_${id}` },
+{ text:"❌", callback_data:`cancel_${id}` }
 ]
 ]
 }
 }
 );
 
-/* пользователю */
+bot.sendMessage(id,"⏳ Ожидайте");
 
-bot.sendMessage(id,"⏳ Заявка отправлена");
-
-return;
 }
 
 });
 
 /* =========================
-АДМИН КНОПКИ
+АДМИН
 ========================= */
 
 bot.on("callback_query", async (q)=>{
 
 const data = q.data;
 
-if(!data) return;
-
-/* выплачено */
-
 if(data.startsWith("paid_")){
-
 const id = data.split("_")[1];
 
-bot.sendMessage(id,"💸 Выплата отправлена");
-
+bot.sendMessage(id,"✅ Выплачено");
 }
-
-/* отклонено */
 
 if(data.startsWith("cancel_")){
 
 const id = data.split("_")[1];
 
-bot.sendMessage(id,"❌ Выплата отклонена");
-
-/* вернуть баланс */
-
-const snap = await db.collection("withdraws")
-.where("partner","==",id)
-.where("status","==","pending")
-.limit(1)
-.get();
-
-if(!snap.empty){
-
-const w = snap.docs[0].data();
-
-await db.collection("partners").doc(id).update({
-balance: admin.firestore.FieldValue.increment(w.amount)
-});
-
-}
+bot.sendMessage(id,"❌ Отказ");
 
 }
 
@@ -309,49 +258,4 @@ bot.answerCallbackQuery(q.id);
 
 });
 
-/* =========================
-АВТОАПРУВ ИЗ СЕРВЕРА
-========================= */
-
-async function approveTrader(trader, amount){
-
-const doc = await db.collection("traders").doc(trader).get();
-
-if(!doc.exists) return;
-
-const data = doc.data();
-const partner = data.partner;
-
-const reward = calcReward(amount);
-
-/* обновляем трейдера */
-
-await db.collection("traders").doc(trader).update({
-status:"approved",
-reward
-});
-
-/* обновляем партнёра */
-
-await db.collection("partners").doc(String(partner)).update({
-ftd: admin.firestore.FieldValue.increment(1),
-balance: admin.firestore.FieldValue.increment(reward)
-});
-
-/* уведомление */
-
-bot.sendMessage(partner,
-
-`🔥 Новый апрув
-
-Trader: ${trader}
-Сумма: $${amount}
-
-+ $${reward}`
-);
-
-console.log("AUTO APPROVE:", trader);
-
-}
-
-module.exports = { bot, approveTrader };
+module.exports = { bot };

@@ -182,6 +182,7 @@ if(!deposits[trader] || amount > deposits[trader]){
 deposits[trader] = amount;
 }
 
+
 console.log("🧪 TEST депозит:",trader,"+",amount);
 
 }
@@ -226,9 +227,14 @@ try{
 
 /* 🔥 проверяем в Firebase */
 
-const doc = await db.collection("referrals").doc(trader).get();
+if(!db){
+console.log("❌ DB NOT CONNECTED");
+return res.send("db error");
+}
 
-if(doc.exists){
+const ref = await db.collection("referrals").doc(trader).get();
+
+if(ref.exists){
 return res.json({
 ok:true,
 trader_id: trader
@@ -256,6 +262,7 @@ return res.json({ok:false,amount:0});
 }
 
 const amount = parseFloat(deposits[trader] || 0);
+
 
 if(amount >= 10){
 
@@ -617,7 +624,7 @@ req.query.status ||
 REGISTRATION
 ========================= */
 
-if(click && trader){
+if(click && trader && String(click).length > 3){
 
 registeredUsers[click] = trader;
 
@@ -682,9 +689,36 @@ REDEPOSIT (APPROVE)
 
 if(type === "redeposit" && trader){
 
+if(approvedDeposits[trader]){
+return res.send("already approved");
+}
+
 console.log("🔥 REDEPOSIT:", trader, amount)
 
-const partner = traderPartners[trader];
+let partner = null;
+
+try{
+
+if(!db){
+console.log("❌ DB NOT CONNECTED");
+return res.send("db error");
+}
+
+const ref = await db.collection("referrals").doc(trader).get();
+
+if(ref.exists){
+partner = ref.data().click_id;
+}
+
+}catch(e){
+console.log("firebase partner error", e);
+}
+
+console.log("👤 PARTNER:", partner);
+
+if(!partner){
+return res.send("no partner");
+}
 
 if(!partner){
 return res.send("no partner");
@@ -704,9 +738,6 @@ console.log("bot redeposit error",e);
 
 /* защита чтобы не платить дважды */
 
-if(approvedDeposits[trader]){
-return res.send("already approved");
-}
 
 approvedDeposits[trader] = true;
 saveApproved();
@@ -719,18 +750,6 @@ const firstDeposit = deposits[trader] || 0;
 if(partner){
 
 try{
-
-const { bot } = require("./public/bot/partnerBot");
-
-await bot.sendMessage(
-PARTNER_BOT_ADMIN,
-`/autoapprove ${trader}`
-);
-
-
-
-
-
 
 }catch(e){
 console.log("bot approve error",e);

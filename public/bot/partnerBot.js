@@ -1,60 +1,103 @@
 const TelegramBot = require("node-telegram-bot-api");
-const fetch = require("node-fetch");
+const admin = require("firebase-admin");
+
+/* =========================
+CONFIG
+========================= */
 
 const TOKEN = process.env.PARTNER_BOT_TOKEN;
 const ADMIN_ID = 838408932;
 
-const CHECK_URL = "https://ai-boost.onrender.com/check-deposit?trader_id=";
+/* =========================
+INIT
+========================= */
 
 const bot = new TelegramBot(TOKEN);
+bot.deleteWebHook().then(()=>bot.startPolling());
 
-bot.deleteWebHook().then(()=>{
-bot.startPolling();
-});
+const db = admin.firestore();
 
-let partners = {};
-let pending = {};
-let approved = {};
-let withdraw = {};
-
-let history = {};      // история депозитов
-let withdrawHistory = {}; // история выводов
+/* =========================
+HELPERS
+========================= */
 
 function now(){
-
 return new Date().toLocaleString("ru-RU",{
 timeZone:"Europe/Kyiv"
 });
+}
 
+function calcReward(amount){
+if(amount >=10 && amount <20) return amount * 0.30;
+if(amount >=20) return amount * 0.50;
+return 0;
 }
 
 /* =========================
-START
+START + REF
 ========================= */
 
-bot.onText(/\/start/, (msg)=>{
+bot.onText(/\/start(?: (.+))?/, async (msg,match)=>{
 
-const id = msg.from.id;
+const id = String(msg.from.id);
+const username = msg.from.username || "";
 
-if(!partners[id]){
-partners[id] = { ftd:0, balance:0 };
+const ref = match[1];
+
+/* создаём партнёра если нет */
+
+const partnerRef = db.collection("partners").doc(id);
+const doc = await partnerRef.get();
+
+if(!doc.exists){
+await partnerRef.set({
+reg:0,
+ftd:0,
+balance:0,
+pending:0,
+username
+});
 }
+
+/* если пришёл по рефке */
+
+if(ref && ref !== id){
+
+await db.collection("users").doc(id).set({
+partner: ref,
+created: Date.now()
+});
+
+await db.collection("partners").doc(ref).update({
+reg: admin.firestore.FieldValue.increment(1)
+});
+}
+
+/* ссылки */
+
+const botLink = `https://t.me/aiboost_partner_bot?start=${id}`;
+const siteLink = `https://aiboost.trade/?ref=${id}`;
 
 bot.sendMessage(id,
 
-`🤝 Приветствуем в AI BOOST Partners
+`🤝 AI BOOST PARTNERS
 
-🆔 Ваш Telegram ID:
-${id}
+🆔 ID: ${id}
+👤 Username: @${username}
 
-Используйте его для работы с партнёрской системой.`,
+🔗 Ваша ссылка:
+${botLink}
+
+🌐 Сайт:
+${siteLink}`,
 
 {
 reply_markup:{
 keyboard:[
-["🔎 Чек депозит","⏳ Ожидают апруфа"],
-["📊 Статистика","📜 История"],
-["💰 Вывод"]
+["👤 Профиль"],
+["📥 Ожидание","📜 История"],
+["💸 Выплаты","💰 Вывод"],
+["📞 Поддержка"]
 ],
 resize_keyboard:true
 }
@@ -62,101 +105,67 @@ resize_keyboard:true
 
 });
 
-
 /* =========================
-СТАТИСТИКА
+ПРОФИЛЬ
 ========================= */
 
-bot.onText(/📊 Статистика/, (msg)=>{
+bot.onText(/👤 Профиль/, async (msg)=>{
 
-const id = msg.from.id;
+const id = String(msg.from.id);
 
-if(!partners[id]){
-return bot.sendMessage(id,"Нет статистики");
+const doc = await db.collection("partners").doc(id).get();
+
+if(!doc.exists){
+return bot.sendMessage(id,"Нет данных");
 }
 
-const p = partners[id];
+const p = doc.data();
 
 bot.sendMessage(id,
 
-`📊 Ваша статистика
+`👤 Профиль
 
-Telegram ID: ${id}
+ID: ${id}
 
-FTD: ${p.ftd}
-Баланс: $${p.balance}`
+👥 Регистрации: ${p.reg}
+💰 FTD: ${p.ftd}
 
-
+💵 Баланс: $${p.balance}`
 );
 
 });
 
-bot.onText(/⏳ Ожидают апруфа/, (msg)=>{
+/* =========================
+ИСТОРИЯ
+========================= */
 
-const id = msg.from.id;
+bot.onText(/📜 История/, async (msg)=>{
 
-let text = "⏳ Ожидают апруфа\n\n";
-let found = false;
+const id = String(msg.from.id);
 
-for(const trader in pending){
+const snap = await db.collection("traders")
+.where("partner","==",id)
+.where("status","==","ftd")
+.get();
 
-if(pending[trader].partner === id){
-
-found = true;
-
-text +=
-`Trader ID: ${trader}
-Сумма: $${pending[trader].amount}
-Дата: ${pending[trader].date}
-
-`;
-
-}
-
-}
-
-if(!found){
-text += "Нет депозитов на проверке";
-}
-
-bot.sendMessage(id,text);
-
-});
-
-
-bot.onText(/📜 История/, (msg)=>{
-
-const id = msg.from.id;
-
-if(!history[id]){
+if(snap.empty){
 return bot.sendMessage(id,"История пуста");
 }
 
-let text = "📜 Апрувнутые депозиты\n\n";
+let text = "📜 История\n\n";
 
-history[id].slice(-20).forEach(h=>{
+snap.docs.slice(-20).forEach(doc=>{
+const d = doc.data();
 
 text +=
-`Trader: ${h.trader}
-Начислено: $${h.reward}
-Дата: ${h.date}
+`Trader: ${doc.id}
+Сумма: $${d.amount}
+Начислено: $${d.reward}
 
 `;
-
 });
 
 bot.sendMessage(id,text);
-
-});
-
-
-/* =========================
-ЧЕК ДЕПОЗИТ
-========================= */
-
-bot.onText(/🔎 Чек депозит/, (msg)=>{
-
-bot.sendMessage(msg.from.id,"Введите Trader ID клиента");
 
 });
 
@@ -164,56 +173,69 @@ bot.sendMessage(msg.from.id,"Введите Trader ID клиента");
 ВЫВОД
 ========================= */
 
-bot.onText(/💰 Вывод/, (msg)=>{
+let withdrawState = {};
 
-const id = msg.from.id;
+bot.onText(/💰 Вывод/, async (msg)=>{
 
-if(!partners[id] || partners[id].balance < 100){
-return bot.sendMessage(id,
+const id = String(msg.from.id);
 
-`❌ Минимальная выплата $100
-Баланс: $${partners[id] ? partners[id].balance : 0}`
+const doc = await db.collection("partners").doc(id).get();
+const balance = doc.data().balance;
 
-);
+if(balance < 100){
+return bot.sendMessage(id,`❌ Минимум $100\nБаланс: $${balance}`);
 }
 
-withdraw[id] = true;
+withdrawState[id] = true;
 
-bot.sendMessage(id,"Введите USDT TRC20 адрес");
+bot.sendMessage(id,"Введите TRC20 адрес");
+
 });
-
-/* =========================
-MESSAGE
-========================= */
 
 bot.on("message", async (msg)=>{
 
-const id = msg.from.id;
+const id = String(msg.from.id);
 const text = msg.text;
 
 if(!text) return;
 
-/* вывод */
+/* ввод адреса */
 
-if(withdraw[id]){
+if(withdrawState[id]){
 
-withdraw[id] = false;
+withdrawState[id] = false;
 
-const date = now();
+const partnerDoc = await db.collection("partners").doc(id).get();
+const amount = partnerDoc.data().balance;
 
-/* сообщение админу */
+/* создаём вывод */
 
-bot.sendMessage(
-ADMIN_ID,
+await db.collection("withdraws").add({
+partner:id,
+amount,
+address:text,
+status:"pending",
+date:Date.now()
+});
+
+/* обнуляем баланс */
+
+await db.collection("partners").doc(id).update({
+balance:0
+});
+
+/* админу */
+
+bot.sendMessage(ADMIN_ID,
+
 `💰 Запрос вывода
 
-Telegram ID: ${id}
-Сумма: $${partners[id].balance}
+ID: ${id}
+Сумма: $${amount}
 
 Адрес:
-${text}
+${text}`,
 
-Дата: ${date}`,
 {
 reply_markup:{
 inline_keyboard:[
@@ -226,222 +248,36 @@ inline_keyboard:[
 }
 );
 
-/* сообщение партнёру */
+/* пользователю */
 
-bot.sendMessage(
-id,
-"⏳ Запрос на вывод отправлен. Ожидайте подтверждения."
-);
+bot.sendMessage(id,"⏳ Заявка отправлена");
 
 return;
-
-}
-
-
-
-/* проверка Trader ID */
-
-if(!/^\d+$/.test(text)) return;
-
-const trader = text;
-
-if(pending[trader] || approved[trader]){
-
-return bot.sendMessage(
-id,
-"⛔ Этот Trader ID уже был отправлен на проверку"
-);
-
-}
-if(history[id]){
-
-const used = history[id].find(h => h.trader === trader);
-
-if(used){
-return bot.sendMessage(id,"⛔ Этот Trader ID уже был апрувнут ранее");
-}
-
-}
-
-
-
-try{
-
-const res = await fetch(CHECK_URL + trader);
-const data = await res.json();
-
-if(!data.ok){
-return bot.sendMessage(id,"❌ Депозит не найден");
-}
-
-pending[trader] = {
-partner:id,
-amount:data.amount,
-date: now()
-};
-
-bot.sendMessage(id,
-
-`⏳ Депозит найден
-
-Trader ID: ${trader}
-Сумма: $${data.amount}
-
-Ожидает апрува`
-
-);
-
-bot.sendMessage(ADMIN_ID,
-
-`⚡ Новый депозит
-
-Trader ID: ${trader}
-Сумма: $${data.amount}
-
-Апрув:
-/approve ${trader}`
-
-);
-
-}catch(e){
-
-bot.sendMessage(id,"⚠️ Ошибка проверки");
-
 }
 
 });
 
 /* =========================
-APPROVE
+АДМИН КНОПКИ
 ========================= */
 
-bot.onText(/\/approve (.+)/,(msg,match)=>{
+bot.on("callback_query", async (q)=>{
 
-if(msg.from.id !== ADMIN_ID) return;
-
-const trader = match[1];
-
-if(!pending[trader]){
-return bot.sendMessage(ADMIN_ID,"❌ Нет такого депозита");
-}
-
-const partner = pending[trader].partner;
-const amount = pending[trader].amount;
-
-let reward = 0;
-
-if(amount >=10 && amount <20){
-reward = amount * 0.30;
-}
-
-if(amount >=20){
-reward = amount * 0.50;
-}
-
-partners[partner].ftd += 1;
-partners[partner].balance += reward;
-
-approved[trader] = {
-partner,
-reward,
-date: now()
-};
-
-if(!history[partner]){
-history[partner] = [];
-}
-
-history[partner].push({
-
-trader,
-reward,
-date: now()
-
-});
-
-
-delete pending[trader];
-
-bot.sendMessage(partner,
-
-`🔥 Ваш клиент апрувнут
-
-Trader ID: ${trader}
-
-+1 FTD
-Начислено: $${reward.toFixed(2)}
-
-Дата: ${now()}`
-);
-
-
-bot.sendMessage(ADMIN_ID,"✅ Апрув выполнен");
-
-});
-
-/* =========================
-REJECT
-========================= */
-
-bot.onText(/\/reject (.+)/,(msg,match)=>{
-
-if(msg.from.id !== ADMIN_ID) return;
-
-const trader = match[1];
-
-if(!approved[trader]){
-return bot.sendMessage(ADMIN_ID,"❌ Нет апрува");
-}
-
-const partner = approved[trader].partner;
-const reward = approved[trader].reward;
-
-partners[partner].ftd -= 1;
-partners[partner].balance -= reward;
-
-delete approved[trader];
-
-bot.sendMessage(partner,"❌ Апрув отменён");
-bot.sendMessage(ADMIN_ID,"❌ Апрув отменён");
-
-});
-
-/* =========================
-ВЫПЛАТА
-========================= */
-
-bot.on("callback_query",(query)=>{
-
-const data = query.data;
+const data = q.data;
 
 if(!data) return;
+
+/* выплачено */
 
 if(data.startsWith("paid_")){
 
 const id = data.split("_")[1];
 
-bot.sendMessage(id,
-
-`💸 Выплата отправлена
-
-Сумма: $${partners[id].balance}`
-
-);
-
-if(!withdrawHistory[id]){
-withdrawHistory[id] = [];
-}
-
-withdrawHistory[id].push({
-
-amount: partners[id].balance,
-date: now()
-
-});
-
-partners[id].balance = 0;
+bot.sendMessage(id,"💸 Выплата отправлена");
 
 }
+
+/* отклонено */
 
 if(data.startsWith("cancel_")){
 
@@ -449,76 +285,73 @@ const id = data.split("_")[1];
 
 bot.sendMessage(id,"❌ Выплата отклонена");
 
+/* вернуть баланс */
+
+const snap = await db.collection("withdraws")
+.where("partner","==",id)
+.where("status","==","pending")
+.limit(1)
+.get();
+
+if(!snap.empty){
+
+const w = snap.docs[0].data();
+
+await db.collection("partners").doc(id).update({
+balance: admin.firestore.FieldValue.increment(w.amount)
+});
+
 }
 
-bot.answerCallbackQuery(query.id);
+}
+
+bot.answerCallbackQuery(q.id);
 
 });
 
+/* =========================
+АВТОАПРУВ ИЗ СЕРВЕРА
+========================= */
 
+async function approveTrader(trader, amount){
 
-function approveTrader(trader, partner, amount){
+const doc = await db.collection("traders").doc(trader).get();
 
-let reward = 0;
+if(!doc.exists) return;
 
-if(amount >=10 && amount <20){
-reward = amount * 0.30;
-}
+const data = doc.data();
+const partner = data.partner;
 
-if(amount >=20){
-reward = amount * 0.50;
-}
+const reward = calcReward(amount);
 
-if(!partners[partner]){
-partners[partner] = {ftd:0,balance:0};
-}
+/* обновляем трейдера */
 
-partners[partner].ftd += 1;
-partners[partner].balance += reward;
-
-if(!history[partner]){
-history[partner] = [];
-}
-
-history[partner].push({
-trader,
-reward,
-date: now()
+await db.collection("traders").doc(trader).update({
+status:"approved",
+reward
 });
 
-delete pending[trader];
+/* обновляем партнёра */
 
-bot.sendMessage(
-partner,
-`✅ Человек апрувнут
+await db.collection("partners").doc(String(partner)).update({
+ftd: admin.firestore.FieldValue.increment(1),
+balance: admin.firestore.FieldValue.increment(reward)
+});
 
-Trader ID: ${trader}
-Первый депозит: $${amount}
+/* уведомление */
 
-Начислено: $${reward.toFixed(2)}
+bot.sendMessage(partner,
 
-Комиссия поступила на баланс`
+`🔥 Новый апрув
+
+Trader: ${trader}
+Сумма: $${amount}
+
++ $${reward}`
 );
 
-console.log("🔥 AUTO APPROVED:", trader);
+console.log("AUTO APPROVE:", trader);
 
 }
 
-
-
 module.exports = { bot, approveTrader };
-
-
-bot.onText(/\/autoapprove (.+)/,(msg,match)=>{
-
-if(msg.from.id !== ADMIN_ID) return;
-
-const trader = match[1];
-const partner = pending[trader]?.partner;
-const amount = pending[trader]?.amount;
-
-if(!partner) return;
-
-approveTrader(trader, amount);
-
-});

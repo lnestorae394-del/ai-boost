@@ -87,7 +87,7 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":25328,"profit":41657191,"win":87,"loss":13,"time":"15:00"}
+{"users":30093,"profit":50615164,"win":87,"loss":13,"time":"23:00"}
 
 
 try{
@@ -214,7 +214,7 @@ res.send("OK");
 });
 
 
-app.get("/check",(req,res)=>{
+app.get("/check", async (req,res)=>{
 
 const trader = req.query.trader_id;
 
@@ -222,19 +222,26 @@ if(!trader){
 return res.json({ok:false});
 }
 
-/* проверяем только тех кто пришёл через postback */
+try{
 
-if(traders[trader]){
+/* 🔥 проверяем в Firebase */
+
+const doc = await db.collection("referrals").doc(trader).get();
+
+if(doc.exists){
 return res.json({
 ok:true,
-trader_id:trader
+trader_id: trader
 });
 }
 
-res.json({ok:false});
+}catch(e){
+console.log("firebase check error", e);
+}
+
+return res.json({ok:false});
 
 });
-
 
 /* =========================
    ПРОВЕРКА ДЕПОЗИТА
@@ -675,6 +682,26 @@ REDEPOSIT (APPROVE)
 
 if(type === "redeposit" && trader){
 
+console.log("🔥 REDEPOSIT:", trader, amount)
+
+const partner = traderPartners[trader];
+
+if(!partner){
+return res.send("no partner");
+}
+
+try{
+
+const { approveTrader } = require("./public/bot/partnerBot");
+
+approveTrader(trader, partner, amount);
+
+}catch(e){
+console.log("bot redeposit error",e);
+}
+
+
+
 /* защита чтобы не платить дважды */
 
 if(approvedDeposits[trader]){
@@ -686,7 +713,7 @@ saveApproved();
 
 console.log("🔥 REDEPOSIT APPROVED:", trader, amount);
 
-const partner = traderPartners[trader];
+
 const firstDeposit = deposits[trader] || 0;
 
 if(partner){

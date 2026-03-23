@@ -1,50 +1,91 @@
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 
 const bot = new Telegraf(process.env.PARTNER_BOT_TOKEN);
 
 console.log("🤖 Partner bot started");
 
+// состояние пользователя (что он выбрал)
+const userState = {};
+
 // старт
 bot.start((ctx) => {
-  ctx.reply("Приветствуем в AIBOOST PARTNER - Введите ID трейдера 👇");
+  const username = ctx.from.username || ctx.from.first_name || "партнер";
+
+  ctx.reply(
+    `Приветствуем ${username} в AIBOOST PARTNER 👋`,
+    Markup.keyboard([
+      ["📋 Проверка регистрации", "💰 Проверка депозита"]
+    ])
+      .resize()
+  );
+});
+
+// кнопка регистрация
+bot.hears("📋 Проверка регистрации", (ctx) => {
+  userState[ctx.from.id] = "check_reg";
+  ctx.reply("Введите ID трейдера для проверки регистрации 👇");
+});
+
+// кнопка депозит
+bot.hears("💰 Проверка депозита", (ctx) => {
+  userState[ctx.from.id] = "check_dep";
+  ctx.reply("Введите ID трейдера для проверки депозита 👇");
 });
 
 // обработка ID
 bot.on("text", async (ctx) => {
-
   const id = ctx.message.text.trim();
 
-  // проверка на цифры
+  // если не выбран режим — игнор
+  if (!userState[ctx.from.id]) return;
+
+  // проверка цифр
   if (!/^\d+$/.test(id)) {
     return ctx.reply("❌ Введите корректный ID (только цифры)");
   }
 
   try {
 
-    const res = await fetch(`https://ai-boost.onrender.com/check-deposit?trader_id=${id}`);
-    const data = await res.json();
+    // 🔥 ПРОВЕРКА РЕГИСТРАЦИИ
+    if (userState[ctx.from.id] === "check_reg") {
 
-    if (data.ok) {
-      ctx.reply(`✅ Депозит найден\n💰 Сумма: $${data.amount}`);
-    } else {
-      ctx.reply("❌ Депозит не найден");
+      const res = await fetch(`https://ai-boost.onrender.com/check?trader_id=${id}`);
+      const data = await res.json();
+
+      if (data.ok) {
+        return ctx.reply("✅ Пользователь зарегистрирован");
+      } else {
+        return ctx.reply("❌ Пользователь не найден");
+      }
+    }
+
+    // 🔥 ПРОВЕРКА ДЕПОЗИТА
+    if (userState[ctx.from.id] === "check_dep") {
+
+      const res = await fetch(`https://ai-boost.onrender.com/check-deposit?trader_id=${id}`);
+      const data = await res.json();
+
+      if (data.ok) {
+        return ctx.reply(`✅ Депозит найден\n💰 Сумма: $${data.amount}`);
+      } else {
+        return ctx.reply("❌ Депозит не найден");
+      }
     }
 
   } catch (e) {
     console.log("CHECK ERROR:", e);
     ctx.reply("⚠️ Ошибка сервера");
   }
-
 });
 
 // запуск
-bot.launch({ dropPendingUpdates: true }).then(()=>{
+bot.launch({ dropPendingUpdates: true }).then(() => {
   console.log("🚀 Partner bot launched");
 });
 
 // ошибки
 bot.catch(err => console.log("BOT ERROR:", err));
 
-// graceful stop
+// остановка
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));

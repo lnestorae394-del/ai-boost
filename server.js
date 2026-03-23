@@ -252,37 +252,47 @@ return res.json({ok:false});
    ПРОВЕРКА ДЕПОЗИТА
 ========================= */
 
-app.get("/check-deposit",(req,res)=>{
+app.get("/check-deposit", async (req,res)=>{
 
-const trader = req.query.trader_id;
+  const trader = req.query.trader_id;
 
-if(!trader){
-return res.json({ok:false,amount:0});
-}
+  if(!trader){
+    return res.json({ok:false,amount:0});
+  }
 
-const amount = parseFloat(deposits[trader] || 0);
+  try{
 
+    if(!db){
+      console.log("❌ DB NOT CONNECTED");
+      return res.json({ok:false,amount:0});
+    }
 
-if(amount >= 10){
+    const ref = await db.collection("referrals").doc(trader).get();
 
-console.log("✅ депозит есть:",trader,amount);
+    if(ref.exists){
 
-res.json({
-ok:true,
-amount:amount
-});
+      const data = ref.data();
+      const amount = parseFloat(data.deposit || 0);
 
-}else{
+      if(amount >= 10){
+        return res.json({
+          ok:true,
+          amount:amount
+        });
+      }
 
-console.log("⛔ депозита нет:",trader);
+    }
 
-res.json({
-ok:false,
-amount:0
-});
+  }catch(e){
+    console.log("firebase check deposit error", e);
+  }
 
-}
+  return res.json({
+    ok:false,
+    amount:0
+  });
 
+  
 });
 
 
@@ -673,11 +683,27 @@ FIRST DEPOSIT (FTD)
 
 if(trader && amount > 0 && type !== "redeposit"){
 
-deposits[trader] = amount;
+  deposits[trader] = amount;
 
-console.log("💰 FTD:", trader,"+",amount);
+  console.log("💰 FTD:", trader,"+",amount);
 
-saveDeposits();
+  saveDeposits();
+
+  // 🔥 ДОБАВЬ ЭТО
+  if(db){
+    try{
+
+      await db.collection("referrals").doc(trader).set({
+        deposit: amount,
+        deposit_at: Date.now()
+      }, { merge: true });
+
+      console.log("🔥 deposit saved to firebase:", trader);
+
+    }catch(e){
+      console.log("firebase deposit save error", e);
+    }
+  }
 
 }
 

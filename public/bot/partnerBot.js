@@ -4,14 +4,13 @@ const bot = new Telegraf(process.env.PARTNER_BOT_TOKEN);
 
 console.log("🤖 Partner bot started");
 
-// состояние пользователя
 const userState = {};
+const checkedUsers = {}; // 🔥 блок после успешной проверки
 
-// 🔥 СТАРТ
+// старт
 bot.start((ctx) => {
   const username = ctx.from.username || ctx.from.first_name || "партнер";
 
-  // сбрасываем состояние
   userState[ctx.from.id] = null;
 
   ctx.reply(
@@ -22,32 +21,43 @@ bot.start((ctx) => {
   );
 });
 
-// 📋 проверка регистрации
+// регистрация
 bot.hears("📋 Проверка регистрации", (ctx) => {
+
+  if (checkedUsers[ctx.from.id]) {
+    return ctx.reply("⛔ Вы уже успешно проверили ID\nПовторная проверка запрещена");
+  }
+
   userState[ctx.from.id] = "check_reg";
   ctx.reply("Введите ID трейдера для проверки регистрации 👇");
 });
 
-// 💰 проверка депозита
+// депозит
 bot.hears("💰 Проверка депозита", (ctx) => {
+
+  if (checkedUsers[ctx.from.id]) {
+    return ctx.reply("⛔ Вы уже успешно проверили ID\nПовторная проверка запрещена");
+  }
+
   userState[ctx.from.id] = "check_dep";
   ctx.reply("Введите ID трейдера для проверки депозита 👇");
 });
 
-// 🔥 ОБРАБОТКА ТЕКСТА
+// обработка
 bot.on("text", async (ctx) => {
 
   const text = ctx.message.text;
 
-  // ❗ игнорируем команды (/start и т.д.)
   if (text.startsWith("/")) return;
 
-  // если режим не выбран
   if (!userState[ctx.from.id]) return;
+
+  if (checkedUsers[ctx.from.id]) {
+    return ctx.reply("⛔ Повторная проверка запрещена");
+  }
 
   const id = text.trim();
 
-  // проверка ID
   if (!/^\d+$/.test(id)) {
     return ctx.reply("❌ Введите корректный ID (только цифры)");
   }
@@ -61,7 +71,8 @@ bot.on("text", async (ctx) => {
       const data = await res.json();
 
       if (data.ok) {
-        return ctx.reply("✅ Пользователь зарегистрирован");
+        checkedUsers[ctx.from.id] = true; // 🔥 блокируем
+        return ctx.reply("✅ Пользователь зарегистрирован\n\n🔒 Повторная проверка отключена");
       } else {
         return ctx.reply("❌ Пользователь не найден");
       }
@@ -74,7 +85,8 @@ bot.on("text", async (ctx) => {
       const data = await res.json();
 
       if (data.ok) {
-        return ctx.reply(`✅ Депозит найден\n💰 Сумма: $${data.amount}`);
+        checkedUsers[ctx.from.id] = true; // 🔥 блокируем
+        return ctx.reply(`✅ Депозит найден\n💰 Сумма: $${data.amount}\n\n🔒 Повторная проверка отключена`);
       } else {
         return ctx.reply("❌ Депозит не найден");
       }
@@ -94,6 +106,5 @@ bot.launch({ dropPendingUpdates: true }).then(() => {
 // ошибки
 bot.catch(err => console.log("BOT ERROR:", err));
 
-// остановка
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));

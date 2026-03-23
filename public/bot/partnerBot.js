@@ -4,49 +4,57 @@ const bot = new Telegraf(process.env.PARTNER_BOT_TOKEN);
 
 console.log("🤖 Partner bot started");
 
-// состояние пользователя (что он выбрал)
+// состояние пользователя
 const userState = {};
 
-// старт
+// 🔥 СТАРТ
 bot.start((ctx) => {
   const username = ctx.from.username || ctx.from.first_name || "партнер";
+
+  // сбрасываем состояние
+  userState[ctx.from.id] = null;
 
   ctx.reply(
     `Приветствуем ${username} в AIBOOST PARTNER 👋`,
     Markup.keyboard([
       ["📋 Проверка регистрации", "💰 Проверка депозита"]
-    ])
-      .resize()
+    ]).resize()
   );
 });
 
-// кнопка регистрация
+// 📋 проверка регистрации
 bot.hears("📋 Проверка регистрации", (ctx) => {
   userState[ctx.from.id] = "check_reg";
   ctx.reply("Введите ID трейдера для проверки регистрации 👇");
 });
 
-// кнопка депозит
+// 💰 проверка депозита
 bot.hears("💰 Проверка депозита", (ctx) => {
   userState[ctx.from.id] = "check_dep";
   ctx.reply("Введите ID трейдера для проверки депозита 👇");
 });
 
-// обработка ID
+// 🔥 ОБРАБОТКА ТЕКСТА
 bot.on("text", async (ctx) => {
-  const id = ctx.message.text.trim();
 
-  // если не выбран режим — игнор
+  const text = ctx.message.text;
+
+  // ❗ игнорируем команды (/start и т.д.)
+  if (text.startsWith("/")) return;
+
+  // если режим не выбран
   if (!userState[ctx.from.id]) return;
 
-  // проверка цифр
+  const id = text.trim();
+
+  // проверка ID
   if (!/^\d+$/.test(id)) {
     return ctx.reply("❌ Введите корректный ID (только цифры)");
   }
 
   try {
 
-    // 🔥 ПРОВЕРКА РЕГИСТРАЦИИ
+    // 📋 регистрация
     if (userState[ctx.from.id] === "check_reg") {
 
       const res = await fetch(`https://ai-boost.onrender.com/check?trader_id=${id}`);
@@ -59,7 +67,7 @@ bot.on("text", async (ctx) => {
       }
     }
 
-    // 🔥 ПРОВЕРКА ДЕПОЗИТА
+    // 💰 депозит
     if (userState[ctx.from.id] === "check_dep") {
 
       const res = await fetch(`https://ai-boost.onrender.com/check-deposit?trader_id=${id}`);

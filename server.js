@@ -1,9 +1,7 @@
 const express = require("express");
 const fs = require("fs");
-const simpleGit = require("simple-git");
 
 const app = express();
-const git = simpleGit();
 
 const PARTNER_BOT_ADMIN = 838408932; // твой телеграм
 
@@ -604,29 +602,6 @@ error: "server_error"
 
 });
 
-/* =========================
-   AUTO SAVE STATS TO GIT
-========================= */
-
-setInterval(async()=>{
-
-try{
-
-await git.add("stats.json");
-
-await git.commit("auto stats update");
-
-await git.push();
-
-console.log("📦 stats saved to git");
-
-}catch(e){
-
-console.log("git save error", e.message);
-
-}
-
-},300000);
 
 app.get("/postback", async (req,res)=>{
 

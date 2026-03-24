@@ -87,7 +87,7 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":31236,"profit":52902375,"win":70,"loss":30,"time":"01:00"}
+{"users":33375,"profit":57161877,"win":75,"loss":25,"time":"17:00"}
 
 try{
 const data = fs.readFileSync("stats.json","utf8");
@@ -274,7 +274,7 @@ app.get("/check-deposit", async (req,res)=>{
       const data = ref.data();
       const amount = parseFloat(data.deposit || 0);
 
-      if(amount >= 10){
+      if(amount >= 30){
         return res.json({
           ok:true,
           amount:amount

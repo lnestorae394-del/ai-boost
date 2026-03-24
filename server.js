@@ -745,10 +745,6 @@ if(!partner){
 return res.send("no partner");
 }
 
-if(!partner){
-return res.send("no partner");
-}
-
 try{
 
 const { approveTrader } = require("./public/bot/partnerBot");
@@ -771,16 +767,6 @@ console.log("🔥 REDEPOSIT APPROVED:", trader, amount);
 
 
 const firstDeposit = deposits[trader] || 0;
-
-if(partner){
-
-try{
-
-}catch(e){
-console.log("bot approve error",e);
-}
-
-}
 
 }
 

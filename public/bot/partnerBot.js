@@ -96,6 +96,21 @@ bot.on("text", async (ctx) => {
 
 });
 
+// уведомление партнера о редепозите
+async function approveTrader(traderId, partnerId, amount) {
+  const adminId = process.env.PARTNER_BOT_ADMIN || 838408932;
+  try {
+    await bot.telegram.sendMessage(
+      adminId,
+      `✅ Redeposit approved:\nTrader: ${traderId}\nPartner: ${partnerId}\nAmount: $${amount}`
+    );
+  } catch (e) {
+    console.log("approveTrader notify error", e);
+  }
+}
+
+module.exports = { approveTrader };
+
 // запуск
 bot.launch({ dropPendingUpdates: true }).then(() => {
   console.log("🚀 Partner bot launched");

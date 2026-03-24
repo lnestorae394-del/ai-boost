@@ -7,11 +7,11 @@ canvas.height = window.innerHeight;
 let snowflakes = [];
 
 for(let i=0;i<120;i++){
-  particles.push({
+  snowflakes.push({
     x: Math.random()*canvas.width,
     y: Math.random()*canvas.height,
-    r: Math.random()*2+1,
-    d: Math.random()*1
+    radius: Math.random()*2+1,
+    speed: Math.random()*1
   });
 }
 
@@ -84,7 +84,7 @@ window.checkID = async function () {
   }
 
   try {
-    const res = await fetch("https://sandy-pseudoreformatory-unsuperiorly.ngrok/check?id=" + userId);
+    const res = await fetch("/check?id=" + userId);
     const data = await res.json();
 
     if (data.access === true) {

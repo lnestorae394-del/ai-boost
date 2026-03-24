@@ -23,7 +23,7 @@ bot.start(async (ctx) => {
               {
                 text: "🟢 Открыть AI BOOST",
                 web_app: {
-                  url: "https://aiboost.trade/register" // 🔥 лучше свой домен
+                  url: process.env.WEB_APP_URL || "https://aiboost.trade/register"
                 }
               }
             ]
@@ -46,12 +46,27 @@ bot.catch((err) => {
   console.log("🚨 BOT ERROR:", err);
 });
 
-// запуск
-bot.launch({
-  dropPendingUpdates: true
-}).then(() => {
-  console.log("🚀 BOT STARTED");
-});
+function setup(app) {
+  const APP_URL = process.env.APP_URL;
+  const secret = process.env.BOT_TOKEN.split(":")[1].slice(0, 20);
+  const path = `/webhook/bot/${secret}`;
+
+  if (APP_URL) {
+    bot.telegram.setWebhook(`${APP_URL}${path}`).then(() => {
+      console.log("🚀 BOT webhook set");
+    }).catch(e => {
+      console.log("❌ BOT webhook error, falling back to polling:", e.message);
+      bot.launch({ dropPendingUpdates: true });
+    });
+
+    app.use(bot.webhookCallback(path));
+  } else {
+    console.log("⚠️ APP_URL not set, using polling");
+    bot.launch({ dropPendingUpdates: true });
+  }
+}
+
+module.exports = { setup };
 
 // корректное завершение
 process.once("SIGINT", () => bot.stop("SIGINT"));

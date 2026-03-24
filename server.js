@@ -117,8 +117,8 @@ app.listen(PORT, () => {
    BOTS
 ========================= */
 
-require("./public/bot/bot");
-require("./public/bot/partnerBot");
+require("./public/bot/bot").setup(app);
+require("./public/bot/partnerBot").setup(app);
 
 /* =========================
    GLOBAL ERROR HANDLER

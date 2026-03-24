@@ -4,6 +4,8 @@ const bot = new Telegraf(process.env.PARTNER_BOT_TOKEN);
 
 console.log("🤖 Partner bot started");
 
+const APP_URL = process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
+
 // режим пользователя
 const userState = {};
 
@@ -58,7 +60,7 @@ bot.on("text", async (ctx) => {
     // 📋 ПРОВЕРКА РЕГИСТРАЦИИ
     if (userState[ctx.from.id] === "check_reg") {
 
-      const res = await fetch(`https://ai-boost.onrender.com/check?trader_id=${id}`);
+      const res = await fetch(`${APP_URL}/check?trader_id=${id}`);
       const data = await res.json();
 
       if (data.ok) {
@@ -71,7 +73,7 @@ bot.on("text", async (ctx) => {
     // 💰 ПРОВЕРКА ДЕПОЗИТА
     if (userState[ctx.from.id] === "check_dep") {
 
-      const res = await fetch(`https://ai-boost.onrender.com/check-deposit?trader_id=${id}`);
+      const res = await fetch(`${APP_URL}/check-deposit?trader_id=${id}`);
       const data = await res.json();
 
       if (data.ok) {
@@ -109,15 +111,30 @@ async function approveTrader(traderId, partnerId, amount) {
   }
 }
 
-module.exports = { approveTrader };
-
-// запуск
-bot.launch({ dropPendingUpdates: true }).then(() => {
-  console.log("🚀 Partner bot launched");
-});
-
-// ошибки
+// ловим ошибки
 bot.catch(err => console.log("BOT ERROR:", err));
+
+function setup(app) {
+  const appUrl = process.env.APP_URL;
+  const secret = process.env.PARTNER_BOT_TOKEN.split(":")[1].slice(0, 20);
+  const path = `/webhook/partner/${secret}`;
+
+  if (appUrl) {
+    bot.telegram.setWebhook(`${appUrl}${path}`).then(() => {
+      console.log("🚀 Partner bot webhook set");
+    }).catch(e => {
+      console.log("❌ Partner webhook error, falling back to polling:", e.message);
+      bot.launch({ dropPendingUpdates: true });
+    });
+
+    app.use(bot.webhookCallback(path));
+  } else {
+    console.log("⚠️ APP_URL not set, using polling for partner bot");
+    bot.launch({ dropPendingUpdates: true });
+  }
+}
+
+module.exports = { setup, approveTrader };
 
 // остановка
 process.once("SIGINT", () => bot.stop("SIGINT"));

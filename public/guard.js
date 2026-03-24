@@ -7,7 +7,7 @@ const protectedPages = [
 "/signals",
 "/signals.html",
 "/flash",
-"/flash.html",,
+"/flash.html",
 ];
 
 const session = sessionStorage.getItem("auth");

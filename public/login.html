@@ -171,22 +171,7 @@ height:100%;
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyAB7sETTaO3mKj1OdBjtdeIEGeozeVXDVM",
-authDomain: "ai-boost-10540.firebaseapp.com",
-projectId: "ai-boost-10540",
-storageBucket: "ai-boost-10540.appspot.com",
-messagingSenderId: "1024595520009",
-appId: "1:1024595520009:web:650af4d5912ef70da5e6d8"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { auth, db, signInWithEmailAndPassword, doc, getDoc } from "/firebase-init.js";
 
 window.loginUser = async function(){
 

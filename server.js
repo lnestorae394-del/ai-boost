@@ -39,6 +39,18 @@ let clickPartners = {};
 let traderPartners = {};
 let partnerStats = {};
 
+/* =========================
+   VALIDATION HELPERS
+========================= */
+
+function isValidId(id) {
+  return typeof id === "string" && /^[a-zA-Z0-9_-]{1,64}$/.test(id);
+}
+
+function isValidAmount(amount) {
+  return Number.isFinite(amount) && amount > 0 && amount <= 1_000_000;
+}
+
 
 /* =========================
    FIREBASE
@@ -116,7 +128,7 @@ let totalTrades = 0;
 
 let winChance = 0.74;
 
-const DEV_MODE = true;
+const DEV_MODE = process.env.DEV_MODE === "true";
 
 
 /* =========================
@@ -164,16 +176,24 @@ res.sendFile(path.join(__dirname,"public",page+".html"));
    DEV DEPOSIT
 ========================= */
 
-app.get("/dev-deposit",(req,res)=>{
+app.post("/dev-deposit",(req,res)=>{
 
-const adminKey = req.query.key;
+const adminKey = req.body && req.body.key;
 
 if(adminKey !== process.env.DEV_KEY){
 return res.send("forbidden");
 }
 
-const trader = req.query.trader_id;
-const amount = parseFloat(req.query.amount || 25);
+const trader = req.body && req.body.trader_id;
+const amount = parseFloat(req.body && req.body.amount || 25);
+
+if(trader && !isValidId(trader)){
+return res.send("invalid trader_id");
+}
+
+if(!isValidAmount(amount)){
+return res.send("invalid amount");
+}
 
 if(trader){
 
@@ -201,6 +221,14 @@ app.get("/deposit",(req,res)=>{
 const trader = req.query.trader_id;
 const amount = parseFloat(req.query.amount || 0);
 
+if(trader && !isValidId(trader)){
+return res.send("invalid trader_id");
+}
+
+if(amount && !isValidAmount(amount)){
+return res.send("invalid amount");
+}
+
 if(trader && amount){
 
 deposits[trader] = amount;
@@ -218,7 +246,7 @@ app.get("/check", async (req,res)=>{
 
 const trader = req.query.trader_id;
 
-if(!trader){
+if(!trader || !isValidId(trader)){
 return res.json({ok:false});
 }
 
@@ -256,7 +284,7 @@ app.get("/check-deposit", async (req,res)=>{
 
   const trader = req.query.trader_id;
 
-  if(!trader){
+  if(!trader || !isValidId(trader)){
     return res.json({ok:false,amount:0});
   }
 
@@ -602,6 +630,12 @@ console.log("git save error", e.message);
 
 app.get("/postback", async (req,res)=>{
 
+/* postback secret verification */
+const postbackToken = req.query.token || req.headers["x-postback-token"];
+if(process.env.POSTBACK_SECRET && postbackToken !== process.env.POSTBACK_SECRET){
+return res.status(403).send("forbidden");
+}
+
 const click =
 req.query.click_id ||
 req.query.clickid ||
@@ -620,6 +654,17 @@ req.query.payout ||
 req.query.profit ||
 0
 );
+
+/* validate inputs */
+if(click && !isValidId(click)){
+return res.send("invalid click_id");
+}
+if(trader && !isValidId(trader)){
+return res.send("invalid trader_id");
+}
+if(amount && !isValidAmount(amount)){
+return res.send("invalid amount");
+}
 
 const type =
 req.query.type ||

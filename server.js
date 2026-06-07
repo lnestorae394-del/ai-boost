@@ -87,7 +87,7 @@ console.log("⚠️ deposits.json not found");
 ========================= */
 
 let stats = 
-{"users":33375,"profit":57161877,"win":75,"loss":25,"time":"17:00"}
+{"users":166259,"profit":320236555,"win":75,"loss":25,"time":"20:00"}
 
 try{
 const data = fs.readFileSync("stats.json","utf8");

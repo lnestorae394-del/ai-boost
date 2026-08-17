@@ -823,7 +823,7 @@ font-size:20px;
 font-weight:700;
 color:#00ff88;
 min-height:120px;">
-Сигнал активен
+Анализ активен
 </div>
 
 <div style="margin-top:25px;display:flex;flex-direction:column;gap:16px;">
@@ -1006,7 +1006,7 @@ background:#031c12;
 color:#00ff88;
 font-weight:800;
 font-size:18px;">
-Новый сигнал
+Новый анализ
 </button>
 `;
 
@@ -1104,10 +1104,10 @@ const box = document.getElementById("tradeBox");
 if(result==="win"){
 confetti({particleCount:120,spread:80,origin:{y:0.6}});
 box.innerHTML=`<div style="font-size:24px;color:#00ff88;font-weight:800">Сделка закрыта в +</div>
-<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый сигнал</button>`;
+<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый анализ</button>`;
 }else{
 box.innerHTML=`<div style="font-size:24px;color:#ff3b3b;font-weight:800">Сделка закрыта в -</div>
-<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый сигнал</button>`;
+<button onclick="location.reload()" style="margin-top:20px;padding:16px 30px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:800;">Новый анализ</button>`;
 }
 
 setTimeout(async()=>{
